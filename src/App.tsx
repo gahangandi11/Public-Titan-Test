@@ -1,17 +1,14 @@
-import { Redirect, Route } from 'react-router-dom';
+import {Redirect, Route, useHistory} from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
+import Menu from './components/Menu/Menu';
 
-/* Core CSS required for Ionic components to work properly */
+/* Ionic CSS */
 import '@ionic/react/css/core.css';
-
-/* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
-
-/* Optional CSS utils that can be commented out */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
@@ -21,20 +18,67 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import {useState} from 'react';
+import * as React from 'react';
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
+
+const App: React.FC = () => {
+    const [auth, setAuth] = useState(2);
+    let pageDefault: JSX.Element = (<div>Error Loading Auth</div>);
+
+    // const history = useHistory();
+    // watchUser().onAuthStateChanged((fireUser) => {
+    //     if (fireUser !== null) {
+    //         firebaseService.getUserByID(fireUser.uid).then(doc => {
+    //             const user = doc.data() as User;
+    //             if (fireUser.emailVerified && user.verified) {
+    //                 setAuth(2);
+    //             } else if (fireUser.providerData[0]?.providerId !== 'password' && user.verified) {
+    //                 setAuth(2);
+    //             }else {
+    //                 setAuth(1);
+    //                 if (history) {
+    //                     history.push('/');
+    //                 }
+    //             }
+    //         });
+    //     } else {
+    //         setAuth(0);
+    //         if (history) {
+    //             history.push('/');
+    //         }
+    //     }
+    // });
+
+  if (auth === 0) {
+    pageDefault = (
+        <Route path="/" exact={true}>
+          <Redirect to="/login" />
         </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
+    );
+  }
+
+  if (auth === 2) {
+    pageDefault = (
+        <Route path="/" exact={true}>
+          <Redirect to="/home"/>
         </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+    );
+  }
+
+  return (
+      <IonApp>
+        <IonReactRouter>
+          <Menu/>
+          <IonRouterOutlet id="main">
+            {pageDefault}
+            <Route path="/home">
+              <Home />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+  );
+};
 
 export default App;

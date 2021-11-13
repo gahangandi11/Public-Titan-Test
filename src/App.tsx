@@ -76,6 +76,10 @@ const App: React.FC = () => {
             <Route path="/home">
               <Home />
             </Route>
+              <Route path="/app-center/Analytics">
+                  <AppCenter title={'Safety'} />
+              </Route>
+
               <Route path="/app-center/Safety">
                   <AppCenter title={'Safety'} />
               </Route>

@@ -132,7 +132,7 @@ const Home: React.FC = () => {
                     <div className="dashboard__split">
                     {dataCards.map(card => {
                         return (
-                            <IonCol className="data-card__col">
+                            <IonCol key={card.title} className="data-card__col">
                                 <DataCard content={card} />
                             </IonCol>
                         )

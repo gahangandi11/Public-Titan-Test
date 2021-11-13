@@ -1,14 +1,13 @@
 .dashboard__row {
     width: 100%;
-    padding: 5em;
+    padding: .8em;
     display: flex;
     justify-content: center;
 }
 
 .dashboard__split {
-    width: 50%;
-    min-height: 43.5em;
+    width: 70em;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-wrap: wrap;
 }

@@ -128,7 +128,7 @@ const Home: React.FC = () => {
                         <IonTitle size="large">Blank</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonRow>
+                <IonRow className="dashboard__row">
                     <div className="dashboard__split">
                     {dataCards.map(card => {
                         return (

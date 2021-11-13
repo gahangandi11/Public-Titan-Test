@@ -20,6 +20,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import {useState} from 'react';
 import * as React from 'react';
+import AppCenter from './pages/AppCenter/AppCenter';
 
 
 const App: React.FC = () => {
@@ -75,6 +76,33 @@ const App: React.FC = () => {
             <Route path="/home">
               <Home />
             </Route>
+              <Route path="/app-center/Safety">
+                  <AppCenter title={'Safety'} />
+              </Route>
+
+              <Route path="/app-center/Congestion">
+                  <AppCenter title={'Congestion'} />
+              </Route>
+
+              <Route path="/app-center/TravelTime">
+                  <AppCenter title={'TravelTime'} />
+              </Route>
+
+              <Route path="/app-center/TrafficCounts">
+                  <AppCenter title={'TrafficCounts'} />
+              </Route>
+
+              <Route path="/app-center/TrafficJams">
+                  <AppCenter title={'TrafficJams'} />
+              </Route>
+
+              <Route path="/app-center/WazeAnalytics">
+                  <AppCenter title={'WazeAnalytics'} />
+              </Route>
+
+              <Route path="/app-center/TranscoreAnalytics">
+                  <AppCenter title={'TranscoreAnalytics'} />
+              </Route>
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>

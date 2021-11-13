@@ -16,9 +16,12 @@ import {DataCardContent} from '../../interfaces/DataCardContent';
 import {useEffect, useState} from 'react';
 import {DashboardData} from '../../interfaces/DashboardData';
 import {getDashboardContent} from '../../services/firestoreService';
+import {GraphData} from '../../interfaces/GraphData';
+import Graph from '../../components/Graph/Graph';
 
 const Home: React.FC = () => {
     const [dataCards, setDataCards] = useState<DataCardContent[]>([]);
+    const [graphData, setGraphData] = useState<GraphData[]>([]);
 
     useEffect(() => {
         getDashboardContent().then((data: DashboardData) => {
@@ -58,6 +61,61 @@ const Home: React.FC = () => {
                     color: 'icon__blue'
                 }
             ]);
+
+            setGraphData([
+                {
+                    labels: dashboardData.dailyCrashDay,
+                    series: dashboardData.dailyCrashCount,
+                    graphType: "Line",
+                    title: "Daily Crashes",
+                    subtitle: "Past Week",
+                    content: "Updated " + updated,
+                    color: "green"
+                },
+                {
+                    labels: dashboardData.incidentTypeName,
+                    series: dashboardData.incidentTypeCount,
+                    graphType: "Bar",
+                    title: "Incident Types",
+                    subtitle: "Last incident report",
+                    content: "Updated " + updated,
+                    color: "yellow"
+
+                },
+                {
+                    labels: [
+                        "12am",
+                        "1am",
+                        "2am",
+                        "3am",
+                        "4am",
+                        "5am",
+                        "6am",
+                        "7am",
+                        "8am",
+                        "9am",
+                        "10am",
+                        "11am",
+                        "12pm",
+                        "1pm",
+                        "2pm",
+                        "3pm",
+                        "4pm",
+                        "5pm",
+                        "6pm",
+                        "7pm",
+                        "8pm",
+                        "9pm",
+                        "10pm",
+                        "11pm"],
+                    series: dashboardData.trafficCount,
+                    graphType: "Line",
+                    title: "Traffic Counts",
+                    subtitle: "Past 24 hours",
+                    content: "Updated " + updated,
+                    color: "red"
+                }
+            ])
         })
     }, []);
 
@@ -71,6 +129,7 @@ const Home: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <IonRow>
+                    <div className="dashboard__split">
                     {dataCards.map(card => {
                         return (
                             <IonCol className="data-card__col">
@@ -78,9 +137,19 @@ const Home: React.FC = () => {
                             </IonCol>
                         )
                     })}
+                    </div>
+                    <div className="dashboard__split">
+                        <Map />
+                    </div>
                 </IonRow>
-                <IonRow className="dashboard__row">
-                    <Map />
+                <IonRow className="fourth-step">
+                    {graphData.map((value: GraphData, index: number) => {
+                        return (
+                            <IonCol key={index} size-lg="4" size-md="12" size-sm="12" size="12">
+                                <Graph labels={value.labels} series={value.series} title={value.title} subtitle={value.subtitle} graphType={value.graphType} content={value.content} color={value.color} />
+                            </IonCol>
+                        )
+                    })}
                 </IonRow>
             </IonContent>
         </IonPage>

@@ -1,0 +1,47 @@
+.rule {
+    height: 0.05em;
+    width: 95%;
+    margin: auto;
+    background-color: #d7d8da;
+}
+
+.green,
+.yellow,
+.red {
+    position: relative;
+    height: 100%;
+    width: 95%;
+    padding: 10px;
+    border-radius: 5px;
+    margin: -2rem auto auto;
+}
+
+.green {
+    background-color: var(--ion-color-green);
+    box-shadow: 0 7px 5px rgba(var(--ion-color-green-rgb), 0.2);
+}
+
+.red {
+    background-color: var(--ion-color-red);
+    box-shadow: 0 7px 5px rgba(var(--ion-color-red-rgb), 0.2);
+}
+
+.yellow {
+    background-color: var(--ion-color-yellow);
+    box-shadow: 0 7px 5px rgba(var(--ion-color-yellow-rgb), 0.2);
+}
+
+.icon {
+    margin: 0 0.5em 0 0;
+}
+
+.graph-card {
+    overflow: visible;
+    margin: 1rem 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.card-content {
+    height: 90%;
+    overflow: visible;
+}

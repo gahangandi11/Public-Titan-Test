@@ -1,11 +1,13 @@
-import {IonCol, IonContent, IonHeader, IonPage, IonRow, IonTitle, IonToolbar} from '@ionic/react';
+import {IonCard, IonCol, IonContent, IonHeader, IonItem, IonPage, IonRow, IonTitle, IonToolbar} from '@ionic/react';
 import './Home.css';
 import Header from '../../components/Header/Header';
 import Map from '../../components/Map/Map';
 import * as React from 'react';
 import {
-    calendarOutline,
-    calendarSharp, carSportOutline, carSportSharp, informationCircleOutline, informationCircleSharp,
+    carSportOutline,
+    carSportSharp,
+    informationCircleOutline,
+    informationCircleSharp,
     statsChartOutline,
     statsChartSharp,
     warningOutline,
@@ -18,10 +20,12 @@ import {DashboardData} from '../../interfaces/DashboardData';
 import {getDashboardContent} from '../../services/firestoreService';
 import {GraphData} from '../../interfaces/GraphData';
 import Graph from '../../components/Graph/Graph';
+import {CountyData} from '../../interfaces/CountyData';
 
 const Home: React.FC = () => {
     const [dataCards, setDataCards] = useState<DataCardContent[]>([]);
     const [graphData, setGraphData] = useState<GraphData[]>([]);
+    const [crashes, setCrashes] = useState<CountyData[]>([]);
 
     useEffect(() => {
         getDashboardContent().then((data: DashboardData) => {
@@ -115,8 +119,10 @@ const Home: React.FC = () => {
                     content: "Updated " + updated,
                     color: "red"
                 }
-            ])
-        })
+            ]);
+
+            setCrashes(dashboardData.countyCrashes.sort((a, b) => b.crashes - a.crashes));
+        });
     }, []);
 
     return (
@@ -139,13 +145,31 @@ const Home: React.FC = () => {
                     })}
                     </div>
                     <div className="dashboard__split">
-                        <Map />
+                        <IonCard color="primary">
+                            <IonRow>
+                                <IonCol size-lg="3">
+                                    <IonItem color="primary">
+                                        <h1>Crash Rates By County</h1>
+                                    </IonItem>
+                                    {crashes.map(county => {
+                                        return (
+                                            <IonItem className="ion-padding-top" color="primary" key={county.name}>
+                                                {county.name} : {county.crashes}
+                                            </IonItem>
+                                        );
+                                    })}
+                                </IonCol>
+                                <IonCol size-lg="9">
+                                    <Map />
+                                </IonCol>
+                            </IonRow>
+                        </IonCard>
                     </div>
                 </IonRow>
-                <IonRow className="fourth-step">
+                <IonRow className="char__row ion-justify-content-evenly">
                     {graphData.map((value: GraphData, index: number) => {
                         return (
-                            <IonCol key={index} size-lg="4" size-md="12" size-sm="12" size="12">
+                            <IonCol key={index} size-lg="3.5" size="10">
                                 <Graph labels={value.labels} series={value.series} title={value.title} subtitle={value.subtitle} graphType={value.graphType} content={value.content} color={value.color} />
                             </IonCol>
                         )

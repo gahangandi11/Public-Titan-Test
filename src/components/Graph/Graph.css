@@ -45,3 +45,8 @@
     height: 90%;
     overflow: visible;
 }
+
+.chart__row {
+    display: flex;
+    justify-content: space-between;
+}

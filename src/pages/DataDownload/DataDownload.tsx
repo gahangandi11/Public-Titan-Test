@@ -1,4 +1,14 @@
-import {IonButton, IonCard, IonCardContent, IonCardTitle, IonContent, IonPage} from '@ionic/react';
+import {
+    IonButton,
+    IonCard,
+    IonCardContent,
+    IonCardTitle,
+    IonContent,
+    IonIcon, IonLabel,
+    IonPage,
+    IonRow,
+    IonSelect, IonSelectOption
+} from '@ionic/react';
 import React, {useEffect, useState} from 'react';
 import Downloads from '../../components/Downloads/Downloads';
 import Header from '../../components/Header/Header';
@@ -11,6 +21,7 @@ import CountySelector from '../../components/Forms/CountySelector';
 import bigQueryService from '../../services/bigQueryService';
 import {FormRequest} from '../../interfaces/FormRequest';
 import {getUser} from '../../firebaseConfig';
+import {downloadOutline, downloadSharp} from 'ionicons/icons';
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 const pages: {name: string, value: string}[] = [
@@ -117,7 +128,7 @@ const DataDownload: React.FC = () => {
                     countyValues.push(county.value);
                 })
             }
-            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, [], interval, unit);
+            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, [0, 1, 2, 3], interval, unit);
 
             switch (page.value) {
                 case 'inrix_probe_query':
@@ -148,28 +159,62 @@ const DataDownload: React.FC = () => {
 
     return (
         <IonPage>
-            <Header title="Data Downloads" />
+
+            <Header title="Data Download" />
             <IonContent color="dark">
-                <IonCard color="primary" className="download__card">
-                    <IonCardTitle className="download__card--title">
-                        <div className="select__container">
-                            <Select className="select" values={pages} options={pages} labelField="name" valueField="value" onChange={(option) => changePage(option[0])} />
+                <IonRow className="ion-justify-content-center download__container">
+                    <IonCard color="primary" className="download__card">
+                        <div className='download__icon download__green'>
+                            <IonIcon size="large" color="dark" ios={downloadOutline} md={downloadSharp} />
                         </div>
-                        {page.name} Download
-                    </IonCardTitle>
-                    <IonCardContent>
-                        <DateTimes startDate={startSelectedDate}
-                                   endDate={endSelectedDate}
-                                   handleStartDateChange={handleStartDateChange}
-                                   handleEndDateChange={handleEndDateChange}
-                                   form={page.name} />
-                        {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
-                        <FileName file={file} setFile={setFile} form={page.name} />
-                        <CountySelector counties={counties} setCounties={setCounties} width='county-select' />
-                        <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
-                    </IonCardContent>
-                </IonCard>
-                <Downloads page={page.value} />
+                        <IonCardContent className="download__card__content">
+                            <IonLabel>{page.name}</IonLabel>
+                            <IonSelect value={page} interface="popover" placeholder="Select Database" onIonChange={e => setPage(e.detail.value)}>
+                                <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
+                                    Probe Database
+                                </IonSelectOption>
+                                <IonSelectOption value={{
+                                    name: 'WazeJam',
+                                    value: 'waze_jam_query'
+                                }}>
+                                    Waze Jam Database
+                                </IonSelectOption>
+                                <IonSelectOption value={{
+                                    name: 'Incidents',
+                                    value: 'transcore_incident_query'
+                                }}>
+                                    Incidents Database
+                                </IonSelectOption>
+                                <IonSelectOption value={{
+                                    name: 'Detector',
+                                    value: 'transcore_detector_query'
+                                }}>
+                                    Detector Database
+                                </IonSelectOption>
+                                <IonSelectOption value={{
+                                    name: 'WazeIncident',
+                                    value: 'waze_incident_query'
+                                }}>
+                                    Waze Incidents Database
+                                </IonSelectOption>
+                            </IonSelect>
+                        </IonCardContent>
+                        <IonCardContent>
+                            <DateTimes startDate={startSelectedDate}
+                                       endDate={endSelectedDate}
+                                       handleStartDateChange={handleStartDateChange}
+                                       handleEndDateChange={handleEndDateChange}
+                                       form={page.name} />
+                            {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
+                            <FileName file={file} setFile={setFile} form={page.name} /><br />
+                            <CountySelector counties={counties} setCounties={setCounties} width='county-small' /><br />
+                            <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
+                        </IonCardContent>
+                    </IonCard>
+                </IonRow>
+                <IonRow className="ion-justify-content-center">
+                    <Downloads page={page.value} />
+                </IonRow>
             </IonContent>
         </IonPage>
     );

@@ -20,7 +20,7 @@ const Login: React.FC = () => {
                         }
                     }} />
                     <IonLabel position="floating">Password: </IonLabel>
-                    <IonInput onIonChange={(val) => {
+                    <IonInput type="password" onIonChange={(val) => {
                         const inputPassword = val.detail.value;
                         if (inputPassword) {
                             setPassword(inputPassword);

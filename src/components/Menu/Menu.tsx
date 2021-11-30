@@ -7,6 +7,7 @@ import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
 import {logout} from '../../services/firebaseAuthService';
+import {watchUser} from '../../firebaseConfig';
 
 interface AppPage {
     url: string;
@@ -34,21 +35,23 @@ const Menu = () => {
     }];
 
     useEffect(() => {
-        getLinks().then((links: LinkData[]) => {
-            const apps: AppPage[] = [];
-            links.sort((a, b) => {
-                return a.order - b.order;
-            });
-            links.forEach(link => {
-                apps.push({
-                    title: link.name,
-                    url: "/app-center/" + link.name,
-                    iosIcon: iconService.getIcon(link.icon, "ios"),
-                    mdIcon: iconService.getIcon(link.icon, "android")
+        watchUser().onAuthStateChanged(() => {
+            getLinks().then((links: LinkData[]) => {
+                const apps: AppPage[] = [];
+                links.sort((a, b) => {
+                    return a.order - b.order;
                 });
+                links.forEach(link => {
+                    apps.push({
+                        title: link.name,
+                        url: "/app-center/" + link.name,
+                        iosIcon: iconService.getIcon(link.icon, "ios"),
+                        mdIcon: iconService.getIcon(link.icon, "android")
+                    });
+                });
+                setAppCenter(apps);
             });
-            setAppCenter(apps);
-        })
+        });
     }, []);
 
     return(
@@ -81,7 +84,7 @@ const Menu = () => {
                     })}
                 </IonList>
                 <IonList>
-                    <IonMenuToggle autoHide={false} onClick={() => {logout().then(() => history.push('/login'))}}>
+                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={() => {logout().then(() => history.push('/login'))}}>
                         <IonItem color="medium">
                             <IonIcon slot="start" icon={logOut} />
                             <IonLabel>Log Out</IonLabel>

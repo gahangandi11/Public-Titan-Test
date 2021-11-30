@@ -147,7 +147,7 @@ const Home: React.FC = () => {
                     <div className="dashboard__split">
                         <IonCard color="primary">
                             <IonRow>
-                                <IonCol size-lg="3">
+                                <IonCol size-lg="3.5">
                                     <IonItem color="primary">
                                         <h1>Crash Rates By County</h1>
                                     </IonItem>
@@ -159,7 +159,7 @@ const Home: React.FC = () => {
                                         );
                                     })}
                                 </IonCol>
-                                <IonCol size-lg="9">
+                                <IonCol size-lg="8.5">
                                     <Map />
                                 </IonCol>
                             </IonRow>

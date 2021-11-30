@@ -38,14 +38,16 @@ const Downloads: React.FC<DownloadProps> = (props: DownloadProps) => {
         });
     }, []);
     return(
-        <IonCard color="primary">
+        <IonCard color="primary" className="downloads">
             {files.map(file => {
                 if (file.type === props.page) {
                     return (
                         <IonItem color="primary" key={file.fileName}>
-                            {file.fileName}
-                            {file.ready && <IonCol><IonButton color="secondary" className="query-button" download="Query File" onClick={() => handleFile(file)}>Download Ready</IonButton></IonCol>}
-                            {!file.ready && <IonCol><IonButton className="query-button" disabled={true} color="danger">Download Preparing</IonButton></IonCol>}
+                            <div className="button--spacer">
+                                <span>{file.fileName}</span>
+                                {file.ready && <IonButton color="secondary" className="query-button" download="Query File" onClick={() => handleFile(file)}>Download Ready</IonButton>}
+                                {!file.ready && <IonButton className="query-button" disabled={true} color="danger">Download Preparing</IonButton>}
+                            </div>
                         </IonItem>
                     );
                 } else {

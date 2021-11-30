@@ -21,35 +21,37 @@ import './theme/variables.css';
 import {useState} from 'react';
 import * as React from 'react';
 import AppCenter from './pages/AppCenter/AppCenter';
-
+import DataDownload from './pages/DataDownload/DataDownload';
+import Login from './pages/Login/Login';
+import {getUserByID} from './services/firestoreService';
+import {watchUser} from './firebaseConfig';
 
 const App: React.FC = () => {
-    const [auth, setAuth] = useState(2);
+    const [auth, setAuth] = useState(0);
     let pageDefault: JSX.Element = (<div>Error Loading Auth</div>);
 
-    // const history = useHistory();
-    // watchUser().onAuthStateChanged((fireUser) => {
-    //     if (fireUser !== null) {
-    //         firebaseService.getUserByID(fireUser.uid).then(doc => {
-    //             const user = doc.data() as User;
-    //             if (fireUser.emailVerified && user.verified) {
-    //                 setAuth(2);
-    //             } else if (fireUser.providerData[0]?.providerId !== 'password' && user.verified) {
-    //                 setAuth(2);
-    //             }else {
-    //                 setAuth(1);
-    //                 if (history) {
-    //                     history.push('/');
-    //                 }
-    //             }
-    //         });
-    //     } else {
-    //         setAuth(0);
-    //         if (history) {
-    //             history.push('/');
-    //         }
-    //     }
-    // });
+    const history = useHistory();
+    watchUser().onAuthStateChanged((fireUser) => {
+        if (fireUser !== null) {
+            getUserByID(fireUser.uid).then(user => {
+                if (fireUser.emailVerified && user.verified) {
+                    setAuth(2);
+                } else if (fireUser.providerData[0]?.providerId !== 'password' && user.verified) {
+                    setAuth(2);
+                }else {
+                    setAuth(1);
+                    if (history) {
+                        history.push('/');
+                    }
+                }
+            });
+        } else {
+            setAuth(0);
+            if (history) {
+                history.push('/');
+            }
+        }
+    });
 
   if (auth === 0) {
     pageDefault = (
@@ -73,9 +75,15 @@ const App: React.FC = () => {
           <Menu/>
           <IonRouterOutlet id="main">
             {pageDefault}
+            <Route path="/login">
+                <Login />
+            </Route>
             <Route path="/home">
               <Home />
             </Route>
+              <Route path="/data">
+                  <DataDownload />
+              </Route>
               <Route path="/app-center/Analytics">
                   <AppCenter title={'Safety'} />
               </Route>

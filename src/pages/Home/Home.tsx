@@ -166,7 +166,7 @@ const Home: React.FC = () => {
                         </IonCard>
                     </div>
                 </IonRow>
-                <IonRow className="char__row ion-justify-content-evenly">
+                <IonRow className="ion-justify-content-evenly">
                     {graphData.map((value: GraphData, index: number) => {
                         return (
                             <IonCol key={index} size-lg="3.5" size="10">

@@ -1,0 +1,26 @@
+.download__card {
+    height: 40em;
+    padding: 1em;
+}
+
+.download__card--title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.select {
+    min-width: 10em !important;
+}
+
+.select__container {
+    min-width: 10em !important;
+    padding-right: 2em;
+    color: black;
+}
+
+.react-dropdown-select-dropdown {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end;
+}

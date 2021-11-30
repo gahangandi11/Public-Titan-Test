@@ -1,11 +1,12 @@
 import {IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle} from '@ionic/react';
 import * as React from 'react';
-import {gridOutline, gridSharp} from 'ionicons/icons';
-import {useLocation} from 'react-router';
+import {downloadOutline, downloadSharp, gridOutline, gridSharp, logOut} from 'ionicons/icons';
+import {useHistory, useLocation} from 'react-router';
 import {useEffect, useState} from 'react';
 import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
+import {logout} from '../../services/firebaseAuthService';
 
 interface AppPage {
     url: string;
@@ -18,12 +19,18 @@ interface AppPage {
 const Menu = () => {
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
+    const history = useHistory();
 
     const generalPages: AppPage[] = [{
         title: 'Dashboard',
         url: '/home',
         iosIcon: gridOutline,
         mdIcon: gridSharp
+    }, {
+        title: 'Data Download',
+        url: '/data',
+        iosIcon: downloadOutline,
+        mdIcon: downloadSharp
     }];
 
     useEffect(() => {
@@ -72,6 +79,14 @@ const Menu = () => {
                             </IonMenuToggle>
                         );
                     })}
+                </IonList>
+                <IonList>
+                    <IonMenuToggle autoHide={false} onClick={() => {logout().then(() => history.push('/login'))}}>
+                        <IonItem color="medium">
+                            <IonIcon slot="start" icon={logOut} />
+                            <IonLabel>Log Out</IonLabel>
+                        </IonItem>
+                    </IonMenuToggle>
                 </IonList>
             </IonContent>
         </IonMenu>

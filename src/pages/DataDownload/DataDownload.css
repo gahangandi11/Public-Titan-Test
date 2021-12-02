@@ -1,8 +1,3 @@
-.download__card {
-    height: 40em;
-    padding: 1em;
-}
-
 .download__card--title {
     display: flex;
     justify-content: flex-start;
@@ -26,12 +21,13 @@
 }
 
 .download__container {
-    height: 50em;
+    height: 60em;
 }
 
 .download__card {
     width: 100em;
-    height: 55em;
+    height: 60em;
+    padding: 1em;
 }
 
 .download__card__content {
@@ -72,4 +68,29 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+}
+
+.sc-ion-select-popover {
+    --ion-background-color: white !important;
+}
+
+.forms-container {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.attribute-option {
+    width: 25%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.attributes-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
 }

@@ -2,9 +2,9 @@ import {
     IonButton,
     IonCard,
     IonCardContent,
-    IonCardTitle,
+    IonCardTitle, IonCheckbox,
     IonContent,
-    IonIcon, IonLabel,
+    IonIcon, IonItem, IonLabel,
     IonPage,
     IonRow,
     IonSelect, IonSelectOption
@@ -47,6 +47,25 @@ const pages: {name: string, value: string}[] = [
     },
 ];
 
+const options = [
+    {
+        name: 'Travel Time',
+        selected: false
+    },
+    {
+        name: 'Speed',
+        selected: false
+    },
+    {
+        name: 'Average Speed',
+        selected: false
+    },
+    {
+        name: 'Reference Speed',
+        selected: false
+    }
+];
+
 const DataDownload: React.FC = () => {
     // const storedPage = localStorage.getItem("page");
     // const [page, setPage] = useState<{name: string, value: string}>(storedPage ? JSON.parse(storedPage) : pages[0]);
@@ -64,12 +83,15 @@ const DataDownload: React.FC = () => {
         {name: 'Jefferson', value: 'Jefferson'}
     ]);
 
+    const [attributeOptions, setAttributeOptions] = useState(options);
+
     const [showSelectables, setShowSelectables] = useState(false);
 
     function changePage(option: {name: string, value: string}) {
         setPage(option);
         handleStartDateChange(oneWeekAgo);
         handleEndDateChange(new Date());
+        setAttributeOptions(options);
         setUnit(60);
         setInterval(60);
         setFile(option.name);
@@ -86,15 +108,28 @@ const DataDownload: React.FC = () => {
                 setShowSelectables(true);
                 break;
             case 'waze_incident_query':
+                setAttributeOptions([
+                    {name: 'Major Accidents', selected: false},
+                    {name: 'Minor Accidents', selected: false},
+                    {name: 'Construction', selected: false},
+                    {name: 'Jam', selected: false},
+                    {name: 'Road Closed', selected: false}
+                ]);
                 break;
 
             case 'waze_jam_query':
+                setAttributeOptions([]);
                 break;
 
             case 'transcore_incident_query':
+                setAttributeOptions([
+                    {name: 'Incidents', selected: false},
+                    {name: 'Construction', selected: false}
+                ]);
                 break;
 
             case 'transcore_detector_query':
+                setAttributeOptions([]);
                 setShowSelectables(true);
                 break;
         }
@@ -128,7 +163,13 @@ const DataDownload: React.FC = () => {
                     countyValues.push(county.value);
                 })
             }
-            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, [0, 1, 2, 3], interval, unit);
+            const optionsSelected: number[] = [];
+            attributeOptions.forEach((option, i) => {
+                if (option.selected) {
+                    optionsSelected.push(i);
+                }
+            });
+            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, optionsSelected, interval, unit);
 
             switch (page.value) {
                 case 'inrix_probe_query':
@@ -157,19 +198,21 @@ const DataDownload: React.FC = () => {
         changePage(pages[0]);
     }, []);
 
+    console.log(attributeOptions);
+
     return (
         <IonPage>
 
             <Header title="Data Download" />
             <IonContent color="dark">
                 <IonRow className="ion-justify-content-center download__container">
-                    <IonCard color="primary" className="download__card">
+                    <IonCard className="download__card">
                         <div className='download__icon download__green'>
                             <IonIcon size="large" color="dark" ios={downloadOutline} md={downloadSharp} />
                         </div>
                         <IonCardContent className="download__card__content">
                             <IonLabel>{page.name}</IonLabel>
-                            <IonSelect value={page} interface="popover" placeholder="Select Database" onIonChange={e => setPage(e.detail.value)}>
+                            <IonSelect color="light" value={page} interface="popover" placeholder="Select Database" onIonChange={e => changePage(e.detail.value)}>
                                 <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
                                     Probe Database
                                 </IonSelectOption>
@@ -200,13 +243,31 @@ const DataDownload: React.FC = () => {
                             </IonSelect>
                         </IonCardContent>
                         <IonCardContent>
-                            <DateTimes startDate={startSelectedDate}
-                                       endDate={endSelectedDate}
-                                       handleStartDateChange={handleStartDateChange}
-                                       handleEndDateChange={handleEndDateChange}
-                                       form={page.name} />
-                            {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
-                            <FileName file={file} setFile={setFile} form={page.name} /><br />
+                            <div className="forms-container">
+                                <DateTimes startDate={startSelectedDate}
+                                           endDate={endSelectedDate}
+                                           handleStartDateChange={handleStartDateChange}
+                                           handleEndDateChange={handleEndDateChange}
+                                           form={page.name} />
+                                {attributeOptions.length > 0 &&
+                                    <div>
+                                        <IonItem color="secondary">
+                                            <div  className="attributes-container">
+                                                {attributeOptions.map((option) => {
+                                                    return (
+                                                        <IonItem color="secondary" lines="none" className="attribute-option" key={option.name}>
+                                                            <IonLabel>{option.name}</IonLabel>
+                                                            <IonCheckbox slot="end" onIonChange={() => option.selected = !option.selected} checked={option.selected} />
+                                                        </IonItem>
+                                                    );
+                                                })}
+                                            </div>
+                                        </IonItem>
+                                    </div>
+                                }
+                                {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
+                                <FileName file={file} setFile={setFile} form={page.name} />
+                            </div><br />
                             <CountySelector counties={counties} setCounties={setCounties} width='county-small' /><br />
                             <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
                         </IonCardContent>

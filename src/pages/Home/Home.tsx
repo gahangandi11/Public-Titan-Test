@@ -128,7 +128,7 @@ const Home: React.FC = () => {
     return (
         <IonPage>
             <Header title="Dashboard" />
-            <IonContent fullscreen color="dark">
+            <IonContent fullscreen color="light">
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Blank</IonTitle>

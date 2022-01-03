@@ -155,60 +155,60 @@ const DataDownload: React.FC = () => {
     }
 
     function submit() {
-        const uid = getUser()?.uid;
-        if (uid != null) {
-            const countyValues: string[] = [];
-            if (counties.length > 0) {
-                counties.forEach(county => {
-                    countyValues.push(county.value);
-                })
-            }
-            const optionsSelected: number[] = [];
-            attributeOptions.forEach((option, i) => {
-                if (option.selected) {
-                    optionsSelected.push(i);
+        getUser().then((user) => {
+            const uid = user?.uid;
+            if (uid != null) {
+                const countyValues: string[] = [];
+                if (counties.length > 0) {
+                    counties.forEach(county => {
+                        countyValues.push(county.value);
+                    })
                 }
-            });
-            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, optionsSelected, interval, unit);
+                const optionsSelected: number[] = [];
+                attributeOptions.forEach((option, i) => {
+                    if (option.selected) {
+                        optionsSelected.push(i);
+                    }
+                });
+                const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, optionsSelected, interval, unit);
 
-            switch (page.value) {
-                case 'inrix_probe_query':
-                    bigQueryService.queryProbeData(formRequest);
-                    break;
-                case 'waze_incident_query':
-                    bigQueryService.queryWazeIncidentData(formRequest);
-                    break;
+                switch (page.value) {
+                    case 'inrix_probe_query':
+                        bigQueryService.queryProbeData(formRequest);
+                        break;
+                    case 'waze_incident_query':
+                        bigQueryService.queryWazeIncidentData(formRequest);
+                        break;
 
-                case 'waze_jam_query':
-                    bigQueryService.queryWazeJamData(formRequest);
-                    break;
+                    case 'waze_jam_query':
+                        bigQueryService.queryWazeJamData(formRequest);
+                        break;
 
-                case 'transcore_incident_query':
-                    bigQueryService.queryIncidentsData(formRequest);
-                    break;
+                    case 'transcore_incident_query':
+                        bigQueryService.queryIncidentsData(formRequest);
+                        break;
 
-                case 'transcore_detector_query':
-                    bigQueryService.queryDetectorData(formRequest);
-                    break;
+                    case 'transcore_detector_query':
+                        bigQueryService.queryDetectorData(formRequest);
+                        break;
+                }
             }
-        }
+        });
     }
 
     useEffect(() => {
         changePage(pages[0]);
     }, []);
 
-    console.log(attributeOptions);
-
     return (
         <IonPage>
 
             <Header title="Data Download" />
-            <IonContent color="dark">
+            <IonContent color="light">
                 <IonRow className="ion-justify-content-center download__container">
                     <IonCard className="download__card">
                         <div className='download__icon download__green'>
-                            <IonIcon size="large" color="dark" ios={downloadOutline} md={downloadSharp} />
+                            <IonIcon size="large" color="light" ios={downloadOutline} md={downloadSharp} />
                         </div>
                         <IonCardContent className="download__card__content">
                             <IonLabel>{page.name}</IonLabel>

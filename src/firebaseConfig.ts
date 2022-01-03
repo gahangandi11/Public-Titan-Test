@@ -1,29 +1,35 @@
 import {getAuth, User} from 'firebase/auth';
 import {initializeApp} from 'firebase/app';
+import {createContext, useContext} from 'react';
 
 export const firebaseConfig = {
     apiKey: `${process.env.REACT_APP_FIREBASE_API_KEY}`,
-    authDomain: "ridsi-13389.firebaseapp.com",
-    databaseURL: "https://ridsi-13389-default-rtdb.firebaseio.com",
-    projectId: "ridsi-13389",
-    storageBucket: "ridsi-13389.appspot.com",
-    messagingSenderId: "1077534661299",
-    appId: "1:1077534661299:web:a9445d356ef5022b4aeec6",
-    measurementId: "G-LP7RW6V2BM"
+    authDomain: "titan-49df0.firebaseapp.com",
+    databaseURL: "https://titan-49df0-default-rtdb.firebaseio.com",
+    projectId: "titan-49df0",
+    storageBucket: "titan-49df0.appspot.com",
+    messagingSenderId: "506719603582",
+    appId: "1:506719603582:web:129e08c7fe7b7e5d26412f",
+    measurementId: "G-HX3HWTZQH5"
 };
 
 export const app = initializeApp(firebaseConfig);
 
-let fireUser: User | null = null;
 const auth = getAuth();
-auth.onAuthStateChanged(user => {
-    fireUser = user;
-});
 
 export function watchUser() {
     return auth;
 }
 
-export function getUser() {
-    return fireUser;
+export function getUser(): Promise<User | null> {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                resolve(user);
+            } else {
+                resolve(null);
+            }
+            unsubscribe();
+        })
+    })
 }

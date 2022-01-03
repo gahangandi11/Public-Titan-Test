@@ -13,7 +13,7 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
             <IonCardTitle className="data-card__title">
                 {props.content.title}
                 <div className={'data-card__icon ' + props.content.color}>
-                    <IonIcon color="dark" ios={props.content.ios} md={props.content.md} />
+                    <IonIcon color="light" ios={props.content.ios} md={props.content.md} />
                 </div>
             </IonCardTitle>
             <IonCardContent>

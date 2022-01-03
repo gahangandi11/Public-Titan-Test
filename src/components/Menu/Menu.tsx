@@ -84,7 +84,7 @@ const Menu = () => {
                     })}
                 </IonList>
                 <IonList>
-                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={() => {logout().then(() => history.push('/login'))}}>
+                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={logout}>
                         <IonItem color="medium">
                             <IonIcon slot="start" icon={logOut} />
                             <IonLabel>Log Out</IonLabel>

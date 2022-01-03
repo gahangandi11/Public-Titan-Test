@@ -1,4 +1,4 @@
-import {Redirect, Route, useHistory} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home/Home';
@@ -18,105 +18,55 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import {useState} from 'react';
 import * as React from 'react';
 import AppCenter from './pages/AppCenter/AppCenter';
 import DataDownload from './pages/DataDownload/DataDownload';
 import Login from './pages/Login/Login';
-import {getUserByID} from './services/firestoreService';
-import {watchUser} from './firebaseConfig';
+import RouteGuard from './components/Guard/RouteGuard';
+import {useEffect, useState} from 'react';
+import {getLinks} from './services/firestoreService';
+import {LinkData} from './interfaces/LinkData';
 
 const App: React.FC = () => {
-    const [auth, setAuth] = useState(0);
-    let pageDefault: JSX.Element = (<div>Error Loading Auth</div>);
+    const [links, setLinks] = useState<LinkData[]>([]);
 
-    const history = useHistory();
-    watchUser().onAuthStateChanged((fireUser) => {
-        if (fireUser !== null) {
-            getUserByID(fireUser.uid).then(user => {
-                if (fireUser.emailVerified && user.verified) {
-                    setAuth(2);
-                } else if (fireUser.providerData[0]?.providerId !== 'password' && user.verified) {
-                    setAuth(2);
-                }else {
-                    setAuth(1);
-                    if (history) {
-                        history.push('/');
-                    }
-                }
-            });
-        } else {
-            setAuth(0);
-            if (history) {
-                history.push('/');
-            }
-        }
-    });
-
-  if (auth === 0) {
-    pageDefault = (
-        <Route path="/" exact={true}>
-          <Redirect to="/login" />
-        </Route>
-    );
-  }
-
-  if (auth === 2) {
-    pageDefault = (
-        <Route path="/" exact={true}>
-          <Redirect to="/home"/>
-        </Route>
-    );
-  }
+    useEffect(() => {
+        getLinks().then(foundLinks => {
+            setLinks(foundLinks);
+        })
+    }, []);
 
   return (
       <IonApp>
-        <IonReactRouter>
-          <Menu/>
-          <IonRouterOutlet id="main">
-            {pageDefault}
-            <Route path="/login">
-                <Login />
-            </Route>
-            <Route path="/home">
-              <Home />
-            </Route>
-              <Route path="/data">
-                  <DataDownload />
-              </Route>
-              <Route path="/app-center/Analytics">
-                  <AppCenter title={'Safety'} />
-              </Route>
+          <IonReactRouter>
+              <Menu/>
+              <IonRouterOutlet id="main">
 
-              <Route path="/app-center/Safety">
-                  <AppCenter title={'Safety'} />
-              </Route>
+                  <Route path="/">
+                      <Login />
+                  </Route>
 
-              <Route path="/app-center/Congestion">
-                  <AppCenter title={'Congestion'} />
-              </Route>
+                  <Route path="/login">
+                      <Login />
+                  </Route>
 
-              <Route path="/app-center/TravelTime">
-                  <AppCenter title={'TravelTime'} />
-              </Route>
+                  <RouteGuard path="/home">
+                      <Home />
+                  </RouteGuard>
 
-              <Route path="/app-center/TrafficCounts">
-                  <AppCenter title={'TrafficCounts'} />
-              </Route>
+                  <RouteGuard path="/data">
+                      <DataDownload />
+                  </RouteGuard>
 
-              <Route path="/app-center/TrafficJams">
-                  <AppCenter title={'TrafficJams'} />
-              </Route>
-
-              <Route path="/app-center/WazeAnalytics">
-                  <AppCenter title={'WazeAnalytics'} />
-              </Route>
-
-              <Route path="/app-center/TranscoreAnalytics">
-                  <AppCenter title={'TranscoreAnalytics'} />
-              </Route>
-          </IonRouterOutlet>
-        </IonReactRouter>
+                  {links.map((link) => {
+                      return(
+                          <RouteGuard path={'/app-center/' + link.name} key={link.name}>
+                              <AppCenter title={link.name} />
+                          </RouteGuard>
+                      );
+                  })}
+              </IonRouterOutlet>
+          </IonReactRouter>
       </IonApp>
   );
 };

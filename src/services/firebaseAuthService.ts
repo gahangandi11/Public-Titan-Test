@@ -1,11 +1,16 @@
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 
 const auth = getAuth();
 
-export async function emailLogin(email: string, password: string) {
-    await signInWithEmailAndPassword(auth, email, password);
+export function emailLogin(email: string, password: string) {
+    return signInWithEmailAndPassword(auth, email, password);
+}
+
+export function emailSignup(email: string, password: string) {
+    return createUserWithEmailAndPassword(auth, email, password);
 }
 
 export function logout() {
+    sessionStorage.removeItem('Auth Token');
     return auth.signOut();
 }

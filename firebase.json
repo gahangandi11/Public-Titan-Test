@@ -11,7 +11,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "titan-dev",
+    "site": "missouri-titan",
     "public": "./build",
     "ignore": [
       "firebase.json",

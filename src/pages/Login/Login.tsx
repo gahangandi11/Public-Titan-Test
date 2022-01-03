@@ -68,9 +68,7 @@ const Login: React.FC = () => {
                                     clear();
                                     // @ts-ignore
                                     sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
-                                    watchUser().onAuthStateChanged(() => {
-                                        history.push('/home');
-                                    });
+                                    history.replace('/home');
                                 }).catch((e) => {
                                     present({
                                         buttons: [{text: 'dismiss', handler: () => dismiss()}],
@@ -86,9 +84,7 @@ const Login: React.FC = () => {
                                         clear();
                                         // @ts-ignore
                                         sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
-                                        watchUser().onAuthStateChanged(() => {
-                                            history.push('/home');
-                                        });
+                                        history.replace('/home');
                                     }).catch((e) => {
                                         present({
                                             buttons: [{text: 'dismiss', handler: () => dismiss()}],

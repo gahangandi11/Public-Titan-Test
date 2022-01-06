@@ -1,6 +1,5 @@
 import {getAuth, User} from 'firebase/auth';
 import {initializeApp} from 'firebase/app';
-import {createContext, useContext} from 'react';
 
 export const firebaseConfig = {
     apiKey: `${process.env.REACT_APP_FIREBASE_API_KEY}`,
@@ -17,12 +16,8 @@ export const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();
 
-export function watchUser() {
-    return auth;
-}
-
 export function getUser(): Promise<User | null> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
                 resolve(user);
@@ -32,4 +27,8 @@ export function getUser(): Promise<User | null> {
             unsubscribe();
         })
     })
+}
+
+export function watchUser() {
+    return auth;
 }

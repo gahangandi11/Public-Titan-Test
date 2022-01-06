@@ -37,9 +37,7 @@ export async function getLink(title: string) {
 export async function watchDownloads() {
     const user = await getUser();
     if (user != null) {
-        const userFilesCollection = collection(db, "Files", user.uid, "Files");
-        return userFilesCollection
-
+        return collection(db, "Files", user.uid, "Files");
     } else {
         return null;
     }

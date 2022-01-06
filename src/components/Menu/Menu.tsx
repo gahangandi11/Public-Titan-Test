@@ -7,7 +7,7 @@ import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
 import {logout} from '../../services/firebaseAuthService';
-import {watchUser} from '../../firebaseConfig';
+import {getUser, watchUser} from '../../firebaseConfig';
 
 interface AppPage {
     url: string;
@@ -54,6 +54,14 @@ const Menu = () => {
         });
     }, []);
 
+    function signout() {
+        logout().then(() => {
+            getUser().then(() => {
+                history.push('/');
+            });
+        });
+    }
+
     return(
         <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
             <IonContent color="medium">
@@ -84,7 +92,7 @@ const Menu = () => {
                     })}
                 </IonList>
                 <IonList>
-                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={() => {logout().then(() => {history.replace('/login')})}}>
+                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={() => {signout()}}>
                         <IonItem color="medium">
                             <IonIcon slot="start" icon={logOut} />
                             <IonLabel>Log Out</IonLabel>

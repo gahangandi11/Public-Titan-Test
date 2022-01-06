@@ -14,7 +14,7 @@ import {emailLogin, emailSignup} from '../../services/firebaseAuthService';
 import {useHistory} from 'react-router';
 import './Login.css'
 import TitanT from '../../assets/icon/favicon.png';
-import {watchUser} from '../../firebaseConfig';
+import {getUser, watchUser} from '../../firebaseConfig';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -38,25 +38,25 @@ const Login: React.FC = () => {
                     <IonCard className="card--login ion-padding ion-margin" color="primary">
                         <IonCardHeader className="titan-container">
                             <IonImg className="titan-t" src={TitanT} />
-                            {!signup && <IonLabel>Login</IonLabel>}
-                            {signup && <IonLabel>Sign Up</IonLabel>}
+                            {!signup && <IonLabel color="light">Login</IonLabel>}
+                            {signup && <IonLabel color="light">Sign Up</IonLabel>}
                         </IonCardHeader>
-                        <IonLabel position="floating">Email: </IonLabel>
-                        <IonInput value={email} onIonChange={(val) => {
+                        <IonLabel color="light" position="floating">Email: </IonLabel>
+                        <IonInput className="login-input" value={email} onIonChange={(val) => {
                             const inputEmail = val.detail.value;
                             if (inputEmail) {
                                 setEmail(inputEmail);
                             }
                         }} />
-                        <IonLabel position="floating">Password: </IonLabel>
-                        <IonInput type="password" value={password} onIonChange={(val) => {
+                        <IonLabel color="light"  position="floating">Password: </IonLabel>
+                        <IonInput className="login-input" type="password" value={password} onIonChange={(val) => {
                             const inputPassword = val.detail.value;
                             if (inputPassword) {
                                 setPassword(inputPassword);
                             }
                         }} />
-                        {signup && <IonLabel position="floating">Confirm Password: </IonLabel>}
-                        {signup && <IonInput type="password" value={checkPassword} onIonChange={(val) => {
+                        {signup && <IonLabel color="light"  position="floating">Confirm Password: </IonLabel>}
+                        {signup && <IonInput className="login-input" type="password" value={checkPassword} onIonChange={(val) => {
                             const inputCheck = val.detail.value;
                             if (inputCheck) {
                                 setCheckPassword(inputCheck);
@@ -68,7 +68,9 @@ const Login: React.FC = () => {
                                     clear();
                                     // @ts-ignore
                                     sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
-                                    history.replace('/home');
+                                    getUser().then(() => {
+                                        history.push('/');
+                                    });
                                 }).catch((e) => {
                                     present({
                                         buttons: [{text: 'dismiss', handler: () => dismiss()}],
@@ -82,9 +84,11 @@ const Login: React.FC = () => {
                                 if (password === checkPassword) {
                                     emailSignup(email, password).then((res) => {
                                         clear();
-                                        // @ts-ignore
+                                        //@ts-ignore
                                         sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
-                                        history.replace('/home');
+                                        getUser().then(() => {
+                                            history.push('/');
+                                        });
                                     }).catch((e) => {
                                         present({
                                             buttons: [{text: 'dismiss', handler: () => dismiss()}],

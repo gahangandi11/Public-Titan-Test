@@ -7,7 +7,7 @@
 
 .card--login {
     width: 50em;
-    height: 30em;
+    height: 35em;
     padding: 0 4em 4em;
     color: black;
 }
@@ -28,6 +28,7 @@
 .buttons-footer {
     display: flex;
     justify-content: space-between;
+    padding-top: 1em;
 }
 
 .background {
@@ -39,4 +40,9 @@
     background: url("../../assets/blurry_background1.PNG") no-repeat fixed;
     background-size: cover;
     filter: blur(10px);
+}
+
+.login-input {
+    --background: var(--ion-color-light) !important;
+    margin-bottom: 1em;
 }

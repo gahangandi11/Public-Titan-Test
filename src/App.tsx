@@ -26,14 +26,36 @@ import RouteGuard from './components/Guard/RouteGuard';
 import {useEffect, useState} from 'react';
 import {getLinks} from './services/firestoreService';
 import {LinkData} from './interfaces/LinkData';
+import {watchUser} from './firebaseConfig';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
+    const [pageDefault, setPageDefault] = useState((
+        <Route path="/">
+            <Login />
+        </Route>
+    ));
 
     useEffect(() => {
         getLinks().then(foundLinks => {
             setLinks(foundLinks);
-        })
+        });
+
+        watchUser().onAuthStateChanged(user => {
+            if (user) {
+                setPageDefault((
+                    <Route path="/">
+                        <Home />
+                    </Route>
+                ));
+            } else {
+                setPageDefault((
+                    <Route path="/">
+                        <Login />
+                    </Route>
+                ));
+            }
+        });
     }, []);
 
   return (
@@ -42,9 +64,7 @@ const App: React.FC = () => {
               <Menu/>
               <IonRouterOutlet id="main">
 
-                  <Route path="/">
-                      <Login />
-                  </Route>
+                  {pageDefault}
 
                   <Route path="/login">
                       <Login />

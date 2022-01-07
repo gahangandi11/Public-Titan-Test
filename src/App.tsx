@@ -1,4 +1,4 @@
-import {Route} from 'react-router-dom';
+import {Redirect, Route} from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home/Home';
@@ -56,6 +56,7 @@ const App: React.FC = () => {
                 ));
             }
         });
+
     }, []);
 
   return (
@@ -63,18 +64,17 @@ const App: React.FC = () => {
           <IonReactRouter>
               <Menu/>
               <IonRouterOutlet id="main">
-
-                  {pageDefault}
-
-                  <Route path="/login">
+                  <Route path="/login" exact={true}>
                       <Login />
                   </Route>
 
-                  <RouteGuard path="/home">
+                  <Redirect exact from="/" to="/login" />
+
+                  <RouteGuard path="/home" exact={true}>
                       <Home />
                   </RouteGuard>
 
-                  <RouteGuard path="/data">
+                  <RouteGuard path="/data" exact={true}>
                       <DataDownload />
                   </RouteGuard>
 

@@ -35,7 +35,7 @@ const Menu = () => {
     }];
 
     useEffect(() => {
-        watchUser().onAuthStateChanged(() => {
+        const unsubscribe = watchUser().onAuthStateChanged(() => {
             getLinks().then((links: LinkData[]) => {
                 const apps: AppPage[] = [];
                 links.sort((a, b) => {
@@ -52,15 +52,11 @@ const Menu = () => {
                 setAppCenter(apps);
             });
         });
-    }, []);
 
-    function signout() {
-        logout().then(() => {
-            getUser().then(() => {
-                history.push('/');
-            });
+        return(() => {
+            unsubscribe();
         });
-    }
+    }, []);
 
     return(
         <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
@@ -92,8 +88,8 @@ const Menu = () => {
                     })}
                 </IonList>
                 <IonList>
-                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={() => {signout()}}>
-                        <IonItem color="medium">
+                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={logout}>
+                        <IonItem color="medium" routerLink={'/logout'} routerDirection="none">
                             <IonIcon slot="start" icon={logOut} />
                             <IonLabel>Log Out</IonLabel>
                         </IonItem>

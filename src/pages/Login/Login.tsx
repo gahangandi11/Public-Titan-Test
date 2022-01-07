@@ -69,7 +69,7 @@ const Login: React.FC = () => {
                                     // @ts-ignore
                                     sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
                                     getUser().then(() => {
-                                        history.push('/');
+                                        history.push('/home');
                                     });
                                 }).catch((e) => {
                                     present({
@@ -87,7 +87,7 @@ const Login: React.FC = () => {
                                         //@ts-ignore
                                         sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken);
                                         getUser().then(() => {
-                                            history.push('/');
+                                            history.push('/home');
                                         });
                                     }).catch((e) => {
                                         present({

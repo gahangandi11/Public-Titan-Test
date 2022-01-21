@@ -1,0 +1,29 @@
+export interface WazeJam {
+    blocking_alertuuid: string;
+    country: string;
+    county: string;
+    delay: number;
+    end_lat: number;
+    end_long: number;
+    end_node: string;
+    end_segment: string;
+    latitude: number;
+    length: number;
+    level: number;
+    longitude: number;
+    pub_millis: string;
+    request_millis: string;
+    road_type: number;
+    speed: number;
+    speed_kmh: number;
+    start_lat: number;
+    start_lat_line: string;
+    start_long: number;
+    start_long_line: string;
+    start_node: string;
+    start_segment: string;
+    street: string;
+    turn_type: string;
+    type: string;
+    uuid: string;
+}

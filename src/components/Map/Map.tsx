@@ -9,19 +9,62 @@ import {WeatherEvent} from '../../interfaces/WeatherEvent';
 import {watchWazeIncidentsData, watchWazeJamsData, watchWeatherData} from '../../services/firestoreService';
 import {WazeIncident} from '../../interfaces/WazeIncident';
 import {GeoJSON} from 'geojson';
-import {Simulate} from 'react-dom/test-utils';
+import {
+    clearDay,
+    drizzle, flurries,
+    fog,
+    fogLight,
+    freezingDrizzle,
+    freezingRain,
+    freezingRainHeavy,
+    freezingRainLight,
+    heavyWind,
+    icePellets,
+    icePelletsHeavy,
+    icePelletsLight,
+    lightWind,
+    mostlyClearDay,
+    mostlyCloudy,
+    partlyCloudyDay,
+    rain,
+    rainHeavy,
+    rainLight,
+    snowHeavy,
+    snowLight,
+    tstorm,
+    wind
+} from '../../assets/weather-icons/availableWeatherIcons';
+import {
+    accident,
+    animal,
+    block,
+    closed,
+    hazard,
+    jam,
+    noShoulder,
+    pothole,
+    roadwork,
+    stalled
+} from '../../assets/traffic-icons/availableTrafficIcons';
 
-const Map = () => {
+interface MapData {
+    weather: boolean,
+    jams: boolean,
+    incidents: boolean,
+    height: number,
+    zoom: number
+}
+
+const Map: React.FC<MapData> = (props: MapData) => {
     const accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
     const [weather, setWeather] = useState<WeatherEvent[]>([]);
     const [wazeIncidents, setWazeIncidents] = useState<WazeIncident[]>([]);
     const [wazeJamGeo, setWazeJamGeo] = useState<GeoJSON.FeatureCollection>();
     const [viewport, setViewport] = useState<InteractiveMapProps>({
-        width: 640,
-        height: 550,
+        height: props.height,
         latitude: 37.9643,
         longitude: -91.8318,
-        zoom: 5.5
+        zoom: props.zoom
     });
     const geojson: GeoJSON.Feature = Missouri;
     const stateLayer: LayerProps = {
@@ -37,119 +80,119 @@ const Map = () => {
     const weatherMarkers = React.useMemo(() => weather.map(weatherItem => {
             let iconType: string;
             let weatherType: string;
-            switch(weatherItem.weatherCode) {
-                case 0:
-                    iconType = help;
-                    weatherType = 'invalid';
-                    break;
-                case 1000:
-                    iconType = cloudy;
-                    weatherType = 'Clear Day';
-                    break;
-                case 1001:
-                    iconType = cloudy;
-                    weatherType = 'Cloudy';
-                    break;
-                case 1100:
-                    iconType = cloudy;
-                    weatherType = "Mostly Clear Day";
-                    break;
-                case 1101:
-                    iconType = cloudy;
-                    weatherType = "Partly Cloudy Day";
-                    break;
-                case 1102:
-                    iconType = cloudy;
-                    weatherType = "Mostly Cloudy";
-                    break;
-                case 2000:
-                    iconType = cloudy;
-                    weatherType = "Foggy";
-                    break;
-                case 2100:
-                    iconType = cloudy;
-                    weatherType = "Light Fog";
-                    break;
-                case 3000:
-                    iconType = cloudy;
-                    weatherType = "Light Wind";
-                    break;
-                case 3001:
-                    iconType = cloudy;
-                    weatherType = "Windy";
-                    break;
-                case 3002:
-                    iconType = cloudy;
-                    weatherType = "Heavy Wind";
-                    break;
-                case 4000:
-                    iconType = cloudy;
-                    weatherType = "Drizzle";
-                    break;
-                case 4001:
-                    iconType = cloudy;
-                    weatherType = "Rainy";
-                    break;
-                case 4200:
-                    iconType = cloudy;
-                    weatherType = "Light Rain";
-                    break;
-                case 4201:
-                    iconType = cloudy;
-                    weatherType = "Heavy Rain";
-                    break;
-                case 5000:
-                    iconType = snow;
-                    weatherType = "Snowy";
-                    break;
-                case 5001:
-                    iconType = cloudy;
-                    weatherType = "Snow Flurries";
-                    break;
-                case 5100:
-                    iconType = cloudy;
-                    weatherType = "Light Snow";
-                    break;
-                case 5101:
-                    iconType = cloudy;
-                    weatherType = "Heavy Snow";
-                    break;
-                case 6000:
-                    iconType = cloudy;
-                    weatherType = "Freezing Drizzle";
-                    break;
-                case 6001:
-                    iconType = cloudy;
-                    weatherType = "Freezing Rain";
-                    break;
-                case 6200:
-                    iconType = cloudy;
-                    weatherType = "Light Freezing Rain";
-                    break;
-                case 6201:
-                    iconType = cloudy;
-                    weatherType = "Heavy Freezing Rain";
-                    break;
-                case 7000:
-                    iconType = cloudy;
-                    weatherType = "Hail";
-                    break;
-                case 7101:
-                    iconType = cloudy;
-                    weatherType = "Heavy Hail";
-                    break;
-                case 7102:
-                    iconType = cloudy;
-                    weatherType = "Light Hail";
-                    break;
-                case 8000:
-                    iconType = cloudy;
-                    weatherType = "Thunderstorm";
-                    break;
-                default:
-                    iconType = help;
-                    break;
-            }
+        switch(weatherItem.weatherCode) {
+            case 0:
+                iconType = help;
+                weatherType = 'invalid';
+                break;
+            case 1000:
+                iconType = clearDay;
+                weatherType = 'Clear Day';
+                break;
+            case 1001:
+                iconType = cloudy;
+                weatherType = 'Cloudy';
+                break;
+            case 1100:
+                iconType = mostlyClearDay;
+                weatherType = "Mostly Clear Day";
+                break;
+            case 1101:
+                iconType = partlyCloudyDay;
+                weatherType = "Partly Cloudy Day";
+                break;
+            case 1102:
+                iconType = mostlyCloudy;
+                weatherType = "Mostly Cloudy";
+                break;
+            case 2000:
+                iconType = fog;
+                weatherType = "Foggy";
+                break;
+            case 2100:
+                iconType = fogLight;
+                weatherType = "Light Fog";
+                break;
+            case 3000:
+                iconType = lightWind;
+                weatherType = "Light Wind";
+                break;
+            case 3001:
+                iconType = wind;
+                weatherType = "Windy";
+                break;
+            case 3002:
+                iconType = heavyWind;
+                weatherType = "Heavy Wind";
+                break;
+            case 4000:
+                iconType = drizzle;
+                weatherType = "Drizzle";
+                break;
+            case 4001:
+                iconType = rain;
+                weatherType = "Rainy";
+                break;
+            case 4200:
+                iconType = rainLight;
+                weatherType = "Light Rain";
+                break;
+            case 4201:
+                iconType = rainHeavy;
+                weatherType = "Heavy Rain";
+                break;
+            case 5000:
+                iconType = snow;
+                weatherType = "Snowy";
+                break;
+            case 5001:
+                iconType = flurries;
+                weatherType = "Snow Flurries";
+                break;
+            case 5100:
+                iconType = snowLight;
+                weatherType = "Light Snow";
+                break;
+            case 5101:
+                iconType = snowHeavy;
+                weatherType = "Heavy Snow";
+                break;
+            case 6000:
+                iconType = freezingDrizzle;
+                weatherType = "Freezing Drizzle";
+                break;
+            case 6001:
+                iconType = freezingRain;
+                weatherType = "Freezing Rain";
+                break;
+            case 6200:
+                iconType = freezingRainLight;
+                weatherType = "Light Freezing Rain";
+                break;
+            case 6201:
+                iconType = freezingRainHeavy;
+                weatherType = "Heavy Freezing Rain";
+                break;
+            case 7000:
+                iconType = icePellets;
+                weatherType = "Hail";
+                break;
+            case 7101:
+                iconType = icePelletsHeavy;
+                weatherType = "Heavy Hail";
+                break;
+            case 7102:
+                iconType = icePelletsLight;
+                weatherType = "Light Hail";
+                break;
+            case 8000:
+                iconType = tstorm;
+                weatherType = "Thunderstorm";
+                break;
+            default:
+                iconType = help;
+                break;
+        }
             return (
                 <Marker latitude={weatherItem.latitude} longitude={weatherItem.longitude} key={weatherItem.id}>
                     <IonIcon className="marker-icon" src={iconType} />
@@ -166,66 +209,66 @@ const Map = () => {
         }
         switch (incident.event_class) {
             case "ROAD_CLOSED":
-                iconType = pin;
+                iconType = closed;
                 iconColor = "red";
                 break;
             case "ROADWORK":
-                iconType = pin;
+                iconType = roadwork;
                 iconColor = "yellow";
                 break;
             case "":
                 iconType = pin;
                 break;
             case "STALLED VEHICLE_ON_ROAD":
-                iconType = pin;
+                iconType = stalled;
                 iconColor = "warning";
                 break;
             case "STALLED VEHICLE_SHOULDER":
-                iconType = pin;
+                iconType = stalled;
                 iconColor = "warning";
                 break;
             case "JAM_HEAVY_TRAFFIC":
-                iconType = pin;
+                iconType = jam;
                 iconColor = "red";
                 break;
             case "POT_HOLE":
-                iconType = pin;
+                iconType = pothole;
                 iconColor = "orange";
                 break;
             case "ROAD_OBJECT":
-                iconType = pin;
+                iconType = block;
                 iconColor = "danger";
                 break;
             case "JAM_MODERATE_TRAFFIC":
-                iconType = pin;
+                iconType = jam;
                 iconColor = "red";
                 break;
             case "ACCIDENT_MINOR":
-                iconType = pin;
+                iconType = accident;
                 iconColor = "warning";
                 break;
             case "ROAD_KILL_ROAD":
-                iconType = pin;
+                iconType = animal;
                 iconColor = "purple";
                 break;
             case "JAM_STAND_STILL_TRAFFIC":
-                iconType = pin;
+                iconType = jam;
                 iconColor = "red";
                 break;
             case "ACCIDENT_MAJOR":
-                iconType = pin;
+                iconType = accident;
                 iconColor = "danger";
                 break;
             case "ACCIDENT":
-                iconType = pin;
+                iconType = accident;
                 iconColor = "orange";
                 break;
             case "HAZARD_ON_SHOULDER":
-                iconType = pin;
+                iconType = hazard;
                 iconColor = "danger";
                 break;
             case "SHOULDER_MISSING_SIGN":
-                iconType = pin;
+                iconType = noShoulder;
                 iconColor = "warning";
                 break;
             default:
@@ -256,16 +299,17 @@ const Map = () => {
         <IonCard className="map__card">
             <ReactMapGl
                 {...viewport}
+                width="100%"
                 onViewportChange={(nextViewport: InteractiveMapProps) => setViewport(nextViewport)}
                 mapStyle="mapbox://styles/mapbox/dark-v10"
                 mapboxApiAccessToken={accessToken}
             >
-                {weatherMarkers}
-                {wazeIncidentMarkers}
+                {props.weather && weatherMarkers}
+                {props.incidents && wazeIncidentMarkers}
                 <Source id='missouri' type='geojson' data={geojson}>
                     <Layer {...stateLayer} />
                 </Source>
-                <Source id='wazeJam' type='geojson' data={wazeJamGeo}>
+                {props.jams && <Source id='wazeJam' type='geojson' data={wazeJamGeo}>
                     <Layer
                         id="wazeJamLayer"
                         type="line"
@@ -294,7 +338,7 @@ const Map = () => {
                             }
                         }
                     />
-                </Source>
+                </Source>}
             </ReactMapGl>
         </IonCard>
     );

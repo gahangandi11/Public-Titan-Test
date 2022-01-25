@@ -14,9 +14,11 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 export async function getDashboardContent() {
-    const dashboardDoc = doc(db, 'Dashboard', 'CURRENT');
-    const dashboardSnapshot = await getDoc(dashboardDoc);
-    return dashboardSnapshot.data() as DashboardData;
+    const dashboardDocs = collection(db, 'Dashboard');
+    const dashboardSnapshot = await getDocs(dashboardDocs);
+    const dashboardData = dashboardSnapshot.docs[0].data();
+    const devData = dashboardSnapshot.docs[1].data();
+    return Object.assign(dashboardData, devData) as DashboardData;
 }
 
 export async function getLinks() {
@@ -51,8 +53,18 @@ export async function watchWeatherData() {
     const weatherDocs = await getDocs(weatherCollection);
     const weather: WeatherEvent[] = [];
     weatherDocs.forEach(doc => {
-        const weatherEvent = doc.data() as WeatherEvent;
-        weatherEvent.id = doc.id;
+        const docData = doc.data();
+        const weatherEvent = new WeatherEvent(
+            doc.id,
+            docData.county,
+            docData.pub_millis,
+            docData.weather_code,
+            docData.latitude,
+            docData.longitude,
+            docData.temperature,
+            docData.precipitation_intensity,
+            docData.wind_gust,
+            docData.snow_accumulation);
         weather.push(weatherEvent);
     });
     return weather;

@@ -1,24 +1,9 @@
-.dashboard__row {
-    width: 100%;
-    padding: .8em;
-    display: flex;
-    justify-content: center;
+.home--content {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
 }
 
-@media screen and (min-width: 1025px) {
-    .dashboard__split {
-        width: 60em;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-}
-
-@media screen and (max-width: 1025px) {
-    .dashboard__split {
-        width: 20em;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
+.map--container {
+    width: 1500px;
 }

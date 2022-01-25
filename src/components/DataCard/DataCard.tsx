@@ -5,6 +5,7 @@ import './DataCard.css';
 
 interface DataCardProps {
     content: DataCardContent
+    type: boolean
 }
 
 const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
@@ -12,9 +13,12 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
         <IonCard color="primary" className="data-card">
             <IonCardTitle className="data-card__title">
                 {props.content.title}
-                <div className={'data-card__icon ' + props.content.color}>
+                {!props.type && <div className={'data-card__icon ' + props.content.color}>
                     <IonIcon color="light" ios={props.content.ios} md={props.content.md} />
-                </div>
+                </div>}
+                {props.type && <div className={'data-card__icon icon__neutral'}>
+                    <IonIcon color={props.content.color === 'icon__green' ? 'green' : 'red'} ios={props.content.ios} md={props.content.md} />
+                </div>}
             </IonCardTitle>
             <IonCardContent>
                 <div className="data-card__data">

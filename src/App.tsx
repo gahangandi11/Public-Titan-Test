@@ -27,6 +27,7 @@ import {useEffect, useState} from 'react';
 import {getLinks} from './services/firestoreService';
 import {LinkData} from './interfaces/LinkData';
 import {watchUser} from './firebaseConfig';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
@@ -72,6 +73,10 @@ const App: React.FC = () => {
 
                   <RouteGuard path="/home" exact={true}>
                       <Home />
+                  </RouteGuard>
+
+                  <RouteGuard path="/dashboard" exact={true}>
+                      <Dashboard />
                   </RouteGuard>
 
                   <RouteGuard path="/data" exact={true}>

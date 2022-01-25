@@ -1,13 +1,13 @@
 import {IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle} from '@ionic/react';
 import * as React from 'react';
-import {downloadOutline, downloadSharp, gridOutline, gridSharp, logOut} from 'ionicons/icons';
+import {downloadOutline, downloadSharp, gridOutline, gridSharp, homeOutline, homeSharp, logOut} from 'ionicons/icons';
 import {useHistory, useLocation} from 'react-router';
 import {useEffect, useState} from 'react';
 import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
 import {logout} from '../../services/firebaseAuthService';
-import {getUser, watchUser} from '../../firebaseConfig';
+import {watchUser} from '../../firebaseConfig';
 
 interface AppPage {
     url: string;
@@ -20,11 +20,16 @@ interface AppPage {
 const Menu = () => {
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
-    const history = useHistory();
 
     const generalPages: AppPage[] = [{
-        title: 'Dashboard',
+        title: 'Home',
         url: '/home',
+        iosIcon: homeOutline,
+        mdIcon: homeSharp
+    },
+    {
+        title: 'Dashboard',
+        url: '/dashboard',
         iosIcon: gridOutline,
         mdIcon: gridSharp
     }, {

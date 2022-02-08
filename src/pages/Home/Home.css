@@ -2,8 +2,107 @@
     display: flex !important;
     justify-content: center !important;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .map--container {
     width: 1500px;
 }
+
+.map--toggles {
+    width: 50em;
+}
+
+.cctv-div-title{
+    color: var(--ion-color-dark);
+    font-size: x-large;
+}
+
+.camera-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-wrap: wrap-reverse;
+}
+
+.main-camera {
+    width: 100em;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 1983px) {
+    .camera-index {
+        width: 35em;
+        max-height: 80em;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+    }
+}
+
+@media only screen and (max-width: 1983px) {
+    .camera-index {
+        width: 100%;
+        max-height: 55em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        overflow-y: auto;
+    }
+}
+
+.key {
+    width: 100%;
+    min-height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.key-box {
+    min-width: 3em;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: solid black 2px;
+}
+
+.red-key {
+    background-color: red;
+}
+
+.orangered-key {
+    background-color: orangered;
+}
+
+.gold-key {
+    background-color: gold;
+    color: black;
+}
+
+.greenyellow-key {
+    background-color: greenyellow;
+    color: black;
+}
+
+.palegreen-key {
+    background-color: palegreen;
+    color: black;
+}
+
+.mediumseagreen-key {
+    background-color: mediumseagreen;
+}
+
+.forestgreen-key {
+    background-color: forestgreen;
+}
+

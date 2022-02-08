@@ -217,7 +217,7 @@ const Dashboard: React.FC = () => {
                                 </IonCol>
                                 <IonCol size-lg="8.5">
                                     <div className="map-data--container">
-                                        <Map weather={false} incidents={false} jams={false} height={550} zoom={5.5} />
+                                        <Map weather={false} incidents={false} jams={false} cameras={[]} showCameras={false} height={550} zoom={5.5} />
                                     </div>
                                 </IonCol>
                             </IonRow>

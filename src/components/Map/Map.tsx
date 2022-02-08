@@ -2,11 +2,17 @@ import * as React from 'react';
 import {IonCard, IonIcon} from '@ionic/react';
 import './Map.css';
 import ReactMapGl, {InteractiveMapProps, Layer, LayerProps, Marker, Source} from 'react-map-gl';
-import {useEffect, useState} from 'react';
+import mapboxgl from 'mapbox-gl';
+import {SetStateAction, useEffect, useState} from 'react';
 import {Missouri} from './Missouri';
-import {cloudy, help, pin, snow} from 'ionicons/icons';
+import {cloudy, help, pin, snow, videocam} from 'ionicons/icons';
 import {WeatherEvent} from '../../interfaces/WeatherEvent';
-import {watchWazeIncidentsData, watchWazeJamsData, watchWeatherData} from '../../services/firestoreService';
+import {
+    watchCameras,
+    watchWazeIncidentsData,
+    watchWazeJamsData,
+    watchWeatherData
+} from '../../services/firestoreService';
 import {WazeIncident} from '../../interfaces/WazeIncident';
 import {GeoJSON} from 'geojson';
 import {
@@ -46,11 +52,19 @@ import {
     roadwork,
     stalled
 } from '../../assets/traffic-icons/availableTrafficIcons';
+import {Camera} from '../../interfaces/Camera';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 interface MapData {
     weather: boolean,
     jams: boolean,
     incidents: boolean,
+    cameras: Camera[],
+    setId?: (id: number) => void;
+    showCameras: boolean,
     height: number,
     zoom: number
 }
@@ -76,6 +90,14 @@ const Map: React.FC<MapData> = (props: MapData) => {
             'fill-opacity': 0.2
         }
     };
+
+    const cameraMarkers = React.useMemo(() => props.cameras?.map(
+        camera => (
+            <Marker latitude={camera.latitude} longitude={camera.longitude} key={camera.id}>
+                <IonIcon className="map-icon" color='primary' md={videocam} onClick={() => props.setId ? props.setId(camera.id) : {}} />
+            </Marker>
+        ),
+    ), [props]);
 
     const weatherMarkers = React.useMemo(() => weather.map(weatherItem => {
             let iconType: string;
@@ -292,8 +314,8 @@ const Map: React.FC<MapData> = (props: MapData) => {
         });
         watchWazeJamsData().then(foundJams => {
             setWazeJamGeo(foundJams);
-        })
-    }, []);
+        });
+    }, [props]);
 
     return(
         <IonCard className="map__card">
@@ -305,6 +327,7 @@ const Map: React.FC<MapData> = (props: MapData) => {
                 mapboxApiAccessToken={accessToken}
             >
                 {props.weather && weatherMarkers}
+                {props.showCameras && cameraMarkers}
                 {props.incidents && wazeIncidentMarkers}
                 <Source id='missouri' type='geojson' data={geojson}>
                     <Layer {...stateLayer} />

@@ -9,6 +9,7 @@ import {WeatherEvent} from '../interfaces/WeatherEvent';
 import {WazeIncident} from '../interfaces/WazeIncident';
 import {WazeJam} from '../interfaces/WazeJam';
 import {GeoJSON} from 'geojson';
+import {Camera} from '../interfaces/Camera';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -69,6 +70,17 @@ export async function watchWeatherData() {
     });
     return weather;
 }
+
+export async function watchCameras() {
+    const camerasCollection = collection(db, "CCTV");
+    const camerasDocs = await getDocs(camerasCollection);
+    const cameras: Camera[] = [];
+    camerasDocs.forEach(doc => {
+        cameras.push(doc.data() as Camera);
+    });
+    return cameras;
+}
+
 
 export async function watchWazeIncidentsData() {
     const incidentsCollection = collection(db, "WAZE", "ACTIVE", "INCIDENTS");

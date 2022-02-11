@@ -1,5 +1,11 @@
 import {FormRequest} from '../interfaces/FormRequest';
 const transcoreURL = 'https://ridsi-api.com/api/data_download/';
+let authToken = '';
+const website = 'titan';
+
+export function setAuthToken(token: string) {
+    authToken = token;
+}
 
 const bigQueryService = {
     queryProbeData: (data: FormRequest): Promise<Response> => {
@@ -11,11 +17,15 @@ const bigQueryService = {
             aggv: data.interval,
             unitsv: data.unit,
             filename: data.file + '.csv',
-            counties: data.counties
+            counties: data.counties,
+            website: website
         };
         return fetch(transcoreURL + 'inrix_probe', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': authToken
+                },
                 body: JSON.stringify(request)
                 }
             );
@@ -27,11 +37,15 @@ const bigQueryService = {
             end: data.end,
             flags: data.attributes,
             filename: data.file + '.csv',
-            counties: data.counties
+            counties: data.counties,
+            website: website
         };
         return fetch(transcoreURL + 'transcore_incident', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': authToken
+                },
                 body: JSON.stringify(request)
             }
         );
@@ -43,11 +57,15 @@ const bigQueryService = {
             end: data.end,
             aggv: data.interval,
             filename: data.file + '.csv',
-            counties: data.counties
+            counties: data.counties,
+            website: website
         };
         return fetch(transcoreURL + 'transcore_detector', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': authToken
+                },
                 body: JSON.stringify(request)
             }
         );
@@ -59,11 +77,15 @@ const bigQueryService = {
             end: data.end,
             flags: data.attributes,
             filename: data.file + '.csv',
-            counties: data.counties
+            counties: data.counties,
+            website: website
         };
         return fetch(transcoreURL + 'waze_incident', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': authToken
+                },
                 body: JSON.stringify(request)
             }
         );
@@ -74,11 +96,15 @@ const bigQueryService = {
             start: data.start,
             end: data.end,
             filename: data.file + '.csv',
-            counties: data.counties
+            counties: data.counties,
+            website: website
         };
         return fetch(transcoreURL + 'waze_jam', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': authToken
+                },
                 body: JSON.stringify(request)
             }
         );

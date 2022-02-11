@@ -3,12 +3,12 @@ import {IonCard, IonIcon} from '@ionic/react';
 import './Map.css';
 import ReactMapGl, {InteractiveMapProps, Layer, LayerProps, Marker, Source} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
-import {SetStateAction, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Missouri} from './Missouri';
 import {cloudy, help, pin, snow, videocam} from 'ionicons/icons';
 import {WeatherEvent} from '../../interfaces/WeatherEvent';
 import {
-    watchCameras,
+    watchTranscoreIncidents,
     watchWazeIncidentsData,
     watchWazeJamsData,
     watchWeatherData
@@ -44,24 +44,89 @@ import {
     accident,
     animal,
     block,
-    closed,
+    closed, exitClosed,
     hazard,
     jam,
-    noShoulder,
+    noShoulder, other,
     pothole,
     roadwork,
     stalled
 } from '../../assets/traffic-icons/availableTrafficIcons';
 import {Camera} from '../../interfaces/Camera';
+import {TranscoreIncident} from '../../interfaces/TranscoreIncident';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
+const trafficLayer: LayerProps = {
+    id: 'traffic-layer',
+    source: 'traffic',
+    'source-layer': 'traffic',
+    type: 'line',
+    minzoom: 5,
+    paint: {
+        'line-width': 1.5,
+        'line-color': [
+            "case",
+            [
+                "==",
+                "low",
+                [
+                    "get",
+                    "congestion"
+                ]
+            ],
+            "#4caf50",
+            [
+                "==",
+                "moderate",
+                [
+                    "get",
+                    "congestion"
+                ]
+            ],
+            "#ff3409",
+            [
+                "==",
+                "heavy",
+                [
+                    "get",
+                    "congestion"
+                ]
+            ],
+            "#fc930a",
+            [
+                "==",
+                "severe",
+                [
+                    "get",
+                    "congestion"
+                ]
+            ],
+            "#e73e3a",
+            "#4caf50"
+        ]
+    }
+};
+const geojson: GeoJSON.Feature = Missouri;
+const stateLayer: LayerProps = {
+    id: 'fill',
+    type: 'fill',
+    source: 'missouri',
+    paint: {
+        'fill-color': '#3880ff',
+        'fill-opacity': 0.2
+    }
+};
+
+
 interface MapData {
     weather: boolean,
     jams: boolean,
     incidents: boolean,
+    transcore: boolean,
+    traffic: boolean,
     cameras: Camera[],
     setId?: (id: number) => void;
     showCameras: boolean,
@@ -73,6 +138,7 @@ const Map: React.FC<MapData> = (props: MapData) => {
     const accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
     const [weather, setWeather] = useState<WeatherEvent[]>([]);
     const [wazeIncidents, setWazeIncidents] = useState<WazeIncident[]>([]);
+    const [transcoreIncidents, setTranscoreIncidents] = useState<TranscoreIncident[]>([]);
     const [wazeJamGeo, setWazeJamGeo] = useState<GeoJSON.FeatureCollection>();
     const [viewport, setViewport] = useState<InteractiveMapProps>({
         height: props.height,
@@ -80,16 +146,6 @@ const Map: React.FC<MapData> = (props: MapData) => {
         longitude: -91.8318,
         zoom: props.zoom
     });
-    const geojson: GeoJSON.Feature = Missouri;
-    const stateLayer: LayerProps = {
-        id: 'fill',
-        type: 'fill',
-        source: 'missouri',
-        paint: {
-            'fill-color': '#3880ff',
-            'fill-opacity': 0.2
-        }
-    };
 
     const cameraMarkers = React.useMemo(() => props.cameras?.map(
         camera => (
@@ -223,6 +279,39 @@ const Map: React.FC<MapData> = (props: MapData) => {
         },
     ), [weather]);
 
+    const transcoreMarkers = React.useMemo(() => transcoreIncidents.map(incident => {
+        let iconType;
+        let iconColor;
+
+        switch (incident.event_class) {
+            case "ROADWORK":
+                iconType = roadwork;
+                iconColor = "yellow";
+                break;
+            case "OTHER":
+                iconType = other;
+                iconColor = "black";
+                break;
+            case "EXIT CLOSED":
+                iconType = exitClosed;
+                iconColor = "danger";
+                break;
+            case "STALLED VEHICLE":
+                iconType = stalled;
+                iconColor = "warning";
+                break;
+            default:
+                iconType = pin;
+                break;
+        }
+        return <Marker
+            key={incident.uuid}
+            longitude={incident.longitude}
+            latitude={incident.latitude}>
+            <IonIcon className="marker-icon" color={iconColor} src={iconType} />
+        </Marker>
+    }), [transcoreIncidents, props]);
+
     const wazeIncidentMarkers = React.useMemo(() => wazeIncidents.map(incident => {
         let iconType;
         let iconColor;
@@ -315,6 +404,9 @@ const Map: React.FC<MapData> = (props: MapData) => {
         watchWazeJamsData().then(foundJams => {
             setWazeJamGeo(foundJams);
         });
+        watchTranscoreIncidents().then(foundTranscore => {
+            setTranscoreIncidents(foundTranscore)
+        })
     }, [props]);
 
     return(
@@ -329,6 +421,11 @@ const Map: React.FC<MapData> = (props: MapData) => {
                 {props.weather && weatherMarkers}
                 {props.showCameras && cameraMarkers}
                 {props.incidents && wazeIncidentMarkers}
+                {props.transcore && transcoreMarkers}
+                {props.traffic &&
+                <Source id='traffic' type='vector' url='mapbox://mapbox.mapbox-traffic-v1' minzoom={5}>
+                    <Layer {...trafficLayer} />
+                </Source>}
                 <Source id='missouri' type='geojson' data={geojson}>
                     <Layer {...stateLayer} />
                 </Source>

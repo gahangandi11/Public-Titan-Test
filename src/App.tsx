@@ -24,10 +24,11 @@ import DataDownload from './pages/DataDownload/DataDownload';
 import Login from './pages/Login/Login';
 import RouteGuard from './components/Guard/RouteGuard';
 import {useEffect, useState} from 'react';
-import {getLinks} from './services/firestoreService';
+import {getAuthToken, getLinks} from './services/firestoreService';
 import {LinkData} from './interfaces/LinkData';
 import {watchUser} from './firebaseConfig';
 import Dashboard from './pages/Dashboard/Dashboard';
+import {setAuthToken} from './services/bigQueryService';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
@@ -38,6 +39,10 @@ const App: React.FC = () => {
     ));
 
     useEffect(() => {
+        getAuthToken().then(doc => {
+            setAuthToken(doc);
+        });
+
         getLinks().then(foundLinks => {
             setLinks(foundLinks);
         });

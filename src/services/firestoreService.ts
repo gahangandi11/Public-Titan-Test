@@ -10,9 +10,16 @@ import {WazeIncident} from '../interfaces/WazeIncident';
 import {WazeJam} from '../interfaces/WazeJam';
 import {GeoJSON} from 'geojson';
 import {Camera} from '../interfaces/Camera';
+import {TranscoreIncident} from '../interfaces/TranscoreIncident';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
+
+export async function getAuthToken() {
+    const tokenDoc = doc(db, 'API-TOKEN', '1');
+    const tokenSnapshot = await getDoc(tokenDoc);
+    return tokenSnapshot.data()?.token;
+}
 
 export async function getDashboardContent() {
     const dashboardDocs = collection(db, 'Dashboard');
@@ -79,6 +86,16 @@ export async function watchCameras() {
         cameras.push(doc.data() as Camera);
     });
     return cameras;
+}
+
+export async function watchTranscoreIncidents() {
+    const incidentsCollection = collection(db, "TRANSCORE", "ACTIVE", "INCIDENTS");
+    const incidentsDocs = await getDocs(incidentsCollection);
+    const incidents: TranscoreIncident[] = [];
+    incidentsDocs.forEach(doc => {
+        incidents.push(doc.data() as TranscoreIncident);
+    });
+    return incidents;
 }
 
 

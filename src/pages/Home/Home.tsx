@@ -6,7 +6,7 @@ import {
     IonContent,
     IonItem,
     IonLabel,
-    IonPage,
+    IonPage, IonSelect, IonSelectOption,
     IonToast,
     IonToggle
 } from '@ionic/react';
@@ -22,7 +22,8 @@ import {watchCameras} from '../../services/firestoreService';
 const Home: React.FC = () => {
     const [weather, setWeather] = useState(false);
     const [traffic, setTraffic] = useState(false);
-    const [transcoreIncidents, setTranscoreIncidents] = useState(false);
+    const [transcore, setTranscore] = useState(false);
+    const [transcoreIncidents, setTranscoreIncidents] = useState<string[]>([]);
     const [wazeIncidents, setWazeIncidents] = useState(false);
     const [wazeJams, setWazeJams] = useState(false);
     const [showCameras, setShowCameras] = useState(false);
@@ -71,7 +72,7 @@ const Home: React.FC = () => {
             <IonContent>
                 <div className="home--content">
                     <div className="map--container">
-                        <Map weather={weather} traffic={traffic} transcore={transcoreIncidents} jams={wazeJams} incidents={wazeIncidents} cameras={cameras} setId={setNewCamera} showCameras={showCameras} height={1000} zoom={6.5} />
+                        <Map weather={weather} traffic={traffic} transcore={transcore} transcoreIncidents={transcoreIncidents} jams={wazeJams} incidents={wazeIncidents} cameras={cameras} setId={setNewCamera} showCameras={showCameras} height={1000} zoom={6.5} />
                     </div>
                     <IonCard className="map--toggles">
                         <IonCardContent>
@@ -89,8 +90,19 @@ const Home: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <IonLabel>Transcore Incidents</IonLabel>
-                                <IonToggle color="green" value='transcoreIncidents' checked={transcoreIncidents} onIonChange={e => setTranscoreIncidents(e.detail.checked)}/>
+                                <IonToggle color="green" value='transcore' checked={transcore} onIonChange={e => setTranscore(e.detail.checked)}/>
                             </IonItem>
+                            {transcore && <IonItem>
+                                <IonLabel>Select Incidents</IonLabel>
+                                <IonSelect multiple value={transcoreIncidents} onIonChange={e => setTranscoreIncidents(e.detail.value)}>
+                                    <IonSelectOption value="accident">Accidents</IonSelectOption>
+                                    <IonSelectOption value="debris">Debris</IonSelectOption>
+                                    <IonSelectOption value="exit closed">Exit Closed</IonSelectOption>
+                                    <IonSelectOption value="roadwork">Roadwork</IonSelectOption>
+                                    <IonSelectOption value="stalled vehicle">Stalled Vehicle</IonSelectOption>
+                                    <IonSelectOption value="other">Other</IonSelectOption>
+                                </IonSelect>
+                            </IonItem>}
                             <IonItem>
                                 <IonLabel>Waze Incidents</IonLabel>
                                 <IonToggle color="green" value='wazeIncidents' checked={wazeIncidents} onIonChange={e => setWazeIncidents(e.detail.checked)}/>

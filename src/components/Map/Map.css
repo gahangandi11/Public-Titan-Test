@@ -1,3 +1,7 @@
 .map__card {
     max-height: 90%;
 }
+
+.hidden {
+    display: none;
+}

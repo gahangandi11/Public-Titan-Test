@@ -127,6 +127,7 @@ interface MapData {
     incidents: boolean,
     transcore: boolean,
     traffic: boolean,
+    transcoreIncidents?: string[],
     cameras: Camera[],
     setId?: (id: number) => void;
     showCameras: boolean,
@@ -283,33 +284,40 @@ const Map: React.FC<MapData> = (props: MapData) => {
         let iconType;
         let iconColor;
 
-        switch (incident.event_class) {
-            case "ROADWORK":
-                iconType = roadwork;
-                iconColor = "yellow";
-                break;
-            case "OTHER":
-                iconType = other;
-                iconColor = "black";
-                break;
-            case "EXIT CLOSED":
-                iconType = exitClosed;
-                iconColor = "danger";
-                break;
-            case "STALLED VEHICLE":
-                iconType = stalled;
-                iconColor = "warning";
-                break;
-            default:
-                iconType = pin;
-                break;
+        if (props.transcoreIncidents?.includes(incident.event_class.toLowerCase())) {
+            switch (incident.event_class) {
+                case "ACCIDENT":
+                    iconType = accident;
+                    iconColor = "blue";
+                    break;
+                case "ROADWORK":
+                    iconType = roadwork;
+                    iconColor = "yellow";
+                    break;
+                case "OTHER":
+                    iconType = other;
+                    iconColor = "black";
+                    break;
+                case "EXIT CLOSED":
+                    iconType = exitClosed;
+                    iconColor = "danger";
+                    break;
+                case "STALLED VEHICLE":
+                    iconType = stalled;
+                    iconColor = "warning";
+                    break;
+                default:
+                    iconType = pin;
+                    break;
+            }
+            return <Marker
+                key={incident.uuid}
+                longitude={incident.longitude}
+                latitude={incident.latitude}>
+                <IonIcon className="marker-icon" color={iconColor} src={iconType} />
+            </Marker>
         }
-        return <Marker
-            key={incident.uuid}
-            longitude={incident.longitude}
-            latitude={incident.latitude}>
-            <IonIcon className="marker-icon" color={iconColor} src={iconType} />
-        </Marker>
+        return <div className="hidden" />;
     }), [transcoreIncidents, props]);
 
     const wazeIncidentMarkers = React.useMemo(() => wazeIncidents.map(incident => {

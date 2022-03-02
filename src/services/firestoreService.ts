@@ -56,12 +56,7 @@ export async function watchDownloads() {
     //     return null;
     // }
     const linkCollection = collection(db, "downloads");
-    const linkSnapshot = await getDocs(linkCollection);
-    const foundDownloads: File[] = [];
-    linkSnapshot.forEach(doc => {
-        foundDownloads.push(doc.data() as File);
-    });
-    return foundDownloads;
+    return linkCollection;
 }
 
 export async function watchWeatherData() {

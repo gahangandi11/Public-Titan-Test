@@ -22,8 +22,14 @@ const Downloads: React.FC<DownloadProps> = (props: DownloadProps) => {
     };
 
     useEffect(() => {
-        watchDownloads().then(foundFiles => {
-            setFiles(foundFiles);
+        watchDownloads().then(filesCollection => {
+            onSnapshot(filesCollection, (snapshot) => {
+                const foundFiles: File[] = [];
+                snapshot.forEach(doc => {
+                    foundFiles.push(doc.data() as File);
+                });
+                setFiles(foundFiles);
+            });
         });
     }, []);
     return(

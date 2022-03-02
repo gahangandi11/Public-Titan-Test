@@ -22,19 +22,8 @@ const Downloads: React.FC<DownloadProps> = (props: DownloadProps) => {
     };
 
     useEffect(() => {
-        watchUser().onAuthStateChanged(() => {
-            watchDownloads().then(foundFiles => {
-                if (foundFiles != null) {
-                    onSnapshot(foundFiles, (userFilesSnapshot) => {
-                        const userFiles: File[] = [];
-                        userFilesSnapshot.forEach(doc => {
-                            const file = doc.data() as File;
-                            userFiles.push(file);
-                        });
-                        setFiles(userFiles);
-                    });
-                }
-            });
+        watchDownloads().then(foundFiles => {
+            setFiles(foundFiles);
         });
     }, []);
     return(

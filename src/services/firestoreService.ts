@@ -11,6 +11,7 @@ import {WazeJam} from '../interfaces/WazeJam';
 import {GeoJSON} from 'geojson';
 import {Camera} from '../interfaces/Camera';
 import {TranscoreIncident} from '../interfaces/TranscoreIncident';
+import {File} from '../interfaces/File';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -48,12 +49,19 @@ export async function getLink(title: string) {
 }
 
 export async function watchDownloads() {
-    const user = await getUser();
-    if (user != null) {
-        return collection(db, "Files", user.uid, "Files");
-    } else {
-        return null;
-    }
+    // const user = await getUser();
+    // if (user != null) {
+    //     return collection(db, "Files", user.uid, "Files");
+    // } else {
+    //     return null;
+    // }
+    const linkCollection = collection(db, "downloads");
+    const linkSnapshot = await getDocs(linkCollection);
+    const foundDownloads: File[] = [];
+    linkSnapshot.forEach(doc => {
+        foundDownloads.push(doc.data() as File);
+    });
+    return foundDownloads;
 }
 
 export async function watchWeatherData() {

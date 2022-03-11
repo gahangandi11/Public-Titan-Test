@@ -1,13 +1,12 @@
 import {IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle} from '@ionic/react';
 import * as React from 'react';
 import {downloadOutline, downloadSharp, gridOutline, gridSharp, homeOutline, homeSharp, logOut} from 'ionicons/icons';
-import {useHistory, useLocation} from 'react-router';
+import {useLocation} from 'react-router';
 import {useEffect, useState} from 'react';
 import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
-import {logout} from '../../services/firebaseAuthService';
-import {watchUser} from '../../firebaseConfig';
+import AuthProvider, {logout, useAuth} from '../../services/contexts/AuthContext/AuthContext';
 
 interface AppPage {
     url: string;
@@ -18,6 +17,8 @@ interface AppPage {
 }
 
 const Menu = () => {
+    const { currentUser } = useAuth();
+
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
 
@@ -40,7 +41,7 @@ const Menu = () => {
     }];
 
     useEffect(() => {
-        const unsubscribe = watchUser().onAuthStateChanged(() => {
+        if (currentUser) {
             getLinks().then((links: LinkData[]) => {
                 const apps: AppPage[] = [];
                 links.sort((a, b) => {
@@ -56,52 +57,50 @@ const Menu = () => {
                 });
                 setAppCenter(apps);
             });
-        });
-
-        return(() => {
-            unsubscribe();
-        });
-    }, []);
+        }
+    }, [currentUser]);
 
     return(
-        <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
-            <IonContent color="medium">
-                <IonList>
-                    <IonListHeader color="medium">Welcome to TITAN</IonListHeader>
-                    {generalPages.map((page, index) => {
-                        return(
-                            <IonMenuToggle key={index} autoHide={false}>
-                                <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
-                                    <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
-                                    <IonLabel>{page.title}</IonLabel>
-                                </IonItem>
-                            </IonMenuToggle>
-                        );
-                    })}
-                </IonList>
-                <IonList>
-                    <IonListHeader color="medium">App Center</IonListHeader>
-                    {appCenter.map((page, index) => {
-                        return(
-                            <IonMenuToggle key={index} autoHide={false}>
-                                <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
-                                    <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
-                                    <IonLabel>{page.title}</IonLabel>
-                                </IonItem>
-                            </IonMenuToggle>
-                        );
-                    })}
-                </IonList>
-                <IonList>
-                    <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={logout}>
-                        <IonItem color="medium" routerLink={'/logout'} routerDirection="none">
-                            <IonIcon slot="start" icon={logOut} />
-                            <IonLabel>Log Out</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                </IonList>
-            </IonContent>
-        </IonMenu>
+        <AuthProvider>
+            <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
+                <IonContent color="medium">
+                    <IonList>
+                        <IonListHeader color="medium">Welcome to TITAN</IonListHeader>
+                        {generalPages.map((page, index) => {
+                            return(
+                                <IonMenuToggle key={index} autoHide={false}>
+                                    <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
+                                        <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
+                                        <IonLabel>{page.title}</IonLabel>
+                                    </IonItem>
+                                </IonMenuToggle>
+                            );
+                        })}
+                    </IonList>
+                    <IonList>
+                        <IonListHeader color="medium">App Center</IonListHeader>
+                        {appCenter.map((page, index) => {
+                            return(
+                                <IonMenuToggle key={index} autoHide={false}>
+                                    <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
+                                        <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
+                                        <IonLabel>{page.title}</IonLabel>
+                                    </IonItem>
+                                </IonMenuToggle>
+                            );
+                        })}
+                    </IonList>
+                    <IonList>
+                        <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={logout}>
+                            <IonItem color="medium" routerLink={'/login'} routerDirection="none">
+                                <IonIcon slot="start" icon={logOut} />
+                                <IonLabel>Log Out</IonLabel>
+                            </IonItem>
+                        </IonMenuToggle>
+                    </IonList>
+                </IonContent>
+            </IonMenu>
+        </AuthProvider>
     );
 };
 

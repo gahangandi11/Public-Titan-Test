@@ -1,4 +1,4 @@
-import {Redirect, Route} from 'react-router-dom';
+import {Redirect, Route, useHistory} from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home/Home';
@@ -26,78 +26,63 @@ import RouteGuard from './components/Guard/RouteGuard';
 import {useEffect, useState} from 'react';
 import {getAuthToken, getLinks} from './services/firestoreService';
 import {LinkData} from './interfaces/LinkData';
-import {watchUser} from './firebaseConfig';
 import Dashboard from './pages/Dashboard/Dashboard';
 import {setAuthToken} from './services/bigQueryService';
+import AuthProvider, {watchUser} from './services/contexts/AuthContext/AuthContext';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
-    const [pageDefault, setPageDefault] = useState((
-        <Route path="/">
-            <Login />
-        </Route>
-    ));
 
     useEffect(() => {
         getAuthToken().then(doc => {
             setAuthToken(doc);
         });
-
-        getLinks().then(foundLinks => {
-            setLinks(foundLinks);
-        });
-
-        watchUser().onAuthStateChanged(user => {
+        watchUser().onAuthStateChanged((user) => {
             if (user) {
-                setPageDefault((
-                    <Route path="/">
-                        <Home />
-                    </Route>
-                ));
-            } else {
-                setPageDefault((
-                    <Route path="/">
-                        <Login />
-                    </Route>
-                ));
+                getLinks().then(foundLinks => {
+                    setLinks(foundLinks);
+                });
             }
         });
-
     }, []);
 
   return (
-      <IonApp>
-          <IonReactRouter>
-              <Menu/>
-              <IonRouterOutlet id="main">
-                  <Route path="/login" exact={true}>
-                      <Login />
-                  </Route>
+      <AuthProvider>
+          <IonApp>
+              <IonReactRouter>
+                  <Menu/>
+                      <IonRouterOutlet id="main">
+                          <Route path="/login" exact={true}>
+                              <Login />
+                          </Route>
 
-                  <Redirect exact from="/" to="/login" />
-
-                  <RouteGuard path="/home" exact={true}>
-                      <Home />
-                  </RouteGuard>
-
-                  <RouteGuard path="/dashboard" exact={true}>
-                      <Dashboard />
-                  </RouteGuard>
-
-                  <RouteGuard path="/data" exact={true}>
-                      <DataDownload />
-                  </RouteGuard>
-
-                  {links.map((link) => {
-                      return(
-                          <RouteGuard path={'/app-center/' + link.name} key={link.name}>
-                              <AppCenter title={link.name} />
+                          <RouteGuard path="/" exact={true}>
+                              <Redirect to="/home" />
                           </RouteGuard>
-                      );
-                  })}
-              </IonRouterOutlet>
-          </IonReactRouter>
-      </IonApp>
+
+                          <RouteGuard path="/home" exact={true}>
+                              <Home />
+                          </RouteGuard>
+
+                          <RouteGuard path="/dashboard" exact={true}>
+                              <Dashboard />
+                          </RouteGuard>
+
+                          <RouteGuard path="/data" exact={true}>
+                              <DataDownload />
+                          </RouteGuard>
+
+                          {links.map((link) => {
+                              return(
+                                  <RouteGuard path={'/app-center/' + link.name} key={link.name}>
+                                      <AppCenter title={link.name} />
+                                  </RouteGuard>
+                              );
+                          })}
+                      </IonRouterOutlet>
+              </IonReactRouter>
+          </IonApp>
+      </AuthProvider>
   );
 };
 

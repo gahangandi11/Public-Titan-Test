@@ -1,17 +1,16 @@
-import {getFirestore, doc, collection, getDoc, getDocs, onSnapshot} from 'firebase/firestore';
+import {getFirestore, doc, collection, getDoc, setDoc, getDocs} from 'firebase/firestore';
 import {getStorage, ref, getDownloadURL} from 'firebase/storage';
 
 import {DashboardData} from '../interfaces/DashboardData';
 import {LinkData} from '../interfaces/LinkData';
 import {User} from '../interfaces/User';
-import {app, getUser} from '../firebaseConfig';
+import {app} from '../firebaseConfig';
 import {WeatherEvent} from '../interfaces/WeatherEvent';
 import {WazeIncident} from '../interfaces/WazeIncident';
 import {WazeJam} from '../interfaces/WazeJam';
 import {GeoJSON} from 'geojson';
 import {Camera} from '../interfaces/Camera';
 import {TranscoreIncident} from '../interfaces/TranscoreIncident';
-import {File} from '../interfaces/File';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -48,15 +47,13 @@ export async function getLink(title: string) {
     return linkSnapshot.data() as LinkData;
 }
 
-export async function watchDownloads() {
-    // const user = await getUser();
-    // if (user != null) {
-    //     return collection(db, "Files", user.uid, "Files");
-    // } else {
-    //     return null;
-    // }
-    const linkCollection = collection(db, "downloads");
-    return linkCollection;
+export async function watchDownloads(currentUser: any) {
+    const user = currentUser;
+    if (user != null) {
+        return collection(db, "Files", user.uid, "Files");
+    } else {
+        return null;
+    }
 }
 
 export async function watchWeatherData() {
@@ -161,6 +158,19 @@ export async function getUserByID(id: string) {
     const userDoc = doc(db, "Users", id);
     const userSnapshot = await getDoc(userDoc);
     return userSnapshot.data() as User;
+}
+
+export async function createUser(currentUser: any) {
+    currentUser = currentUser.user;
+    await setDoc(doc(db, "Users", currentUser.uid), {
+        uid: currentUser.uid,
+        admin: false,
+        applied: false,
+        verified: false,
+        email: currentUser.email,
+        displayName: currentUser.displayName,
+        subscriptions: []
+    });
 }
 
 export async function checkStorageStatus(link: string) {

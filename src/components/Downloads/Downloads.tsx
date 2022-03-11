@@ -1,9 +1,9 @@
-import {IonButton, IonCard, IonCol, IonItem} from '@ionic/react';
+import {IonButton, IonCard, IonItem} from '@ionic/react';
 import React, {useEffect, useState} from 'react';
 import {checkStorageStatus, watchDownloads} from '../../services/firestoreService';
 import {File} from '../../interfaces/File';
-import {watchUser} from '../../firebaseConfig';
 import {onSnapshot} from 'firebase/firestore';
+import {useAuth} from '../../services/contexts/AuthContext/AuthContext';
 
 interface DownloadProps {
     page: string;
@@ -11,6 +11,7 @@ interface DownloadProps {
 
 const Downloads: React.FC<DownloadProps> = (props: DownloadProps) => {
     const [files, setFiles] = useState<File[]>([]);
+    const { currentUser } = useAuth();
 
     const handleFile = (file: File) => {
         checkStorageStatus(file.location).then(url => {
@@ -22,16 +23,20 @@ const Downloads: React.FC<DownloadProps> = (props: DownloadProps) => {
     };
 
     useEffect(() => {
-        watchDownloads().then(filesCollection => {
-            onSnapshot(filesCollection, (snapshot) => {
-                const foundFiles: File[] = [];
-                snapshot.forEach(doc => {
-                    foundFiles.push(doc.data() as File);
-                });
-                setFiles(foundFiles);
+        if (currentUser) {
+            watchDownloads(currentUser).then(filesCollection => {
+                if (filesCollection) {
+                    onSnapshot(filesCollection, (snapshot) => {
+                        const foundFiles: File[] = [];
+                        snapshot.forEach(doc => {
+                            foundFiles.push(doc.data() as File);
+                        });
+                        setFiles(foundFiles);
+                    });
+                }
             });
-        });
-    }, []);
+        }
+    }, [currentUser]);
     return(
         <IonCard color="primary" className="downloads">
             {files.map(file => {

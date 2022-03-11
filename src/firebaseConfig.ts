@@ -1,4 +1,3 @@
-import {getAuth, User} from 'firebase/auth';
 import {initializeApp} from 'firebase/app';
 
 export const firebaseConfig = {
@@ -13,22 +12,3 @@ export const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
-
-const auth = getAuth();
-
-export function getUser(): Promise<User | null> {
-    return new Promise((resolve) => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                resolve(user);
-            } else {
-                resolve(null);
-            }
-            unsubscribe();
-        })
-    })
-}
-
-export function watchUser() {
-    return auth;
-}

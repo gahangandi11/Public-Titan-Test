@@ -2,7 +2,7 @@ import {
     IonButton,
     IonCard,
     IonCardContent,
-    IonCardTitle, IonCheckbox,
+    IonCheckbox,
     IonContent,
     IonIcon, IonItem, IonLabel,
     IonPage,
@@ -12,7 +12,6 @@ import {
 import React, {useEffect, useState} from 'react';
 import Downloads from '../../components/Downloads/Downloads';
 import Header from '../../components/Header/Header';
-import Select from 'react-dropdown-select';
 import './DataDownload.css';
 import DateTimes from '../../components/Forms/DateTimes';
 import SelectableFields from '../../components/Forms/SelectableFields';
@@ -20,8 +19,8 @@ import FileName from '../../components/Forms/FileName';
 import CountySelector from '../../components/Forms/CountySelector';
 import bigQueryService from '../../services/bigQueryService';
 import {FormRequest} from '../../interfaces/FormRequest';
-import {getUser} from '../../firebaseConfig';
 import {downloadOutline, downloadSharp} from 'ionicons/icons';
+import AuthProvider, {useAuth} from '../../services/contexts/AuthContext/AuthContext';
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 const pages: {name: string, value: string}[] = [
@@ -82,6 +81,8 @@ const DataDownload: React.FC = () => {
         {name: 'Franklin', value: 'Franklin'},
         {name: 'Jefferson', value: 'Jefferson'}
     ]);
+
+    const { currentUser } = useAuth();
 
     const [attributeOptions, setAttributeOptions] = useState(options);
 
@@ -155,45 +156,43 @@ const DataDownload: React.FC = () => {
     }
 
     function submit() {
-        getUser().then((user) => {
-            const uid = user?.uid;
-            if (uid != null) {
-                const countyValues: string[] = [];
-                if (counties.length > 0) {
-                    counties.forEach(county => {
-                        countyValues.push(county.value);
-                    })
-                }
-                const optionsSelected: number[] = [];
-                attributeOptions.forEach((option, i) => {
-                    if (option.selected) {
-                        optionsSelected.push(i);
-                    }
-                });
-                const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, optionsSelected, interval, unit);
-
-                switch (page.value) {
-                    case 'inrix_probe_query':
-                        bigQueryService.queryProbeData(formRequest);
-                        break;
-                    case 'waze_incident_query':
-                        bigQueryService.queryWazeIncidentData(formRequest);
-                        break;
-
-                    case 'waze_jam_query':
-                        bigQueryService.queryWazeJamData(formRequest);
-                        break;
-
-                    case 'transcore_incident_query':
-                        bigQueryService.queryIncidentsData(formRequest);
-                        break;
-
-                    case 'transcore_detector_query':
-                        bigQueryService.queryDetectorData(formRequest);
-                        break;
-                }
+        const uid = currentUser.user.uid;
+        if (uid != null) {
+            const countyValues: string[] = [];
+            if (counties.length > 0) {
+                counties.forEach(county => {
+                    countyValues.push(county.value);
+                })
             }
-        });
+            const optionsSelected: number[] = [];
+            attributeOptions.forEach((option, i) => {
+                if (option.selected) {
+                    optionsSelected.push(i);
+                }
+            });
+            const formRequest = new FormRequest(uid, page.value, convertDateToString(startSelectedDate), convertDateToString(endSelectedDate), file, countyValues, optionsSelected, interval, unit);
+
+            switch (page.value) {
+                case 'inrix_probe_query':
+                    bigQueryService.queryProbeData(formRequest);
+                    break;
+                case 'waze_incident_query':
+                    bigQueryService.queryWazeIncidentData(formRequest);
+                    break;
+
+                case 'waze_jam_query':
+                    bigQueryService.queryWazeJamData(formRequest);
+                    break;
+
+                case 'transcore_incident_query':
+                    bigQueryService.queryIncidentsData(formRequest);
+                    break;
+
+                case 'transcore_detector_query':
+                    bigQueryService.queryDetectorData(formRequest);
+                    break;
+            }
+        }
     }
 
     useEffect(() => {
@@ -201,83 +200,86 @@ const DataDownload: React.FC = () => {
     }, []);
 
     return (
-        <IonPage>
-
-            <Header title="Data Download" />
-            <IonContent color="light">
-                <IonRow className="ion-justify-content-center download__container">
-                    <IonCard className="download__card">
-                        <div className='download__icon download__green'>
-                            <IonIcon size="large" color="light" ios={downloadOutline} md={downloadSharp} />
-                        </div>
-                        <IonCardContent className="download__card__content">
-                            <IonLabel>{page.name}</IonLabel>
-                            <IonSelect color="light" value={page} interface="popover" placeholder="Select Database" onIonChange={e => changePage(e.detail.value)}>
-                                <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
-                                    Probe Database
-                                </IonSelectOption>
-                                <IonSelectOption value={{
-                                    name: 'WazeJam',
-                                    value: 'waze_jam_query'
-                                }}>
-                                    Waze Jam Database
-                                </IonSelectOption>
-                                <IonSelectOption value={{
-                                    name: 'Incidents',
-                                    value: 'transcore_incident_query'
-                                }}>
-                                    Incidents Database
-                                </IonSelectOption>
-                                <IonSelectOption value={{
-                                    name: 'Detector',
-                                    value: 'transcore_detector_query'
-                                }}>
-                                    Detector Database
-                                </IonSelectOption>
-                                <IonSelectOption value={{
-                                    name: 'WazeIncident',
-                                    value: 'waze_incident_query'
-                                }}>
-                                    Waze Incidents Database
-                                </IonSelectOption>
-                            </IonSelect>
-                        </IonCardContent>
-                        <IonCardContent>
-                            <div className="forms-container">
-                                <DateTimes startDate={startSelectedDate}
-                                           endDate={endSelectedDate}
-                                           handleStartDateChange={handleStartDateChange}
-                                           handleEndDateChange={handleEndDateChange}
-                                           form={page.name} />
-                                {attributeOptions.length > 0 &&
-                                    <div>
-                                        <IonItem color="secondary">
-                                            <div  className="attributes-container">
-                                                {attributeOptions.map((option) => {
-                                                    return (
-                                                        <IonItem color="secondary" lines="none" className="attribute-option" key={option.name}>
-                                                            <IonLabel>{option.name}</IonLabel>
-                                                            <IonCheckbox slot="end" onIonChange={() => option.selected = !option.selected} checked={option.selected} />
-                                                        </IonItem>
-                                                    );
-                                                })}
-                                            </div>
-                                        </IonItem>
-                                    </div>
-                                }
-                                {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
-                                <FileName file={file} setFile={setFile} form={page.name} />
-                            </div><br />
-                            <CountySelector counties={counties} setCounties={setCounties} width='county-small' /><br />
-                            <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
-                        </IonCardContent>
-                    </IonCard>
-                </IonRow>
-                <IonRow className="ion-justify-content-center">
-                    <Downloads page={page.value} />
-                </IonRow>
-            </IonContent>
-        </IonPage>
+        <AuthProvider>
+            <IonPage>
+                <Header title="Data Download" />
+                <IonContent color="light">
+                    <IonRow className="ion-justify-content-center download__container">
+                        <IonCard className="download__card">
+                            <div className='download__icon download__green'>
+                                <IonIcon size="large" color="light" ios={downloadOutline} md={downloadSharp} />
+                            </div>
+                            <IonCardContent className="download__card__content">
+                                <IonLabel>{page.name}</IonLabel>
+                                <IonSelect color="light" value={page} interface="popover" placeholder="Select Database" onIonChange={e => changePage(e.detail.value)}>
+                                    <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
+                                        Probe Database
+                                    </IonSelectOption>
+                                    <IonSelectOption value={{
+                                        name: 'WazeJam',
+                                        value: 'waze_jam_query'
+                                    }}>
+                                        Waze Jam Database
+                                    </IonSelectOption>
+                                    <IonSelectOption value={{
+                                        name: 'Incidents',
+                                        value: 'transcore_incident_query'
+                                    }}>
+                                        Incidents Database
+                                    </IonSelectOption>
+                                    <IonSelectOption value={{
+                                        name: 'Detector',
+                                        value: 'transcore_detector_query'
+                                    }}>
+                                        Detector Database
+                                    </IonSelectOption>
+                                    <IonSelectOption value={{
+                                        name: 'WazeIncident',
+                                        value: 'waze_incident_query'
+                                    }}>
+                                        Waze Incidents Database
+                                    </IonSelectOption>
+                                </IonSelect>
+                            </IonCardContent>
+                            <IonCardContent>
+                                <div className="forms-container">
+                                    <DateTimes startDate={startSelectedDate}
+                                               endDate={endSelectedDate}
+                                               handleStartDateChange={handleStartDateChange}
+                                               handleEndDateChange={handleEndDateChange}
+                                               form={page.name} />
+                                    {attributeOptions.length > 0 &&
+                                        <div>
+                                            <IonItem color="secondary">
+                                                <div  className="attributes-container">
+                                                    {attributeOptions.map((option) => {
+                                                        return (
+                                                            <IonItem color="secondary" lines="none" className="attribute-option" key={option.name}>
+                                                                <IonLabel>{option.name}</IonLabel>
+                                                                <IonCheckbox slot="end" onIonChange={() => option.selected = !option.selected} checked={option.selected} />
+                                                            </IonItem>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </IonItem>
+                                        </div>
+                                    }
+                                    {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
+                                    <FileName file={file} setFile={setFile} form={page.name} />
+                                </div><br />
+                                <CountySelector counties={counties} setCounties={setCounties} width='county-small' /><br />
+                                <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
+                            </IonCardContent>
+                        </IonCard>
+                    </IonRow>
+                    <IonRow className="ion-justify-content-center">
+                        <AuthProvider>
+                            <Downloads page={page.value} />
+                        </AuthProvider>
+                    </IonRow>
+                </IonContent>
+            </IonPage>
+        </AuthProvider>
     );
 };
 

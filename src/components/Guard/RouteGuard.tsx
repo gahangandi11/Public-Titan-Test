@@ -1,15 +1,15 @@
 import React from 'react';
+import {Redirect, Route} from "react-router-dom";
+import {useAuth} from '../../services/contexts/AuthContext/AuthContext';
 import PropTypes from 'prop-types';
-import {Redirect, Route, RouteProps} from "react-router-dom";
 
-interface PrivateRouteProps extends RouteProps {
-    children: React.ReactNode
-}
+const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
+    const { currentUser } = useAuth();
 
-const RouteGuard: React.FC<PrivateRouteProps> = ({ children, ...rest }) => {
-    const token = sessionStorage.getItem('Auth Token');
     return (
-        token ? (<Route {...rest}>{children}</Route>) : (<Redirect to='/login' />)
+        <Route {...rest}>
+            {currentUser ? (children) : <Redirect to="/login" />}
+        </Route>
     );
 };
 

@@ -1,4 +1,4 @@
-import {IonCard, IonCol, IonContent, IonHeader, IonItem, IonPage, IonRow, IonTitle, IonToolbar} from '@ionic/react';
+import {IonCard, IonCol, IonContent, IonHeader, IonItem, IonList, IonPage, IonRow, IonTitle, IonToolbar} from '@ionic/react';
 import './Dashboard.css';
 import Header from '../../components/Header/Header';
 import Map from '../../components/Map/Map';
@@ -207,6 +207,7 @@ const Dashboard: React.FC = () => {
                                     <IonItem color="primary">
                                         <h1>Crash Rates By County</h1>
                                     </IonItem>
+                                    <div className='crash-listing-container'>
                                     {crashes.map(county => {
                                         return (
                                             <IonItem className="ion-padding-top" color="primary" key={county.name}>
@@ -214,6 +215,7 @@ const Dashboard: React.FC = () => {
                                             </IonItem>
                                         );
                                     })}
+                                    </div>
                                 </IonCol>
                                 <IonCol size-lg="8.5">
                                     <div className="map-data--container">

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {KeyboardEventHandler, useState} from 'react';
 import {
     IonButton,
     IonCard,
@@ -77,7 +77,19 @@ const Login: React.FC = () => {
         setCheckPassword('');
     }
 
+    const onEnterKeyPressedOnPasswordField = (event:any) => {
+        if (event.key.toLowerCase() === "enter") {
+        if(!signup)
+        {
+            login();
+        }
+        }
+      };
+
+     
+
     return (
+
         <AuthProvider>
             <IonPage>
                 <IonContent color="light">
@@ -97,7 +109,7 @@ const Login: React.FC = () => {
                                 }
                             }} />
                             <IonLabel color="light"  position="floating">Password: </IonLabel>
-                            <IonInput className="login-input" type="password" value={password} onIonChange={(val) => {
+                            <IonInput onKeyDown={onEnterKeyPressedOnPasswordField} className="login-input" type="password" value={password} onIonChange={(val) => {
                                 const inputPassword = val.detail.value;
                                 if (inputPassword) {
                                     setPassword(inputPassword);

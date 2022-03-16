@@ -1,0 +1,52 @@
+
+ion-avatar { 
+    width: 150px;  
+    height: 150px;  
+}
+
+.fixed-size{
+    flex: 1 0 10px;
+
+}
+
+
+.flex-expand{
+    flex-grow: 3
+}
+
+.profile-header
+{
+    background-color:aliceblue;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+}
+
+.profile-detail-card{
+    padding: 10px;
+    margin-top: -30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+
+ 
+}
+
+.center-text{
+	display: flex!important;
+ 	align-items: center!important;
+}
+
+.profile-detail-container{
+    
+}
+
+.no-padding-col{
+    padding:0 0 0 0px;
+}
+
+.detail-label-container{
+    padding-top: 10px;
+}
+

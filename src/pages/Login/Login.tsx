@@ -13,7 +13,7 @@ import {
 import {useHistory} from 'react-router';
 import './Login.css'
 import TitanT from '../../assets/icon/favicon.png';
-import AuthProvider, {emailSignup, emailLogin, useAuth} from '../../services/contexts/AuthContext/AuthContext';
+import AuthProvider, {emailSignup, emailLogin} from '../../services/contexts/AuthContext/AuthContext';
 import {createUser} from '../../services/firestoreService';
 
 const Login: React.FC = () => {
@@ -23,13 +23,6 @@ const Login: React.FC = () => {
     const history = useHistory();
     const [signup, setSignup] = useState(false);
     const [present, dismiss] = useIonToast();
-    const { currentUser } = useAuth();
-
-    if (currentUser) {
-        history.push("/home");
-    } else {
-        history.push("/login");
-    }
 
     async function login() {
         try {

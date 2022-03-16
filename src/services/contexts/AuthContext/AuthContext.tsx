@@ -35,9 +35,12 @@ const AuthProvider: React.FC = ({ children }) => {
         return auth.onAuthStateChanged(user => {
             setCurrentUser(user);
             if (user) {
+                localStorage.setItem("authKey", user.uid);
                 getUserByID(user.uid).then(doc => {
                     setUserDoc(doc);
                 });
+            } else {
+                localStorage.removeItem("authKey");
             }
         });
     }, []);

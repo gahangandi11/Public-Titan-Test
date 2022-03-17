@@ -1,33 +1,18 @@
 import React, {
-  KeyboardEventHandler,
-  useContext,
-  useEffect,
-  useState,
 } from "react";
 import {
-  IonAvatar,
-  IonButton,
   IonCard,
-  IonCardHeader,
   IonCol,
   IonContent,
-  IonFooter,
   IonGrid,
   IonIcon,
-  IonImg,
-  IonInput,
   IonLabel,
   IonPage,
   IonRow,
   IonText,
-  IonTitle,
-  useIonToast,
 } from "@ionic/react";
-import { useHistory } from "react-router";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
-import { User } from "../../interfaces/User";
-import { getUserByID } from "../../services/firestoreService";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import { personCircleOutline } from "ionicons/icons";
 

@@ -17,6 +17,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
+  
   const history = useHistory();
 
   const onProfileBtnTapped = () => {

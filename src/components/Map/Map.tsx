@@ -56,7 +56,7 @@ import {Camera} from '../../interfaces/Camera';
 import {TranscoreIncident} from '../../interfaces/TranscoreIncident';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-webpack-loader-syntax
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const trafficLayer: LayerProps = {
@@ -317,7 +317,7 @@ const Map: React.FC<MapData> = (props: MapData) => {
                 <IonIcon className="marker-icon" color={iconColor} src={iconType} />
             </Marker>
         }
-        return <div className="hidden" />;
+        return <div className="hidden" key={incident.uuid} />;
     }), [transcoreIncidents, props]);
 
     const wazeIncidentMarkers = React.useMemo(() => wazeIncidents.map(incident => {

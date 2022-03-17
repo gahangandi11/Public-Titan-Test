@@ -156,7 +156,7 @@ const DataDownload: React.FC = () => {
     }
 
     function submit() {
-        const uid = currentUser.user.uid;
+        const uid = currentUser.uid;
         if (uid != null) {
             const countyValues: string[] = [];
             if (counties.length > 0) {

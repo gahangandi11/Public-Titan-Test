@@ -13,6 +13,7 @@ import {
   IonContent,
   IonFooter,
   IonGrid,
+  IonIcon,
   IonImg,
   IonInput,
   IonLabel,
@@ -28,21 +29,11 @@ import Header from "../../components/Header/Header";
 import { User } from "../../interfaces/User";
 import { getUserByID } from "../../services/firestoreService";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
-import user_icon from "../../assets/user_icon.png";
+import { personCircleOutline } from "ionicons/icons";
 
 const Profile: React.FC = () => {
-  const [userInfo, setUserInfo] = useState<User>();
+  const { currentUser } = useAuth();
 
-  const user = useAuth();
-
-  useEffect(() => {
-    if (user.userDoc)
-      getUserByID(user.userDoc.uid).then((user: User) => {
-        setUserInfo(user);
-      });
-  }, []);
-
-  
   /**
    * If user has any other information than email that can be shown then evaluate the userInfo object
    * @returns true, if user has any related info that can be shown otherwise false
@@ -53,22 +44,22 @@ const Profile: React.FC = () => {
 
   return (
     <IonPage color="light">
-      <Header title="Profile"
-       hideProfileButton={true} 
-      />
+      <Header title="Profile" hideProfileButton={true} />
       <IonContent>
         <IonGrid className="profile-header">
           <IonRow>
             <IonCol>
-              <IonAvatar className="profile-image-container">
-                <img src={user_icon} />
-              </IonAvatar>
+              <IonIcon
+                icon={personCircleOutline}
+                color="secondary"
+                className="profile-image"
+              />
             </IonCol>
           </IonRow>
           <IonRow>
             <IonCol className="center-text">
               <IonText mode="ios" color="primary">
-                <h1>{userInfo?.email}</h1>
+                <h1>{currentUser?.email}</h1>
               </IonText>
             </IonCol>
           </IonRow>
@@ -81,7 +72,7 @@ const Profile: React.FC = () => {
                 <IonLabel>Details</IonLabel>
               </IonRow>
               <IonRow className="detail-label-container">
-                <IonLabel>Name : {userInfo?.displayName}</IonLabel>
+                <IonLabel>Name : {currentUser?.displayName}</IonLabel>
               </IonRow>
             </IonGrid>
           </IonCard>

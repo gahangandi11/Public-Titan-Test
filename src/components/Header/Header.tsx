@@ -11,19 +11,17 @@ import {
 import { personCircleOutline } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 
-
 interface HeaderProps {
   title: string;
-  hideProfileButton?:boolean;
+  hideProfileButton?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
+  const history = useHistory();
 
-    let history = useHistory()
-
-  let onProfileBtnTapped=()=>{
-    history.push('/profile')
-  }  
+  const onProfileBtnTapped = () => {
+    history.push("/profile");
+  };
   return (
     <IonHeader>
       <IonToolbar color="medium">
@@ -31,14 +29,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
           <IonMenuButton menu="main" />
         </IonButtons>
         <IonTitle>{props.title}</IonTitle>
-        {
-            (props.hideProfileButton===undefined||!props.hideProfileButton)&&
-        <IonButtons slot="end">
-          <IonButton onClick={onProfileBtnTapped}>
-            <IonIcon slot="icon-only" icon={personCircleOutline} />
-          </IonButton>
-        </IonButtons>
-}
+        {(props.hideProfileButton === undefined ||
+          !props.hideProfileButton) && (
+          <IonButtons slot="end">
+            <IonButton onClick={onProfileBtnTapped}>
+              <IonIcon slot="icon-only" icon={personCircleOutline} />
+            </IonButton>
+          </IonButtons>
+        )}
       </IonToolbar>
     </IonHeader>
   );

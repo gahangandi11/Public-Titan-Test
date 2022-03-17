@@ -29,6 +29,7 @@ import {LinkData} from './interfaces/LinkData';
 import Dashboard from './pages/Dashboard/Dashboard';
 import {setAuthToken} from './services/bigQueryService';
 import AuthProvider, {watchUser} from './services/contexts/AuthContext/AuthContext';
+import Profile from './pages/Profile/Profile';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
@@ -70,6 +71,10 @@ const App: React.FC = () => {
 
                           <RouteGuard path="/data" exact={true}>
                               <DataDownload />
+                          </RouteGuard>
+
+                          <RouteGuard path="/profile" exact={true}>
+                              <Profile />
                           </RouteGuard>
 
                           {links.map((link) => {

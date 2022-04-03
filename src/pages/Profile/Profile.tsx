@@ -1,6 +1,6 @@
-import React, {
-} from "react";
+import React, { useState } from "react";
 import {
+  IonButton,
   IonCard,
   IonCol,
   IonContent,
@@ -15,53 +15,48 @@ import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import { personCircleOutline } from "ionicons/icons";
+import {
+  ProfileActionsProps,
+  ProfileActionType,
+} from "../../interfaces/ProfileData";
+import ProfileActions from "./ProfileActions";
+import ProfileInfo from "./ProfileDetail";
+import ProfileHeader from "./ProfileHeader";
+import ProfileChangeEmail from "./ProfileChangeEmail";
+import ProfileChangePassword from "./ProfileChangePassword";
 
 const Profile: React.FC = () => {
-  const { currentUser } = useAuth();
-
-  /**
-   * If user has any other information than email that can be shown then evaluate the userInfo object
-   * @returns true, if user has any related info that can be shown otherwise false
-   */
-  const hasDetail = () => {
-    return false;
-  };
+  const [profileAction, setProfileAction] = useState<ProfileActionType>(
+    ProfileActionType.PROFILE_DETAIL
+  );
 
   return (
     <IonPage color="light">
       <Header title="Profile" hideProfileButton={true} />
       <IonContent>
-        <IonGrid className="profile-header">
+        <IonGrid>
           <IonRow>
-            <IonCol>
-              <IonIcon
-                icon={personCircleOutline}
-                color="secondary"
-                className="profile-image"
-              />
-            </IonCol>
+            <ProfileHeader />
           </IonRow>
           <IonRow>
-            <IonCol className="center-text">
-              <IonText mode="ios" color="primary">
-                <h1>{currentUser?.email}</h1>
-              </IonText>
+            <IonCol>
+              {profileAction == ProfileActionType.PROFILE_DETAIL && (
+                <ProfileInfo />
+              )}
+
+              {profileAction == ProfileActionType.CHANGE_EMAIL && (
+                <ProfileChangeEmail />
+              )}
+              {profileAction == ProfileActionType.CHANGE_PASSWORD && (
+                <ProfileChangePassword />
+              )}
+            </IonCol>
+
+            <IonCol size="auto">
+              <ProfileActions onActionTapped={setProfileAction} />
             </IonCol>
           </IonRow>
         </IonGrid>
-
-        {hasDetail() && (
-          <IonCard className="profile-detail-card">
-            <IonGrid>
-              <IonRow>
-                <IonLabel>Details</IonLabel>
-              </IonRow>
-              <IonRow className="detail-label-container">
-                <IonLabel>Name : {currentUser?.displayName}</IonLabel>
-              </IonRow>
-            </IonGrid>
-          </IonCard>
-        )}
       </IonContent>
     </IonPage>
   );

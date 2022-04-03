@@ -23,9 +23,9 @@ ion-avatar {
     padding-bottom: 30px;
 }
 
-.profile-detail-card{
+.profile-card{
     padding: 10px;
-    margin-top: -30px;
+    margin-top: 0px;
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 20px;
@@ -54,4 +54,10 @@ ion-avatar {
     width: 200px;
     height: 200px;
 }
+
+.no-margin-card{
+    margin-top: 0px;
+}
+.full-span-container{
+    flex: 0 0 100%;}
 

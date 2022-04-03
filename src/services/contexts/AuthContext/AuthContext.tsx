@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createContext, useContext, useEffect, useState} from 'react';
-import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,updatePassword,updateEmail, User} from 'firebase/auth';
 import {getUserByID} from '../../firestoreService';
 
 const auth = getAuth();
@@ -26,9 +26,13 @@ export function watchUser() {
     return auth;
 }
 
+export function updateUserPassword(user:User,newPassword:String)
+{
+}
+
 
 const AuthProvider: React.FC = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
     const [userDoc, setUserDoc] = useState<any>(null);
 
     useEffect(() => {

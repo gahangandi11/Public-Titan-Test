@@ -1,63 +1,84 @@
-
-ion-avatar { 
-    width: 150px;  
-    height: 150px;  
+ion-avatar {
+    width: 150px;
+    height: 150px;
 }
 
-.fixed-size{
+.fixed-size {
     flex: 1 0 10px;
 
 }
 
 
-.flex-expand{
+.flex-expand {
     flex-grow: 3
 }
 
-.profile-header
-{
-    background-color:aliceblue;
+.profile-header {
+    background-color: aliceblue;
     padding-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 30px;
 }
 
-.profile-card{
-    padding: 10px;
+.profile-card {
+
     margin-top: 0px;
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 20px;
 
- 
 }
 
-.center-text{
-	display: flex!important;
- 	align-items: center!important;
+.profile-form-card {
+    margin-top: 0px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+
+    padding: 20px;
 }
 
-.profile-detail-container{
-    
+.profile-form-input-width {
+    width: 100%;
+
 }
 
-.no-padding-col{
-    padding:0 0 0 0px;
+ion-input {
+    --padding-end: 10px;
+    --padding-start: 10px;
 }
 
-.detail-label-container{
+.quick-nav-title {
+    color: white;
+    font-size: x-large;
+}
+
+.center-text {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.profile-detail-container {}
+
+ion-item-divider {
+    --ion-background-color: #111D12;
+    padding-right: 15px;
+}
+
+.no-padding-col {
+    padding: 0 0 0 0px;
+}
+
+.detail-label-container {
     padding-top: 10px;
 }
 
-.profile-image{
+.profile-image {
     width: 200px;
     height: 200px;
 }
 
-.no-margin-card{
+.no-margin-card {
     margin-top: 0px;
 }
-.full-span-container{
-    flex: 0 0 100%;}
-

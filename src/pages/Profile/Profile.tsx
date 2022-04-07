@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonButton,
   IonCard,
@@ -16,8 +16,8 @@ import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import { personCircleOutline } from "ionicons/icons";
 import {
-  ProfileActionsProps,
-  ProfileActionType,
+  ProfileQuickActionsProps,
+  ProfileQuickActionType,
 } from "../../interfaces/ProfileData";
 import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
@@ -26,9 +26,15 @@ import ProfileChangeEmail from "./ProfileChangeEmail";
 import ProfileChangePassword from "./ProfileChangePassword";
 
 const Profile: React.FC = () => {
-  const [profileAction, setProfileAction] = useState<ProfileActionType>(
-    ProfileActionType.PROFILE_DETAIL
+  const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
+    ProfileQuickActionType.PROFILE_DETAIL
   );
+  const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =
+    useState(false);
+
+  function onRefreshProfileRequestReceived() {
+    refreshAllProfileSiblingComponents(!refreshSiblingComponents);
+  }
 
   return (
     <IonPage color="light">
@@ -40,18 +46,19 @@ const Profile: React.FC = () => {
           </IonRow>
           <IonRow>
             <IonCol>
-              {profileAction == ProfileActionType.PROFILE_DETAIL && (
+              {profileAction == ProfileQuickActionType.PROFILE_DETAIL && (
                 <ProfileInfo />
               )}
 
-              {profileAction == ProfileActionType.CHANGE_EMAIL && (
-                <ProfileChangeEmail />
+              {profileAction == ProfileQuickActionType.CHANGE_EMAIL && (
+                <ProfileChangeEmail
+                  onProfileSegmentUpdated={onRefreshProfileRequestReceived}
+                />
               )}
-              {profileAction == ProfileActionType.CHANGE_PASSWORD && (
+              {profileAction == ProfileQuickActionType.CHANGE_PASSWORD && (
                 <ProfileChangePassword />
               )}
             </IonCol>
-
             <IonCol size="auto">
               <ProfileActions onActionTapped={setProfileAction} />
             </IonCol>

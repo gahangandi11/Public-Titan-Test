@@ -6,29 +6,29 @@ import {
   IonLabel,
 } from "@ionic/react";
 import "./Profile.css";
-import { ProfileActionsProps, ProfileActionType } from "../../interfaces/ProfileData";
+import { ProfileQuickActionsProps, ProfileQuickActionType } from "../../interfaces/ProfileData";
 
-const ProfileActions: React.FC<ProfileActionsProps> = (props) => {
+const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
 
      function onEmailTapped(){
-                props.onActionTapped(ProfileActionType.CHANGE_EMAIL);
+                props.onActionTapped(ProfileQuickActionType.CHANGE_EMAIL);
     }
 
      function onPasswordTapped(){
-                props.onActionTapped(ProfileActionType.CHANGE_PASSWORD);
+                props.onActionTapped(ProfileQuickActionType.CHANGE_PASSWORD);
     }
 
      function onProfileDetail(){
-                props.onActionTapped(ProfileActionType.PROFILE_DETAIL);
+                props.onActionTapped(ProfileQuickActionType.PROFILE_DETAIL);
     }
 
   return (
     <IonCard className="profile-card">
       <IonItemDivider
-        className="quick-nav-title second-step"
-        color="pink"
+      color="white"
+        className="quick-nav-title"
         sticky={true}>
-        <IonLabel>Quick Navigation</IonLabel>
+        <IonLabel color="primary">Quick Navigation</IonLabel>
       </IonItemDivider>
       <IonItem onClick={onProfileDetail} button={true}>
         <IonLabel>Profile Details</IonLabel>

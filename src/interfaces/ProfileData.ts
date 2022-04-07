@@ -1,10 +1,17 @@
-export interface ProfileActionsProps
+export interface ProfileQuickActionsProps
 {
-    onActionTapped:(actionType:ProfileActionType)=>void,
+    onActionTapped:(actionType:ProfileQuickActionType)=>void,
 
 }
 
-export enum ProfileActionType{
+//Since profile component is disintegrated into sub component, this interface is used to communicate between 
+//different siblings of same profile container.
+export interface ProfileUpdateAction
+{
+    onProfileSegmentUpdated:()=>void
+}
+
+export enum ProfileQuickActionType{
         CHANGE_EMAIL,CHANGE_PASSWORD,PROFILE_DETAIL
 }
 

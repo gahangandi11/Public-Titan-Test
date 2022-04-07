@@ -25,7 +25,7 @@ const ProfileInfo: React.FC = () => {
    * @returns true, if user has any related info that can be shown otherwise false
    */
   const hasDetail = () => {
-    return true;
+    return false;
   };
 
   return (

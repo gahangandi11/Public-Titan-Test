@@ -9,6 +9,7 @@ export interface ProfileQuickActionsProps
 export interface ProfileUpdateAction
 {
     onProfileSegmentUpdated:()=>void
+    actionType:ProfileQuickActionType
 }
 
 export enum ProfileQuickActionType{

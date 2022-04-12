@@ -15,9 +15,7 @@ import "./Profile.css";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import { personCircleOutline } from "ionicons/icons";
 
-
 const ProfileInfo: React.FC = () => {
-
   const { currentUser } = useAuth();
 
   /**
@@ -31,18 +29,16 @@ const ProfileInfo: React.FC = () => {
   return (
     <div>
       {hasDetail() && (
-     
-              <IonCard className="profile-card" >
-                <IonGrid >
-                  <IonRow >
-                    <IonLabel>Details</IonLabel>
-                  </IonRow>
-                  <IonRow className="detail-label-container">
-                    <IonLabel>Name : {currentUser?.displayName}</IonLabel>
-                  </IonRow>
-                </IonGrid>
-              </IonCard>
-           
+        <IonCard className="profile-card">
+          <IonGrid>
+            <IonRow>
+              <IonLabel>Details</IonLabel>
+            </IonRow>
+            <IonRow className="detail-label-container">
+              <IonLabel>Name : {currentUser?.displayName}</IonLabel>
+            </IonRow>
+          </IonGrid>
+        </IonCard>
       )}
     </div>
   );

@@ -22,8 +22,7 @@ import {
 import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
-import ProfileChangeEmail from "./ProfileChangeEmail";
-import ProfileChangePassword from "./ProfileChangePassword";
+import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
 
 const Profile: React.FC = () => {
   const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
@@ -50,13 +49,11 @@ const Profile: React.FC = () => {
                 <ProfileInfo />
               )}
 
-              {profileAction == ProfileQuickActionType.CHANGE_EMAIL && (
-                <ProfileChangeEmail
+              {(profileAction == ProfileQuickActionType.CHANGE_EMAIL ||profileAction == ProfileQuickActionType.CHANGE_PASSWORD)  && (
+                <ProfileChangeEmailOrPassword
+                  actionType={profileAction}
                   onProfileSegmentUpdated={onRefreshProfileRequestReceived}
                 />
-              )}
-              {profileAction == ProfileQuickActionType.CHANGE_PASSWORD && (
-                <ProfileChangePassword />
               )}
             </IonCol>
             <IonCol size="auto">

@@ -55,3 +55,7 @@ ion-avatar {
     height: 200px;
 }
 
+.user-status {
+    display: flex;
+    align-items: center;
+}

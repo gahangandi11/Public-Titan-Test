@@ -1,4 +1,5 @@
 import React, {
+  useEffect, useState
 } from "react";
 import {
   IonCard,
@@ -9,16 +10,19 @@ import {
   IonLabel,
   IonPage,
   IonRow,
-  IonText,
+  IonText, IonToggle,
 } from "@ionic/react";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import { personCircleOutline } from "ionicons/icons";
+import {getNewUsers, verifyUser} from '../../services/firestoreService';
+import {User} from '../../interfaces/User';
 
 const Profile: React.FC = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, userDoc } = useAuth();
 
+  const [newUsers, setNewUsers] = useState<User[]>([]);
   /**
    * If user has any other information than email that can be shown then evaluate the userInfo object
    * @returns true, if user has any related info that can be shown otherwise false
@@ -26,6 +30,16 @@ const Profile: React.FC = () => {
   const hasDetail = () => {
     return false;
   };
+
+  function changeUserStatus(user: User) {
+    verifyUser(user);
+  }
+
+  useEffect(() => {
+    getNewUsers().then(docs => {
+      setNewUsers(docs);
+    })
+  }, []);
 
   return (
     <IonPage color="light">
@@ -47,6 +61,22 @@ const Profile: React.FC = () => {
                 <h1>{currentUser?.email}</h1>
               </IonText>
             </IonCol>
+            { userDoc?.admin && <IonCol>
+              <IonText>Users awaiting verification: </IonText><br /><br />
+              {newUsers.map((user, index) => {
+                return(
+                    <div className="user-status" key={index}>
+                      <IonText>
+                        {user.email}
+                      </IonText>
+
+                      <IonToggle checked={user.verified} onIonChange={() => changeUserStatus(user)} />
+
+                      <br /><br />
+                    </div>
+                );
+              })}
+            </IonCol>}
           </IonRow>
         </IonGrid>
 

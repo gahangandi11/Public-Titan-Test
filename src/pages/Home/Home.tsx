@@ -21,7 +21,7 @@ import {watchCameras} from '../../services/firestoreService';
 
 const Home: React.FC = () => {
     const [weather, setWeather] = useState(false);
-    const [traffic, setTraffic] = useState(false);
+    const [traffic, setTraffic] = useState(true);
     const [transcore, setTranscore] = useState(false);
     const [transcoreIncidents, setTranscoreIncidents] = useState<string[]>([]);
     const [wazeIncidents, setWazeIncidents] = useState(false);

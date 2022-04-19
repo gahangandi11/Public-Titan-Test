@@ -27,7 +27,7 @@ const ProfileChangeEmailOrPassword: React.FC<ProfileUpdateAction> = (props) => {
 
   async function updateEmail() {
     try {
-      let userCredential = await updateUserEmail(
+      const userCredential = await updateUserEmail(
         currentUser,
         newEmail,
         currentPassword
@@ -52,7 +52,7 @@ const ProfileChangeEmailOrPassword: React.FC<ProfileUpdateAction> = (props) => {
 
   async function updatePassword() {
     try {
-      let userCredential = await updateUserPassword(
+      const userCredential = await updateUserPassword(
         currentUser,
         currentPassword,
         newPassword
@@ -65,7 +65,6 @@ const ProfileChangeEmailOrPassword: React.FC<ProfileUpdateAction> = (props) => {
         color: "success",
       });
     } catch (e: any) {
-      console.log("Error : " + e);
       present({
         buttons: [{ text: "dismiss", handler: () => dismiss() }],
         message: e,

@@ -1,4 +1,4 @@
-import {getFirestore, doc, collection, getDoc, setDoc, getDocs} from 'firebase/firestore';
+import {getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc} from 'firebase/firestore';
 import {getStorage, ref, getDownloadURL} from 'firebase/storage';
 
 import {DashboardData} from '../interfaces/DashboardData';
@@ -160,9 +160,27 @@ export async function getUserByID(id: string) {
     return userSnapshot.data() as User;
 }
 
+export async function getNewUsers() {
+    const userCollection = collection(db, "Users");
+    const userQuery = query(userCollection, where("verified", "==", false));
+    const userDocs = await getDocs(userQuery);
+    const foundDocs: User[] = [];
+    userDocs.forEach(doc => {
+        foundDocs.push(doc.data() as User);
+    });
+    return foundDocs;
+}
+
+export async function verifyUser(user: User) {
+    const userRef = doc(db, "Users", user.uid);
+    await updateDoc(userRef, {
+        verified: true
+    });
+}
+
 export async function createUser(currentUser: any) {
     currentUser = currentUser.user;
-    await setDoc(doc(db, "Users", currentUser.uid), {
+    let defaultData = {
         uid: currentUser.uid,
         admin: false,
         applied: false,
@@ -170,7 +188,21 @@ export async function createUser(currentUser: any) {
         email: currentUser.email,
         displayName: currentUser.displayName,
         subscriptions: []
-    });
+    };
+
+    if (/@olsson.com\s*$/.test(currentUser.email)) {
+        defaultData = {
+            uid: currentUser.uid,
+            admin: false,
+            applied: false,
+            verified: true,
+            email: currentUser.email,
+            displayName: currentUser.displayName,
+            subscriptions: []
+        };
+    }
+
+    await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
 
 export async function checkStorageStatus(link: string) {

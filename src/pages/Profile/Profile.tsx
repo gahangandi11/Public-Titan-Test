@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+
+import React, {
+  useEffect, useState
+} from "react";
 import {
   IonButton,
   IonCard,
@@ -9,7 +12,7 @@ import {
   IonLabel,
   IonPage,
   IonRow,
-  IonText,
+  IonText, IonToggle,
 } from "@ionic/react";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
@@ -23,6 +26,8 @@ import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
+import { getNewUsers, verifyUser } from "../../services/firestoreService";
+import { User } from "../../interfaces/User";
 
 const Profile: React.FC = () => {
   const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
@@ -31,9 +36,24 @@ const Profile: React.FC = () => {
   const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =
     useState(false);
 
+    const { currentUser, userDoc } = useAuth();
+
+  const [newUsers, setNewUsers] = useState<User[]>([]);
+
   function onRefreshProfileRequestReceived() {
     refreshAllProfileSiblingComponents(!refreshSiblingComponents);
   }
+
+
+  function changeUserStatus(user: User) {
+    verifyUser(user);
+  }
+
+  useEffect(() => {
+    getNewUsers().then(docs => {
+      setNewUsers(docs);
+    })
+  }, []);
 
   return (
     <IonPage color="light">
@@ -59,6 +79,22 @@ const Profile: React.FC = () => {
             <IonCol size="auto">
               <ProfileActions onActionTapped={setProfileAction} />
             </IonCol>
+            { userDoc?.admin && <IonCol>
+              <IonText>Users awaiting verification: </IonText><br /><br />
+              {newUsers.map((user, index) => {
+                return(
+                    <div className="user-status" key={index}>
+                      <IonText>
+                        {user.email}
+                      </IonText>
+
+                      <IonToggle checked={user.verified} onIonChange={() => changeUserStatus(user)} />
+
+                      <br /><br />
+                    </div>
+                );
+              })}
+            </IonCol>}
           </IonRow>
         </IonGrid>
       </IonContent>

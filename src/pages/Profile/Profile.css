@@ -81,3 +81,7 @@ ion-item-divider {
 .no-margin-card {
     margin-top: 0px;
 }
+.user-status {
+    display: flex;
+    align-items: center;
+}

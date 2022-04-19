@@ -28,7 +28,7 @@ export function watchUser() {
 
 export function updateUserPassword(user:User,currentPassword:string,newPassword:string)
 {
-    let credential = EmailAuthProvider.credential(
+    const credential = EmailAuthProvider.credential(
         user.email!,
         currentPassword
     )
@@ -39,7 +39,7 @@ export function updateUserPassword(user:User,currentPassword:string,newPassword:
 
 export function updateUserEmail(user:User,newEmail:string,currentPassword:string)
 {
-    let credential = EmailAuthProvider.credential(
+    const credential = EmailAuthProvider.credential(
         user.email!,
         currentPassword
     )

@@ -2,15 +2,8 @@ import React, { useState } from "react";
 import {
   IonButton,
   IonCard,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
   IonInput,
   IonLabel,
-  IonPage,
-  IonRow,
-  IonText,
   useIonToast,
 } from "@ionic/react";
 import "./Profile.css";
@@ -33,8 +26,6 @@ const ProfileChangeEmailOrPassword: React.FC<ProfileUpdateAction> = (props) => {
   const [newPassword, setNewPassword] = useState("");
 
   async function updateEmail() {
-    console.log("Current Password : " + currentPassword);
-    console.log("New Email : " + newEmail);
     try {
       let userCredential = await updateUserEmail(
         currentUser,
@@ -60,8 +51,6 @@ const ProfileChangeEmailOrPassword: React.FC<ProfileUpdateAction> = (props) => {
   }
 
   async function updatePassword() {
-    console.log("Current Password : " + currentPassword);
-    console.log("New Password : " + newPassword);
     try {
       let userCredential = await updateUserPassword(
         currentUser,

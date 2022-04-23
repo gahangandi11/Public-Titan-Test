@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createContext, useContext, useEffect, useState} from 'react';
-import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,updatePassword,updateEmail, User,reauthenticateWithCredential, EmailAuthProvider} from 'firebase/auth';
 import {getUserByID} from '../../firestoreService';
 
 const auth = getAuth();
@@ -26,9 +26,31 @@ export function watchUser() {
     return auth;
 }
 
+export function updateUserPassword(user:User,currentPassword:string,newPassword:string)
+{
+    const credential = EmailAuthProvider.credential(
+        user.email!,
+        currentPassword
+    )
+  return reauthenticateWithCredential(user,credential).then((userCredential)=>{
+      return updatePassword(user,newPassword)
+  });
+}
+
+export function updateUserEmail(user:User,newEmail:string,currentPassword:string)
+{
+    const credential = EmailAuthProvider.credential(
+        user.email!,
+        currentPassword
+    )
+  return reauthenticateWithCredential(user,credential).then((userCredential)=>{
+      return updateEmail(user,newEmail)
+  });
+}
+
 
 const AuthProvider: React.FC = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
     const [userDoc, setUserDoc] = useState<any>(null);
 
     useEffect(() => {

@@ -3,7 +3,7 @@ import {
     IonButton,
     IonCard,
     IonCardContent, IonCardHeader,
-    IonContent,
+    IonContent, IonFab, IonFabButton, IonIcon,
     IonItem,
     IonLabel,
     IonPage, IonSelect, IonSelectOption,
@@ -13,11 +13,12 @@ import {
 import Map from '../../components/Map/Map';
 import Header from '../../components/Header/Header';
 import './Home.css';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Camera} from '../../interfaces/Camera';
 import CctvPlayer from '../../components/CctvPlayer/CctvPlayer';
 import {Device} from '@capacitor/device';
 import {watchCameras} from '../../services/firestoreService';
+import {arrowDownCircle} from 'ionicons/icons';
 
 const Home: React.FC = () => {
     const [weather, setWeather] = useState(false);
@@ -32,6 +33,7 @@ const Home: React.FC = () => {
     const [cameras, setCameras] = useState<Camera[]>([]);
     const [isIOS, setIsIOS] = useState(false);
     const [errorResponse, setErrorResponse] = useState(false);
+    const camerasEndRef = useRef(null);
 
     const closeCurrentCamera = (id: number) => {
         setDisplayedCameras(displayedCameras.filter(camera => camera.id !== id));
@@ -57,6 +59,12 @@ const Home: React.FC = () => {
         setDisplayedCameras([]);
     }
 
+     function scrollToBottom() {
+         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+         // @ts-ignore
+         camerasEndRef.current?.scrollIntoView({ behavior: "smooth"});
+    }
+
     useEffect(() => {
         watchCameras().then(foundCameras => {
             setCameras(foundCameras)
@@ -74,6 +82,11 @@ const Home: React.FC = () => {
                     <div className="map--container">
                         <Map weather={weather} traffic={traffic} transcore={transcore} transcoreIncidents={transcoreIncidents} jams={wazeJams} incidents={wazeIncidents} cameras={cameras} setId={setNewCamera} showCameras={showCameras} height={1000} zoom={6.5} />
                     </div>
+                    {displayedCameras.length > 0 && <IonFab vertical="bottom" horizontal="start" slot="fixed" onClick={scrollToBottom}>
+                        <IonFabButton>
+                            <IonIcon icon={arrowDownCircle} />
+                        </IonFabButton>
+                    </IonFab>}
                     <IonCard className="map--toggles">
                         <IonCardContent>
                             <IonItem>
@@ -126,7 +139,7 @@ const Home: React.FC = () => {
                             </IonItem>
                         </IonCardContent>
                     </IonCard>
-                    {displayedCameras.length > 0 && <IonCard>
+                    {displayedCameras.length > 0 && <IonCard ref={camerasEndRef}>
                         <IonCardHeader>
                             <IonLabel className="cctv-div-title">Selected Live CCTVs</IonLabel><br />
                             <IonButton onClick={clearAllSelectedCameras} color="primary">Clear All</IonButton>

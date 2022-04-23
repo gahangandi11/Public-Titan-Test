@@ -14,6 +14,11 @@
     width: 50em;
 }
 
+.map--toggles:hover {
+    opacity: 100%;
+}
+
+
 .cctv-div-title{
     color: var(--ion-color-dark);
     font-size: x-large;
@@ -53,6 +58,26 @@
         justify-content: space-evenly;
         flex-wrap: wrap;
         overflow-y: auto;
+    }
+}
+
+@media only screen and (max-width: 2220px) {
+    .map--toggles {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        opacity: 50%;
+        width: 25em;
+    }
+    @media only screen and (min-height: 1080px) {
+        .map--toggles {
+            position: absolute;
+            right: 0;
+            top: 0;
+            opacity: 50%;
+            width: 25em;
+            height: 32em;
+        }
     }
 }
 

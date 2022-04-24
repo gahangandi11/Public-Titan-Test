@@ -15,7 +15,7 @@
 }
 
 .map--toggles:hover {
-    opacity: 100%;
+    opacity: 1;
 }
 
 
@@ -66,7 +66,7 @@
         position: absolute;
         right: 0;
         bottom: 0;
-        opacity: 50%;
+        opacity: .5;
         width: 25em;
     }
     @media only screen and (min-height: 1080px) {
@@ -74,7 +74,7 @@
             position: absolute;
             right: 0;
             top: 0;
-            opacity: 50%;
+            opacity: .5;
             width: 25em;
             height: 35em;
         }

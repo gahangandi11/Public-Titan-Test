@@ -12,6 +12,7 @@
 
 .map--toggles {
     width: 50em;
+    opacity: 1;
 }
 
 .map--toggles:hover {

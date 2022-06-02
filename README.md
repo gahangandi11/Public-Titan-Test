@@ -17,7 +17,7 @@ Created with the Ionic framework and React.
 
 </div>
 
-## Deployment
+## Deployment 
 
 In contrast to the [RIDSI](https://github.com/MizzouRIDSI/RIDSI-UI/) application, TITAN is not set up for automatic deployments. Deploying with Firebase is simple, however. To build and deploy the application, run the following commands in the base directory of the project:
 

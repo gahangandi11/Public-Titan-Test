@@ -133,3 +133,43 @@
     background-color: forestgreen;
 }
 
+
+.map-div {
+    text-align: left !important;
+  }
+
+ 
+  .ion-list-bg{
+    --ion-background-color:#f4f5f8 !important; 
+  }
+
+  .header-font {
+    font-size: 1.5em !important;
+  }
+
+  .offset-title
+  {
+    marker-start: 5px !important;
+  }
+
+@media only screen and (min-width: 1023px) {
+    .box {
+      display: flex;
+      justify-content: space-around;
+    }
+  
+    .controls-box {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+    }
+  
+    .map-div {
+      width: 65%;
+    }
+  
+    .controls-div {
+      max-height: 40em;
+    }
+  }

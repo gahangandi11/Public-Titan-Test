@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {IonCard, IonIcon} from '@ionic/react';
 import './Map.css';
+import {Marker as MarkerData}  from '../../interfaces/Marker';
+
 import ReactMapGl, {InteractiveMapProps, Layer, LayerProps, Marker, Source} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import {useEffect, useState} from 'react';
@@ -131,8 +133,10 @@ interface MapData {
     cameras: Camera[],
     setId?: (id: number) => void;
     showCameras: boolean,
-    height: number,
-    zoom: number
+    zoom: number,
+    height: string;
+    markerSelection?: React.Dispatch<React.SetStateAction<MarkerData | null>>;
+
 }
 
 const Map: React.FC<MapData> = (props: MapData) => {
@@ -142,7 +146,6 @@ const Map: React.FC<MapData> = (props: MapData) => {
     const [transcoreIncidents, setTranscoreIncidents] = useState<TranscoreIncident[]>([]);
     const [wazeJamGeo, setWazeJamGeo] = useState<GeoJSON.FeatureCollection>();
     const [viewport, setViewport] = useState<InteractiveMapProps>({
-        height: props.height,
         latitude: 37.9643,
         longitude: -91.8318,
         zoom: props.zoom
@@ -274,7 +277,27 @@ const Map: React.FC<MapData> = (props: MapData) => {
         }
             return (
                 <Marker latitude={weatherItem.latitude} longitude={weatherItem.longitude} key={weatherItem.id}>
-                    <IonIcon className="marker-icon" src={iconType} />
+                    <IonIcon className="marker-icon" src={iconType}
+                     onClick={() => {
+                        console.log("Weather marker tapped")
+                        if (props.markerSelection) {
+                            props.markerSelection(new MarkerData(
+                                'Weather Event',
+                                weatherItem.county,
+                                weatherItem.latitude,
+                                weatherItem.longitude,
+                                new Date(weatherItem.timestamp),
+                                weatherType,
+                                '',
+                                weatherItem.temperature,
+                                weatherItem.windGust,
+                                weatherItem.precipitationIntensity,
+                                weatherItem.snowAccumulation
+                                ));
+                        }
+                    }
+                    }
+                    />
                 </Marker>
             );
         },
@@ -314,7 +337,21 @@ const Map: React.FC<MapData> = (props: MapData) => {
                 key={incident.uuid}
                 longitude={incident.longitude}
                 latitude={incident.latitude}>
-                <IonIcon className="marker-icon" color={iconColor} src={iconType} />
+                <IonIcon
+                onClick={() => {
+                    if (props.markerSelection) {
+                        props.markerSelection(new MarkerData(
+                            incident.event_class,
+                            incident.county,
+                            incident.latitude,
+                            incident.longitude,
+                            new Date(incident.pub_millis),
+                            incident.event_description,
+                            incident.on_street_name
+                        ));
+                    }
+                }}
+                className="marker-icon" color={iconColor} src={iconType} />
             </Marker>
         }
         return <div className="hidden" key={incident.uuid} />;
@@ -398,7 +435,23 @@ const Map: React.FC<MapData> = (props: MapData) => {
             key={incident.uuid}
             longitude={incident.longitude}
             latitude={incident.latitude}>
-            <IonIcon className="marker-icon" color={iconColor} src={iconType}/>
+            <IonIcon className="marker-icon"
+            onClick={() => {
+                if (props.markerSelection) {
+                    props.markerSelection(new MarkerData(
+                        incident.event_class,
+                        incident.county,
+                        incident.latitude,
+                        incident.longitude,
+                        new Date(incident.pub_millis),
+                        incident.report_description,
+                        incident.street
+                    ));
+                }
+            }}
+            color={iconColor} src={iconType}
+            
+            />
         </Marker>
     }), [wazeIncidents]);
 
@@ -422,6 +475,7 @@ const Map: React.FC<MapData> = (props: MapData) => {
             <ReactMapGl
                 {...viewport}
                 width="100%"
+                height={props.height}
                 onViewportChange={(nextViewport: InteractiveMapProps) => setViewport(nextViewport)}
                 mapStyle="mapbox://styles/mapbox/dark-v10"
                 mapboxApiAccessToken={accessToken}

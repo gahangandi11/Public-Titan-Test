@@ -1,4 +1,5 @@
 export class Camera {
+
     active: number;
     description: string;
     direction: string;
@@ -9,6 +10,7 @@ export class Camera {
     route: number;
     https_url: string;
     ios_Url: string;
+    
 
     constructor()
     constructor(active: number,
@@ -42,4 +44,21 @@ export class Camera {
         this.https_url = https_url ? https_url : '';
         this.ios_Url = ios_Url ? ios_Url : '';
     }
+
+  
+
+    public toString(): string {
+        return  this.active +
+        this.description+
+        this.direction +
+        this.id +
+        this.latitude+
+        this.longitude+
+        this.mrm+
+        this.route+
+        this.https_url+
+        this.ios_Url
+    }
+
+
 }

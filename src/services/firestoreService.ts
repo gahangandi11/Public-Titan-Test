@@ -1,16 +1,16 @@
-import {getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc} from 'firebase/firestore';
-import {getStorage, ref, getDownloadURL} from 'firebase/storage';
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
-import {DashboardData} from '../interfaces/DashboardData';
-import {LinkData} from '../interfaces/LinkData';
-import {User} from '../interfaces/User';
-import {app} from '../firebaseConfig';
-import {WeatherEvent} from '../interfaces/WeatherEvent';
-import {WazeIncident} from '../interfaces/WazeIncident';
-import {WazeJam} from '../interfaces/WazeJam';
-import {GeoJSON} from 'geojson';
-import {Camera} from '../interfaces/Camera';
-import {TranscoreIncident} from '../interfaces/TranscoreIncident';
+import { DashboardData } from '../interfaces/DashboardData';
+import { LinkData } from '../interfaces/LinkData';
+import { User } from '../interfaces/User';
+import { app } from '../firebaseConfig';
+import { WeatherEvent } from '../interfaces/WeatherEvent';
+import { WazeIncident } from '../interfaces/WazeIncident';
+import { WazeJam } from '../interfaces/WazeJam';
+import { GeoJSON } from 'geojson';
+import { Camera } from '../interfaces/Camera';
+import { TranscoreIncident } from '../interfaces/TranscoreIncident';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -79,11 +79,16 @@ export async function watchWeatherData() {
 }
 
 export async function watchCameras() {
-    const camerasCollection = collection(db, "CCTV");
+    const camerasCollection = collection(db, "CCTV_UPDATE");
     const camerasDocs = await getDocs(camerasCollection);
     const cameras: Camera[] = [];
     camerasDocs.forEach(doc => {
-        cameras.push(doc.data() as Camera);
+        const cam = doc.data() as Camera
+        if (cam.latitude != 0 && cam.longitude != 0 && Number.isFinite(cam.latitude)&& Number.isFinite(cam.longitude))
+        {
+            cameras.push(doc.data() as Camera);
+
+        }     
     });
     return cameras;
 }

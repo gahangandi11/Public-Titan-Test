@@ -19,7 +19,7 @@ const CountySelector: React.FC<CountyProps> = (props: CountyProps) => {
             <div className="county-form-div">
                 <Select className={props.width}
                         options={counties}
-                        values={props.counties}
+                        values={props.counties.slice(0,2)}
                         multi
                         labelField="name"
                         valueField="value"

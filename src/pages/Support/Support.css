@@ -1,0 +1,75 @@
+@media only screen and (min-width: 1024px) {
+    .form-card {
+      width: 75%;
+      margin: 4em auto;
+    }
+  }
+  
+  @media only screen and (max-width: 1024px) {
+    .form-card {
+      margin: 3em 1em;
+    }
+  }
+  
+  .response-requested {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form-card {
+    text-align: center;
+    overflow: visible;
+  }
+  
+  .title-blue {
+    background-color: var(--ion-color-blue);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-blue-rgb), 0.2);
+  }
+  
+  .title-red {
+    background-color: var(--ion-color-red);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-red-rgb), 0.2);
+  }
+  
+  .title-orange {
+    background-color: var(--ion-color-orange);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-orange-rgb), 0.2);
+  }
+  
+  .title-green {
+    background-color: var(--ion-color-green);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-green-rgb), 0.2);
+  }
+  
+  .title-pink {
+    background-color: var(--ion-color-pink);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-pink-rgb), 0.2);
+  }
+  .title-grey {
+    background-color: var(--ion-color-grey);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-pink-rgb), 0.2);
+  }
+  
+  .form-div {
+    margin: 2em 0;
+    text-align: center;
+    display: flex;
+    flex-flow: row wrap;
+  }
+  
+  .form-item {
+    flex-grow: 1;
+    margin: 0 1.5em;
+  }
+  
+
+  .form-input {
+    --background: var(--ion-color-light) !important;
+    margin-bottom: 1em;
+    margin-left: 24px !important;
+    margin-right: 24px !important;
+    margin-top: 5 !important;
+    text-align: start !important;
+}
+  

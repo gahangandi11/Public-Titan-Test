@@ -21,6 +21,7 @@ import bigQueryService from '../../services/bigQueryService';
 import {FormRequest} from '../../interfaces/FormRequest';
 import {downloadOutline, downloadSharp} from 'ionicons/icons';
 import AuthProvider, {useAuth} from '../../services/contexts/AuthContext/AuthContext';
+
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 const pages: {name: string, value: string}[] = [

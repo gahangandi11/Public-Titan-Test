@@ -1,6 +1,6 @@
 import {IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle} from '@ionic/react';
 import * as React from 'react';
-import {downloadOutline, downloadSharp, gridOutline, gridSharp, homeOutline, homeSharp, logOut} from 'ionicons/icons';
+import {downloadOutline, downloadSharp, gridOutline, gridSharp, homeOutline, homeSharp, logOut,paperPlaneOutline} from 'ionicons/icons';
 import {useLocation} from 'react-router';
 import {useEffect, useState} from 'react';
 import {getLinks} from '../../services/firestoreService';
@@ -90,12 +90,20 @@ const Menu = () => {
                             );
                         })}
                     </IonList>
-                    <IonList>
+                    <IonList>{currentUser &&
+                    <IonMenuToggle  autoHide={false}>
+                    <IonItem color="medium"  routerLink={"support"} routerDirection="none" lines="none" detail={false}>
+                                        <IonIcon slot="start" ios={paperPlaneOutline} md={paperPlaneOutline} />
+                                        <IonLabel>{"Support"}</IonLabel>
+                                    </IonItem>
+                        </IonMenuToggle>
+}   
                         <IonMenuToggle style={{cursor: "pointer"}} autoHide={false} onClick={logout}>
                             <IonItem color="medium" routerLink={'/login'} routerDirection="none">
                                 <IonIcon slot="start" icon={logOut} />
                                 <IonLabel>Log Out</IonLabel>
                             </IonItem>
+                           
                         </IonMenuToggle>
                     </IonList>
                 </IonContent>

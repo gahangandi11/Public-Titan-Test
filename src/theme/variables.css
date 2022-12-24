@@ -149,3 +149,10 @@ http://ionicframework.com/docs/theming/ */
 ion-list{
   --ion-background-color:#015990;
 }
+
+.react-dropdown-select-dropdown {
+  z-index: 999999 !important;
+  max-height: 20em !important;
+  width: 30em !important;
+  justify-content: initial !important;
+}

@@ -30,6 +30,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import {setAuthToken} from './services/bigQueryService';
 import AuthProvider, {watchUser} from './services/contexts/AuthContext/AuthContext';
 import Profile from './pages/Profile/Profile';
+import Support from './pages/Support/Support';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
@@ -75,6 +76,10 @@ const App: React.FC = () => {
 
                           <RouteGuard path="/profile" exact={true}>
                               <Profile />
+                          </RouteGuard>
+
+                          <RouteGuard path="/support" exact={true}>
+                              <Support />
                           </RouteGuard>
 
                           {links.map((link) => {

@@ -1,4 +1,4 @@
-import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 import { DashboardData } from '../interfaces/DashboardData';
@@ -11,6 +11,7 @@ import { WazeJam } from '../interfaces/WazeJam';
 import { GeoJSON } from 'geojson';
 import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
+import { push } from 'ionicons/icons';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -213,4 +214,13 @@ export async function createUser(currentUser: any) {
 export async function checkStorageStatus(link: string) {
     const reference = ref(storage, link);
     return await getDownloadURL(reference);
+}
+
+
+export async function submitFeedbackRequest(data: any) {
+
+    const userDocId= collection(db, "UserFeedbacks")
+    data.isEmailSent=false;
+    await addDoc(userDocId,data)
+
 }

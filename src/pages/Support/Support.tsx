@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   IonButton,
   IonInput,
@@ -11,6 +11,7 @@ import {
   IonPage,
   IonTextarea,
   useIonToast,
+  useIonLoading
 } from "@ionic/react";
 import "./Support.css";
 import Header from "../../components/Header/Header";
@@ -19,13 +20,25 @@ import { organization as organizationList } from "../../assets/organization";
 import { supporttype as supportTypeList } from "../../assets/supporttype";
 
 import DDSelector from "../../components/Forms/DropDownSelector";
-import { submitFeedbackRequest } from "../../services/firestoreService";
+import {
+  submitFeedbackRequest,
+  uploadAttachment,
+  getAttachementUrl,
+} from "../../services/firestoreService";
 import { useHistory } from "react-router";
+import { SupportFormDTO } from "../../interfaces/SupportFormDTO";
 
 const Support: React.FC = () => {
+
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+ const [showLoading, hideLoading] = useIonLoading();
+ 
+  const [file, setFile] = useState<File | null>();
+
   const [type, setType] = useState<{ name: string; value: string }[]>([]);
-  const [organization, setOrganization] =
-    useState<{ name: string; value: string }[]>([]);
+  const [organization, setOrganization] = useState<
+    { name: string; value: string }[]
+  >([]);
   const [requesterName, setRequesterName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -42,36 +55,60 @@ const Support: React.FC = () => {
       type.length < 1 ||
       organization == null ||
       organization.length < 1 ||
-      requesterName.length < 1||
+      requesterName.length < 1 ||
       description.length < 1
     )
       return false;
     return true;
   }
 
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event.target.files) {
+      return;
+    }
+    setFile(event.target.files[0]);
+  }
+
   async function onSubmit() {
     if (validateFields()) {
       try {
-        const userData  = {
+        const userData: SupportFormDTO = {
           uid: currentUser.uid,
           organization: organization?.at(0)?.value,
           type: type?.at(0)?.value,
           requesterName: requesterName,
-          requesterEmail:currentUser.email,
+          requesterEmail: currentUser.email,
           requestedDate: getCurrentDateAndTime(),
-          description:description
-          
-        } ;
-        await submitFeedbackRequest(userData);
-        clear();
+          description: description,
+          isEmailSent:false,
+        } as SupportFormDTO;
+        if (!file) {
+          userData.attachmentUrl = "";
+          userData.attachmentFileName = "";
 
-        present({
-          buttons: [{ text: "dismiss", handler: () => dismiss() }],
-          message: "Requested successfully",
-          duration: 5000,
-          color: "success",
-        });
-        history.push("/home");
+          uploadForm(userData);
+        } else {  
+          showLoading({backdropDismiss:false});
+          uploadAttachment(currentUser.uid,file,Date.now().toString()).then(
+            (data) => {
+              getAttachementUrl(data.ref).then((url) => {
+                hideLoading();
+                userData.attachmentUrl = url;
+                userData.attachmentFileName = file.name;
+                uploadForm(userData);
+              });
+            },
+            (error) => {
+              hideLoading();
+              present({
+                buttons: [{ text: "dismiss", handler: () => dismiss() }],
+                message: "Unable to upload. " + error,
+                duration: 3000,
+                color: "danger",
+              });
+            }
+          );
+        }
       } catch (e: any) {
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
@@ -89,13 +126,25 @@ const Support: React.FC = () => {
       });
     }
   }
-  
-  function clear()
-  {
-    setRequesterName("")
-    setDescription("")
-    setType([])
-    setOrganization([])
+
+  async function uploadForm(userData: any) {
+    await submitFeedbackRequest(userData);
+    clear();
+
+    present({
+      buttons: [{ text: "dismiss", handler: () => dismiss() }],
+      message: "Requested successfully",
+      duration: 5000,
+      color: "success",
+    });
+    history.push("/home");
+  }
+
+  function clear() {
+    setRequesterName("");
+    setDescription("");
+    setType([]);
+    setOrganization([]);
   }
   function getCurrentDateAndTime(): string {
     const date = new Date();
@@ -105,7 +154,7 @@ const Support: React.FC = () => {
   }
 
   return (
-    <IonPage >
+    <IonPage>
       <Header title="Support" hideProfileButton={true} />
       <IonContent fullscreen color="light">
         <IonCard className="form-card">
@@ -129,7 +178,6 @@ const Support: React.FC = () => {
               width="county-select"
               allowMultipleOption={false}
             />
-           
             <div className="form-div county-column">
               <IonLabel>Requester Name</IonLabel>
               <div className="county-form-div">
@@ -145,12 +193,11 @@ const Support: React.FC = () => {
                 />
               </div>
             </div>
-
             <div className="form-div county-column">
               <IonLabel>Description</IonLabel>
               <div className="county-form-div">
                 <IonTextarea
-                rows={5}
+                  rows={5}
                   className="form-input"
                   value={description}
                   onIonChange={(val) => {
@@ -162,6 +209,8 @@ const Support: React.FC = () => {
                 />
               </div>
             </div>
+        
+            <input type="file" onChange={handleChange}  accept=".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx,.txt,.pdf" />
 
             <IonButton
               color="secondary"

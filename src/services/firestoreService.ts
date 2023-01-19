@@ -1,5 +1,5 @@
 import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc } from 'firebase/firestore';
-import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
 
 import { DashboardData } from '../interfaces/DashboardData';
 import { LinkData } from '../interfaces/LinkData';
@@ -11,7 +11,7 @@ import { WazeJam } from '../interfaces/WazeJam';
 import { GeoJSON } from 'geojson';
 import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
-import { push } from 'ionicons/icons';
+import { push, pushOutline } from 'ionicons/icons';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -223,4 +223,15 @@ export async function submitFeedbackRequest(data: any) {
     data.isEmailSent=false;
     await addDoc(userDocId,data)
 
+}
+
+export async function uploadAttachment(uid:string,data:File,uploadDate:string):Promise<UploadResult>
+{
+        const reference = ref(storage, uid+'/support_attachments/'+data.name+' - '+uploadDate);
+        return uploadBytes(reference,data) 
+}
+
+
+export async function getAttachementUrl(ref: StorageReference):Promise<string> {
+    return  getDownloadURL(ref);
 }

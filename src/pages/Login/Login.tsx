@@ -9,6 +9,7 @@ import {
   IonInput,
   IonLabel,
   IonPage,
+  IonRouterLink,
   useIonToast,
 } from "@ionic/react";
 import { useHistory } from "react-router";
@@ -146,7 +147,14 @@ const Login: React.FC = () => {
                   }}
                 />
               )}
+              {!signup && (
+                
+              <div className="links">
+                                        <IonRouterLink className="link" routerLink="/ForgotPassword"><IonLabel>Forgot your password?</IonLabel><br /></IonRouterLink>
+                                    </div>
+              )}
               <IonFooter className="buttons-footer">
+                
                 {!signup && (
                   <IonButton color="secondary" onClick={login}>
                     Login

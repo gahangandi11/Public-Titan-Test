@@ -2,6 +2,8 @@ import * as React from 'react';
 import {createContext, useContext, useEffect, useState} from 'react';
 import {getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,updatePassword,updateEmail, User,reauthenticateWithCredential, EmailAuthProvider} from 'firebase/auth';
 import {getUserByID} from '../../firestoreService';
+import { sendPasswordResetEmail } from "firebase/auth"
+
 
 const auth = getAuth();
 const AuthContext = createContext<{currentUser: any, userDoc: any, value: string}>({currentUser: null, userDoc: null, value: ""});
@@ -12,6 +14,11 @@ export function emailLogin(email: string, password: string) {
 
 export function emailSignup(email: string, password: string) {
     return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export function resetPassword(email: string): Promise<void> {
+    const redirect = window.location.href.replace('/ForgotPassword', '/login');
+    return sendPasswordResetEmail(auth,email, {url: redirect});
 }
 
 export function logout() {

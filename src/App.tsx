@@ -31,6 +31,7 @@ import {setAuthToken} from './services/bigQueryService';
 import AuthProvider, {watchUser} from './services/contexts/AuthContext/AuthContext';
 import Profile from './pages/Profile/Profile';
 import Support from './pages/Support/Support';
+import ForgotPassword from './pages/Login/ForgotPassword';
 
 const App: React.FC = () => {
     const [links, setLinks] = useState<LinkData[]>([]);
@@ -57,6 +58,10 @@ const App: React.FC = () => {
                           <Route path="/login" exact={true}>
                               <Login />
                           </Route>
+
+                          <Route path="/ForgotPassword" exact={true}>
+                                <ForgotPassword />
+                            </Route>
 
                           <RouteGuard path="/" exact={true}>
                               <Redirect to="/home" />

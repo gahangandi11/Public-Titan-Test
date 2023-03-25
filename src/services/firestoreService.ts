@@ -1,4 +1,4 @@
-import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
 
 
@@ -167,6 +167,12 @@ export async function getUserByID(id: string) {
     return userSnapshot.data() as User;
 }
 
+export function getUserDocumentRef(id:string):DocumentReference<DocumentData>
+{
+    return doc(db, "Users", id);
+ 
+}
+
 export async function getNewUsers() {
     const userCollection = collection(db, "Users");
     const userQuery = query(userCollection, where("verified", "==", false));
@@ -178,6 +184,32 @@ export async function getNewUsers() {
     return foundDocs;
 }
 
+export async function checkIfUserWithSameEmailAlreadyExists(email:string) {
+    const userCollection = collection(db, "Users");
+    const userQuery = query(userCollection, where("email", "==", email));
+    const userDocs = await getDocs(userQuery);
+    
+    return userDocs.size>0;
+}
+
+export async function deleteUserByEmail() {
+    const userCollection = collection(db, "Users");
+    const userQuery = query(userCollection, where("email", "==", "regmi.preyea@gmail.com"));
+    const userDocs = await getDocs(userQuery);
+
+    console.log("Deleting");
+
+    userDocs.forEach(doc => {
+        const data=(doc.data() as User)
+        console.log(data.uid+" : "+data.email);
+    });
+    // Delete the user document
+    const deletePromises = userDocs.docs.map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+}
+
+
 export async function verifyUser(user: User) {
     const userRef = doc(db, "Users", user.uid);
     await updateDoc(userRef, {
@@ -185,9 +217,17 @@ export async function verifyUser(user: User) {
     });
 }
 
+export async function updateVerificationAndAdminFlag(userId:string, isVerfied:boolean,isAdmin:boolean)
+{
+    const userRef = doc(db, "Users", userId);
+    await updateDoc(userRef, {
+        verified: isVerfied,
+    });
+}
+
 export async function createUser(currentUser: any) {
     currentUser = currentUser.user;
-    let defaultData = {
+    const defaultData = {
         uid: currentUser.uid,
         admin: false,
         applied: false,
@@ -196,19 +236,6 @@ export async function createUser(currentUser: any) {
         displayName: currentUser.displayName,
         subscriptions: []
     };
-
-    if (/@olsson.com\s*$/.test(currentUser.email)) {
-        defaultData = {
-            uid: currentUser.uid,
-            admin: false,
-            applied: false,
-            verified: true,
-            email: currentUser.email,
-            displayName: currentUser.displayName,
-            subscriptions: []
-        };
-    }
-
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
 
@@ -236,4 +263,5 @@ export async function uploadAttachment(uid:string,data:File,uploadDate:string):P
 export async function getAttachementUrl(ref: StorageReference):Promise<string> {
     return  getDownloadURL(ref);
 }
+
 

@@ -1,7 +1,4 @@
-
-import React, {
-  useEffect, useState
-} from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonButton,
   IonCard,
@@ -9,10 +6,12 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
+  IonItem,
   IonLabel,
   IonPage,
   IonRow,
-  IonText, IonToggle,
+  IonText,
+  IonToggle,
 } from "@ionic/react";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
@@ -36,7 +35,7 @@ const Profile: React.FC = () => {
   const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =
     useState(false);
 
-    const { currentUser, userDoc } = useAuth();
+  const { currentUser, userDoc } = useAuth();
 
   const [newUsers, setNewUsers] = useState<User[]>([]);
 
@@ -44,16 +43,22 @@ const Profile: React.FC = () => {
     refreshAllProfileSiblingComponents(!refreshSiblingComponents);
   }
 
-
   function changeUserStatus(user: User) {
     verifyUser(user);
+    setTimeout(function () {
+      refreshUserList();
+    }, 1000);
   }
 
   useEffect(() => {
-    getNewUsers().then(docs => {
-      setNewUsers(docs);
-    })
+    refreshUserList();
   }, []);
+
+  function refreshUserList() {
+    getNewUsers().then((docs) => {
+      setNewUsers(docs);
+    });
+  }
 
   return (
     <IonPage color="light">
@@ -69,17 +74,48 @@ const Profile: React.FC = () => {
                 <ProfileInfo />
               )}
 
-              {(profileAction == ProfileQuickActionType.CHANGE_EMAIL ||profileAction == ProfileQuickActionType.CHANGE_PASSWORD)  && (
+              {(profileAction == ProfileQuickActionType.CHANGE_EMAIL ||
+                profileAction == ProfileQuickActionType.CHANGE_PASSWORD) && (
                 <ProfileChangeEmailOrPassword
                   actionType={profileAction}
                   onProfileSegmentUpdated={onRefreshProfileRequestReceived}
                 />
               )}
+                {userDoc?.admin &&
+              profileAction == ProfileQuickActionType.ADMIN_SETTING && (
+                <div>
+                  <IonItem lines="none" className="div-subtitle space-between">
+                    <IonLabel className="bold-label">Users Awaiting Verification</IonLabel>
+                  </IonItem>
+                  {newUsers.map((user, index) => {
+                    return (
+                      <IonItem key={index}>
+                        <div className="applied-user">
+                          <div className="email-container">
+                            <IonRow className="ion-align-items-start">
+                              <div>{user.email}</div>
+                            </IonRow>
+                            <IonRow className="ion-align-items-end">
+                              <div className="toggle-container">
+                                <IonToggle
+                                  checked={user.verified}
+                                  onIonChange={() => changeUserStatus(user)}
+                                />
+                              </div>
+                            </IonRow>
+                          </div>
+                        </div>
+                      </IonItem>
+                    );
+                  })}
+                </div>
+              )}
             </IonCol>
+          
             <IonCol size="auto">
               <ProfileActions onActionTapped={setProfileAction} />
             </IonCol>
-            { userDoc?.admin && <IonCol>
+            {/* { userDoc?.admin && <IonCol>
               <IonText>Users awaiting verification: </IonText><br /><br />
               {newUsers.map((user, index) => {
                 return(
@@ -94,7 +130,7 @@ const Profile: React.FC = () => {
                     </div>
                 );
               })}
-            </IonCol>}
+            </IonCol>} */}
           </IonRow>
         </IonGrid>
       </IonContent>

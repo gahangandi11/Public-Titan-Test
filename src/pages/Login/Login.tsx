@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useState } from "react";
+import React, { KeyboardEventHandler, useState, useEffect } from "react";
 import {
   IonButton,
   IonCard,
@@ -19,14 +19,16 @@ import AuthProvider, {
   emailSignup,
   emailLogin,
   sendEmailVerfication,
-  isEmailVerified
+  isEmailVerifiedByUser,
 } from "../../services/contexts/AuthContext/AuthContext";
-import { createUser } from "../../services/firestoreService";
+import {
+  checkIfUserWithSameEmailAlreadyExists,
+  createUser,
+  getUserByID,
+  deleteUserByEmail,
+} from "../../services/firestoreService";
 
 const Login: React.FC = () => {
-
-
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
@@ -34,67 +36,86 @@ const Login: React.FC = () => {
   const [signup, setSignup] = useState(false);
   const [present, dismiss] = useIonToast();
 
-  async function login() {
+  const registrationRedirect = window.location.href;
 
-      emailLogin(email,password).then(user=>{
-        if(isEmailVerified())
-        {
-          clear();
-          history.push("/home");
-        }
-        else
-        {
+  async function login() {
+    emailLogin(email, password).then(
+      (usercredential) => {
+        if (isEmailVerifiedByUser()) {
+          //Check if user requires admin verification.
+          getUserByID(usercredential.user.uid).then((userData) => {
+            if (userData.verified == true) {
+            clear();
+              history.push("/home");
+            } else {
+              history.push("/verification");
+            }
+          });
+        } else {
           present({
             buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: "Email verification pending for "+email,
+            message: "Email verification pending for " + email,
             duration: 5000,
             color: "danger",
           });
+          history.push("/verification");
         }
-      },error=>{
+      },
+      (error) => {
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
           message: error,
           duration: 5000,
           color: "danger",
         });
-      })
+      }
+    );
   }
 
-  async function signupClickv2()
-  {
+  async function signupClickv2() {
     if (password === checkPassword) {
-
-      emailSignup(email,password).then(userCredential=>{
-        sendEmailVerfication().then(result=>{
-          if(email)
-            createUser(userCredential);
-          setSignup(!signup);
-          clear();
-          setEmail(email)
-          // history.push("/home");
-          present({
-            buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: "A verification email is sent to "+email,
-            duration: 5000,
-            color: "success",
-          });
-        },error=>{
+      emailSignup(email, password).then(
+        (userCredential) => {
+          sendEmailVerfication(
+            registrationRedirect +
+              "?verificationId=" +
+              userCredential.user.uid +
+              "&email=" +
+              userCredential.user.email
+          ).then(
+            (result) => {
+              setSignup(!signup);
+              clear();
+              setEmail(email);
+              createUser(userCredential).then(() => {
+                history.push("/verification");
+                present({
+                  buttons: [{ text: "dismiss", handler: () => dismiss() }],
+                  message: "A verification email is sent to " + email,
+                  duration: 5000,
+                  color: "success",
+                });
+              });
+            },
+            (error) => {
+              present({
+                buttons: [{ text: "dismiss", handler: () => dismiss() }],
+                message: error,
+                duration: 5000,
+                color: "danger",
+              });
+            }
+          );
+        },
+        (error) => {
           present({
             buttons: [{ text: "dismiss", handler: () => dismiss() }],
             message: error,
             duration: 5000,
             color: "danger",
           });
-        })
-      },error=>{
-        present({
-          buttons: [{ text: "dismiss", handler: () => dismiss() }],
-          message: error,
-          duration: 5000,
-          color: "danger",
-        });
-      })
+        }
+      );
     } else {
       present({
         buttons: [{ text: "dismiss", handler: () => dismiss() }],
@@ -105,19 +126,33 @@ const Login: React.FC = () => {
     }
   }
 
-  async function signupClick() {
+  async function signupClickv3() {
     if (password === checkPassword) {
       try {
         const userCredential = await emailSignup(email, password);
-        const emailVerficationResult=await sendEmailVerfication();
-        if(email)
-          await createUser(userCredential);
+        await emailLogin(email, password);
+        await sendEmailVerfication(
+          registrationRedirect +
+            "?verificationId=" +
+            userCredential.user.uid +
+            "&email=" +
+            userCredential.user.email
+        );
+        setSignup(!signup);
         clear();
-        history.push("/home");
-      } catch (e: any) {
+        setEmail(email);
+        await createUser(userCredential);
+        history.push("/verification");
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
-          message: e,
+          message: "A verification email is sent to " + email,
+          duration: 5000,
+          color: "success",
+        });
+      } catch (error:any) {
+        present({
+          buttons: [{ text: "dismiss", handler: () => dismiss() }],
+          message: error.message || "Something went wrong",
           duration: 5000,
           color: "danger",
         });
@@ -131,6 +166,7 @@ const Login: React.FC = () => {
       });
     }
   }
+  
 
   function clear() {
     setEmail("");
@@ -208,20 +244,21 @@ const Login: React.FC = () => {
                 />
               )}
               {!signup && (
-                
-              <div className="links">
-                                        <IonRouterLink className="link" routerLink="/ForgotPassword"><IonLabel>Forgot your password?</IonLabel><br /></IonRouterLink>
-                                    </div>
+                <div className="links">
+                  <IonRouterLink className="link" routerLink="/ForgotPassword">
+                    <IonLabel>Forgot your password?</IonLabel>
+                    <br />
+                  </IonRouterLink>
+                </div>
               )}
               <IonFooter className="buttons-footer">
-                
                 {!signup && (
                   <IonButton color="secondary" onClick={login}>
                     Login
                   </IonButton>
                 )}
                 {signup && (
-                  <IonButton color="secondary" onClick={signupClickv2}>
+                  <IonButton color="secondary" onClick={signupClickv3}>
                     Sign Up
                   </IonButton>
                 )}
@@ -234,6 +271,14 @@ const Login: React.FC = () => {
                 >
                   {!signup && <span>Sign Up</span>}
                   {signup && <span>Back to Login</span>}
+                </IonButton>
+                <IonButton
+                  color="secondary"
+                  onClick={() => {
+                   deleteUserByEmail();
+                  }}
+                >
+                  Delete 
                 </IonButton>
               </IonFooter>
             </IonCard>

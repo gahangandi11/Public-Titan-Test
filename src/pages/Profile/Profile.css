@@ -85,3 +85,61 @@ ion-item-divider {
     display: flex;
     align-items: center;
 }
+
+
+.applied-user {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .email-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .uid-toggle-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .uid-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .toggle-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .email-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .uid-toggle-container {
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .bold-label {
+    font-weight: bold;
+  }

@@ -10,9 +10,10 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendEmailVerification,
+  UserCredential,
 } from "firebase/auth";
-import { getUserByID } from "../../firestoreService";
-import { sendPasswordResetEmail } from "firebase/auth";
+import { getUserByID, } from "../../firestoreService";
+import { sendPasswordResetEmail,getRedirectResult } from "firebase/auth";
 
 const auth = getAuth();
 const AuthContext = createContext<{
@@ -21,11 +22,17 @@ const AuthContext = createContext<{
   value: string;
 }>({ currentUser: null, userDoc: null, value: "" });
 
-export function emailLogin(email: string, password: string) {
+export function emailLogin(email: string, password:string) {
   return signInWithEmailAndPassword(auth, email, password);
 }
 
-export function isEmailVerified(): boolean {
+
+export function getCurrentUser(): User|null {
+    return auth.currentUser;
+  }
+
+
+export function isEmailVerifiedByUser(): boolean {
   if (auth.currentUser == null) return false;
   return auth.currentUser?.emailVerified;
 }
@@ -34,8 +41,12 @@ export function emailSignup(email: string, password: string) {
   return createUserWithEmailAndPassword(auth, email, password);
 }
 
-export function sendEmailVerfication() {
-  return sendEmailVerification(auth.currentUser!);
+export function sendEmailVerfication(redirectURl:string) {
+    
+  return sendEmailVerification(auth.currentUser!,{
+    url: redirectURl,
+    handleCodeInApp: false
+  });
 }
 
 export function resetPassword(email: string): Promise<void> {
@@ -45,6 +56,11 @@ export function resetPassword(email: string): Promise<void> {
 
 export function logout() {
   return auth.signOut();
+}
+
+export function checkIfVerificationIsRequired():boolean
+{
+    return false;
 }
 
 export function useAuth() {
@@ -79,6 +95,11 @@ export function updateUserEmail(
       return updateEmail(user, newEmail);
     }
   );
+}
+export function getReidrectedUrl(
+  
+):Promise<UserCredential|null> {
+    return getRedirectResult(auth);
 }
 
 const AuthProvider: React.FC = ({ children }) => {

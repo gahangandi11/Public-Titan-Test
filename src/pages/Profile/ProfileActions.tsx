@@ -7,8 +7,10 @@ import {
 } from "@ionic/react";
 import "./Profile.css";
 import { ProfileQuickActionsProps, ProfileQuickActionType } from "../../interfaces/ProfileData";
+import { getCurrentUser, useAuth } from "../../services/contexts/AuthContext/AuthContext";
 
 const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
+  const { currentUser, userDoc } = useAuth();
 
      function onEmailTapped(){
                 props.onActionTapped(ProfileQuickActionType.CHANGE_EMAIL);
@@ -20,6 +22,9 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
 
      function onProfileDetail(){
                 props.onActionTapped(ProfileQuickActionType.PROFILE_DETAIL);
+    }
+     function onAdminSettingTapped(){
+                props.onActionTapped(ProfileQuickActionType.ADMIN_SETTING);
     }
 
   return (
@@ -39,6 +44,10 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
       <IonItem onClick={onPasswordTapped} button={true}>
         <IonLabel>Change Password</IonLabel>
       </IonItem>
+      { (userDoc?.admin) && <IonItem onClick={onAdminSettingTapped} button={true}>
+        <IonLabel>Admin Setting</IonLabel>
+      </IonItem>
+}
     </IonCard>
   );
 };

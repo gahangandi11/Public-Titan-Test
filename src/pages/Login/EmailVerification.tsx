@@ -82,37 +82,7 @@ const EmailVerification: React.FC = () => {
     history.push("/home");
   };
 
-  // useEffect(() => {
-  //   let unsubscribe: (() => void) | undefined;
-  //   if (userAuth) {
-  //     console.log("Getting user document");
-  //     setEmailVerified(isEmailVerifiedByUser());
-  //     getDoc(getUserDocumentRef(userAuth.uid)).then((doc) => {
-  //       if (doc.exists()) {
-  //         const document = doc.data() as User;
-  //         setUser(document);
-  //         setAdminVerified(document.verified);
-  //       }
-  //     });
-  //   }
 
-  //   if (userAuth) {
-  //     console.log("Listening to user docs");
-  //     unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
-  //       const document = doc.data() as User;
-  //       setUser(document);
-  //       if (document.verified && isEmailVerifiedByUser()) {
-  //         history.push("/home");
-  //       }
-  //     });
-  //   }
-  //   return () => {
-  //     if (unsubscribe) {
-  //       unsubscribe();
-  //       console.log("Unsubscribed from user docs");
-  //     }
-  //   };
-  // }, [userAuth]);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -252,8 +222,3 @@ const EmailVerification: React.FC = () => {
 };
 
 export default EmailVerification;
-
-interface EmailDTO {
-  userId: string | null;
-  email: string | null;
-}

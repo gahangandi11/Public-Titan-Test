@@ -14,7 +14,6 @@ function RedirectHandler() {
 
     if (verificationId && email) {
       const isTheUserFromMODDOT = /@modot.mo.gov\s*$/.test(email);
-      // const isTheUserFromMODDOT = /@gmail.com\s*$/.test(email);
       getUserByID(verificationId).then((userDoc) => {
         console.log("Get user by id after redirecting: "+userDoc.email);
         if (email === userDoc.email)

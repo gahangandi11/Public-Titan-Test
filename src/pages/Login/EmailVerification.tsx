@@ -47,14 +47,12 @@ const EmailVerification: React.FC = () => {
   );
   const [error, setError] = useState<string>("");
   const [resent, setResent] = useState<boolean>(false);
-  const [approvalStatus, setApprovalStatus] = useState("Awaiting Approval");
-  const [approvalColor, setApprovalColor] = useState("danger");
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [adminVerfied, setAdminVerified] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
-
   const resend = () => {
-    if (userAuth)
-    {
+    if (userAuth) {
       sendEmailVerfication(
         registrationRedirect +
           "?verificationId=" +
@@ -72,8 +70,6 @@ const EmailVerification: React.FC = () => {
         }
       );
     }
-   
-     
   };
 
   const history = useHistory();
@@ -86,42 +82,74 @@ const EmailVerification: React.FC = () => {
     history.push("/home");
   };
 
+  // useEffect(() => {
+  //   let unsubscribe: (() => void) | undefined;
+  //   if (userAuth) {
+  //     console.log("Getting user document");
+  //     setEmailVerified(isEmailVerifiedByUser());
+  //     getDoc(getUserDocumentRef(userAuth.uid)).then((doc) => {
+  //       if (doc.exists()) {
+  //         const document = doc.data() as User;
+  //         setUser(document);
+  //         setAdminVerified(document.verified);
+  //       }
+  //     });
+  //   }
+
+  //   if (userAuth) {
+  //     console.log("Listening to user docs");
+  //     unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
+  //       const document = doc.data() as User;
+  //       setUser(document);
+  //       if (document.verified && isEmailVerifiedByUser()) {
+  //         history.push("/home");
+  //       }
+  //     });
+  //   }
+  //   return () => {
+  //     if (unsubscribe) {
+  //       unsubscribe();
+  //       console.log("Unsubscribed from user docs");
+  //     }
+  //   };
+  // }, [userAuth]);
+
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
-    if (userAuth) {
-      console.log("Getting user document");
-      setApprovalStatus(userAuth.emailVerified?"Verified":"Pending")
-      getDoc(getUserDocumentRef(userAuth.uid))
-        .then((doc) => {
-          if (doc.exists()) {
-            const document = doc.data() as User;
+    async function fetchUserData() {
+      if (userAuth) {
+        console.log("Getting user document");
+        setEmailVerified(isEmailVerifiedByUser());
+        const doc = await getDoc(getUserDocumentRef(userAuth.uid));
+        if (doc.exists()) {
+          const document = doc.data() as User;
+          setUser(document);
+          setAdminVerified(document.verified);
+        }
+      }
+      if (userAuth) {
+        console.log("Listening to user docs");
+        unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
+          const data = doc.data();
+          if (data) {
+            const document = data as User;
             setUser(document);
+            if (document.verified && isEmailVerifiedByUser()) {
+              history.push("/home");
+            }
           }
         });
       }
-
-    if (userAuth) {
-      console.log("Listening to user docs");
-      unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
-        const document = doc.data() as User;
-        setUser(document)
-        if (document.verified && isEmailVerifiedByUser()) {
-          history.push("/home");
-        }
-      });
     }
-
-   
-
+    fetchUserData();
     return () => {
       if (unsubscribe) {
         unsubscribe();
-        console.log("Unsubscribed from user docs");
       }
     };
-  }, [userAuth]);
+  }, [userAuth, history]);
 
-  function getMessageBeforeVerifying(): string {
+  function getMessageWhenEmailIsNotVerified(): string {
     if (userAuth) {
       if (/@modot.mo.gov\s*$/.test(userAuth.email!))
         return "Please follow the link in the email to verify your email address.";
@@ -131,15 +159,12 @@ const EmailVerification: React.FC = () => {
     return "Please follow the link in the email to verify your email address. It will take 24 - 48 hours for administrator approval after verifying your email.";
   }
 
-  getMessageBeforeVerifying
-  function getMessageAfterEmailVerifying():string
-  {
-    if(userAuth)
-    {
-      if(/@modot.mo.gov\s*$/.test(userAuth.email!))
-       return "Thank you for verifying your email."
+  function getMessageWhenNotAdminVerified(): string {
+    if (userAuth) {
+      if (/@modot.mo.gov\s*$/.test(userAuth.email!))
+        return "Thank you for verifying your email. You may proceed to login.";
       else
-      return "Thank you for verifying your email. Please allow 24 - 48hours for administrator approval.";
+        return "Thank you for verifying your email. Please allow 24 - 48hours for administrator approval.";
     }
     return "Thank you for verifying your email. Please allow 24 - 48hours for administrator approval.";
   }
@@ -150,87 +175,65 @@ const EmailVerification: React.FC = () => {
         <IonToolbar className="login-container" color="dark">
           <div className="card-container-registration">
             <IonCard className="card-registration">
-              <IonCardHeader className="verification-container">
-                Email Verification{" "}
-                <IonIcon
-                  color="success"
-                  md={checkmarkCircleSharp}
-                  ios={checkmarkCircleOutline}
-                />
-              </IonCardHeader>
               <IonCardContent className="ion-text-center">
-                {!user?.verified && approvalStatus !== "Verified" && (
-
+                {!emailVerified && !adminVerfied && (
+                  <IonLabel>{getMessageWhenEmailIsNotVerified()}</IonLabel>
+                )}
+                <br />
+                {emailVerified && !adminVerfied && (
+                  <IonLabel>{getMessageWhenNotAdminVerified()}</IonLabel>
+                )}
+                {!emailVerified && adminVerfied && (
                   <IonLabel>
-                    {getMessageBeforeVerifying()}
+                    Please follow the link in the email to verify your email
+                    address.
+                  </IonLabel>
+                )}
+                {!resent && !emailVerified && (
+                  <div>
+                    <IonLabel>Can&apos;t find the email?</IonLabel>
+                    <IonButton color="secondary" onClick={resend}>
+                      Resend
+                    </IonButton>
+                  </div>
+                )}
+                {emailVerified && adminVerfied && (
+                  <IonLabel>
+                    You&apos;ve been approved, click to go to the home!
                   </IonLabel>
                 )}
                 <br />
-                <br />
-                <IonLabel color={approvalColor}>
-                  Approval Status: {approvalStatus}
-                </IonLabel>
-                {!resent && (
-                  <div className="button-container">
-                    {(!user?.verified ||
-                      approvalStatus !== "Verified") && (
-                      <div>
-                        {!user?.verified && (
-                          <IonLabel>Can&apos;t find the email?</IonLabel>
-                        )}
-                      </div>
-                    )}
-                    {!user?.verified && approvalStatus === "Verified" && (
-                      <IonLabel>
-                       {getMessageAfterEmailVerifying()}
-                      </IonLabel>
-                    )}
-                    {user?.verified && approvalStatus === "Verified" && (
-                      <IonLabel>
-                        You&apos;ve been approved, click to go to the home!
-                      </IonLabel>
-                    )}
-                    {!user?.verified && (
-                      <div style={{ display: "block" }}>
-                      <IonButton color="secondary" onClick={resend}>
-                        Resend
-                      </IonButton>
-                      </div>
-                    )}
-                    <br />
-                    <br />
-                    <div className="route-buttons">
-                      <IonButton
-                        color="secondary"
-                        className="route-button"
-                        onClick={back}
-                      >
-                        <IonIcon md={arrowBackSharp} ios={arrowBackOutline} />
-                        &nbsp;Back to Login
-                      </IonButton>
-                      {user?.verified && approvalStatus === "Verified" && (
-                        <IonButton
-                          color="secondary"
-                          className="route-button"
-                          onClick={toDashboard}
-                        >
-                          Go to the Dashboard&nbsp;
-                          <IonIcon
-                            md={arrowForwardSharp}
-                            ios={arrowForwardOutline}
-                          />
-                        </IonButton>
-                      )}
-                    </div>
-                  </div>
-                )}
+                <div className="route-buttons">
+                  <IonButton
+                    color="secondary"
+                    className="route-button"
+                    onClick={back}
+                  >
+                    <IonIcon md={arrowBackSharp} ios={arrowBackOutline} />
+                    &nbsp;Back to Login
+                  </IonButton>
+                  
+                  {emailVerified && adminVerfied && (
+                    <IonButton
+                      color="secondary"
+                      className="route-button"
+                      onClick={toDashboard}
+                    >
+                      Proceed to Home &nbsp;
+                      <IonIcon
+                        md={arrowForwardSharp}
+                        ios={arrowForwardOutline}
+                      />
+                    </IonButton>
+                  )}
+                </div>
+
                 {resent && (
                   <div className="button-container">
                     <IonLabel>The email has been resent.</IonLabel>
-                    
                   </div>
                 )}
-                {error.length>0 &&(
+                {error.length > 0 && (
                   <div className="error-message">{error}</div>
                 )}
               </IonCardContent>

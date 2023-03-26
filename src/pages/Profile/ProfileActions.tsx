@@ -45,7 +45,7 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
         <IonLabel>Change Password</IonLabel>
       </IonItem>
       { (userDoc?.admin) && <IonItem onClick={onAdminSettingTapped} button={true}>
-        <IonLabel>Admin Setting</IonLabel>
+        <IonLabel>Verify Users</IonLabel>
       </IonItem>
 }
     </IonCard>

@@ -25,7 +25,6 @@ import {
   checkIfUserWithSameEmailAlreadyExists,
   createUser,
   getUserByID,
-  deleteUserByEmail,
 } from "../../services/firestoreService";
 
 const Login: React.FC = () => {
@@ -272,14 +271,7 @@ const Login: React.FC = () => {
                   {!signup && <span>Sign Up</span>}
                   {signup && <span>Back to Login</span>}
                 </IonButton>
-                <IonButton
-                  color="secondary"
-                  onClick={() => {
-                   deleteUserByEmail();
-                  }}
-                >
-                  Delete 
-                </IonButton>
+                
               </IonFooter>
             </IonCard>
           </div>

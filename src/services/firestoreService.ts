@@ -192,24 +192,6 @@ export async function checkIfUserWithSameEmailAlreadyExists(email:string) {
     return userDocs.size>0;
 }
 
-export async function deleteUserByEmail() {
-    const userCollection = collection(db, "Users");
-    const userQuery = query(userCollection, where("email", "==", "regmi.preyea@gmail.com"));
-    const userDocs = await getDocs(userQuery);
-
-    console.log("Deleting");
-
-    userDocs.forEach(doc => {
-        const data=(doc.data() as User)
-        console.log(data.uid+" : "+data.email);
-    });
-    // Delete the user document
-    const deletePromises = userDocs.docs.map((doc) => deleteDoc(doc.ref));
-    await Promise.all(deletePromises);
-
-}
-
-
 export async function verifyUser(user: User) {
     const userRef = doc(db, "Users", user.uid);
     await updateDoc(userRef, {

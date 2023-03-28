@@ -244,7 +244,7 @@ const Login: React.FC = () => {
               )}
               {!signup && (
                 <div className="links">
-                  <IonRouterLink className="link" routerLink="/ForgotPassword">
+                  <IonRouterLink className="link" routerLink="/forgotPassword">
                     <IonLabel>Forgot your password?</IonLabel>
                     <br />
                   </IonRouterLink>

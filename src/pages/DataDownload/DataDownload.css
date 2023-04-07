@@ -26,8 +26,8 @@
 
 .download__card {
     width: 100em;
-    height: 60em;
     padding: 1em;
+    display:inline-block;
 }
 
 .download__card__content {

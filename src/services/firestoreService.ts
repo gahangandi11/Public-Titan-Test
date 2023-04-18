@@ -86,11 +86,10 @@ export async function watchCameras() {
     const cameras: Camera[] = [];
     camerasDocs.forEach(doc => {
         const cam = doc.data() as Camera
-        if (cam.latitude != 0 && cam.longitude != 0 && Number.isFinite(cam.latitude)&& Number.isFinite(cam.longitude))
-        {
+        if (cam.latitude != 0 && cam.longitude != 0 && Number.isFinite(cam.latitude) && Number.isFinite(cam.longitude)) {
             cameras.push(doc.data() as Camera);
 
-        }     
+        }
     });
     return cameras;
 }
@@ -167,10 +166,9 @@ export async function getUserByID(id: string) {
     return userSnapshot.data() as User;
 }
 
-export function getUserDocumentRef(id:string):DocumentReference<DocumentData>
-{
+export function getUserDocumentRef(id: string): DocumentReference<DocumentData> {
     return doc(db, "Users", id);
- 
+
 }
 
 export async function getNewUsers() {
@@ -184,12 +182,12 @@ export async function getNewUsers() {
     return foundDocs;
 }
 
-export async function checkIfUserWithSameEmailAlreadyExists(email:string) {
+export async function checkIfUserWithSameEmailAlreadyExists(email: string) {
     const userCollection = collection(db, "Users");
     const userQuery = query(userCollection, where("email", "==", email));
     const userDocs = await getDocs(userQuery);
-    
-    return userDocs.size>0;
+
+    return userDocs.size > 0;
 }
 
 export async function verifyUser(user: User) {
@@ -199,8 +197,7 @@ export async function verifyUser(user: User) {
     });
 }
 
-export async function updateVerificationAndAdminFlag(userId:string, isVerfied:boolean,isAdmin:boolean)
-{
+export async function updateVerificationAndAdminFlag(userId: string, isVerfied: boolean, isAdmin: boolean) {
     const userRef = doc(db, "Users", userId);
     await updateDoc(userRef, {
         verified: isVerfied,
@@ -208,6 +205,12 @@ export async function updateVerificationAndAdminFlag(userId:string, isVerfied:bo
 }
 
 export async function createUser(currentUser: any) {
+    const date = new Date();
+    const formattedDate = date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    })
     currentUser = currentUser.user;
     const defaultData = {
         uid: currentUser.uid,
@@ -216,7 +219,10 @@ export async function createUser(currentUser: any) {
         verified: false,
         email: currentUser.email,
         displayName: currentUser.displayName,
-        subscriptions: []
+        subscriptions: [],
+        requiresRenewal: false,
+        registeredDate: formattedDate,
+        renewalDate: formattedDate
     };
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
@@ -229,21 +235,20 @@ export async function checkStorageStatus(link: string) {
 
 export async function submitFeedbackRequest(data: any) {
 
-    const userDocId= collection(db, "UserFeedbacks")
-    data.isEmailSent=false;
-    await addDoc(userDocId,data)
+    const userDocId = collection(db, "UserFeedbacks")
+    data.isEmailSent = false;
+    await addDoc(userDocId, data)
 
 }
 
-export async function uploadAttachment(uid:string,data:File,uploadDate:string):Promise<UploadResult>
-{
-        const reference = ref(storage, uid+'/support_attachments/'+data.name+' - '+uploadDate);
-        return uploadBytes(reference,data) 
+export async function uploadAttachment(uid: string, data: File, uploadDate: string): Promise<UploadResult> {
+    const reference = ref(storage, uid + '/support_attachments/' + data.name + ' - ' + uploadDate);
+    return uploadBytes(reference, data)
 }
 
 
-export async function getAttachementUrl(ref: StorageReference):Promise<string> {
-    return  getDownloadURL(ref);
+export async function getAttachementUrl(ref: StorageReference): Promise<string> {
+    return getDownloadURL(ref);
 }
 
 

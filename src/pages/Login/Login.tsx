@@ -44,7 +44,7 @@ const Login: React.FC = () => {
           //Check if user requires admin verification.
           getUserByID(usercredential.user.uid).then((userData) => {
             if (userData.verified == true) {
-            clear();
+              clear();
               history.push("/home");
             } else {
               history.push("/verification");
@@ -71,61 +71,7 @@ const Login: React.FC = () => {
     );
   }
 
-  async function signupClickv2() {
-    if (password === checkPassword) {
-      emailSignup(email, password).then(
-        (userCredential) => {
-          sendEmailVerfication(
-            registrationRedirect +
-              "?verificationId=" +
-              userCredential.user.uid +
-              "&email=" +
-              userCredential.user.email
-          ).then(
-            (result) => {
-              setSignup(!signup);
-              clear();
-              setEmail(email);
-              createUser(userCredential).then(() => {
-                history.push("/verification");
-                present({
-                  buttons: [{ text: "dismiss", handler: () => dismiss() }],
-                  message: "A verification email is sent to " + email,
-                  duration: 5000,
-                  color: "success",
-                });
-              });
-            },
-            (error) => {
-              present({
-                buttons: [{ text: "dismiss", handler: () => dismiss() }],
-                message: error,
-                duration: 5000,
-                color: "danger",
-              });
-            }
-          );
-        },
-        (error) => {
-          present({
-            buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: error,
-            duration: 5000,
-            color: "danger",
-          });
-        }
-      );
-    } else {
-      present({
-        buttons: [{ text: "dismiss", handler: () => dismiss() }],
-        message: "Passwords do not match.",
-        duration: 5000,
-        color: "danger",
-      });
-    }
-  }
-
-  async function signupClickv3() {
+  async function onSignup() {
     if (password === checkPassword) {
       try {
         const userCredential = await emailSignup(email, password);
@@ -148,7 +94,7 @@ const Login: React.FC = () => {
           duration: 5000,
           color: "success",
         });
-      } catch (error:any) {
+      } catch (error: any) {
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
           message: error.message || "Something went wrong",
@@ -165,7 +111,6 @@ const Login: React.FC = () => {
       });
     }
   }
-  
 
   function clear() {
     setEmail("");
@@ -257,7 +202,7 @@ const Login: React.FC = () => {
                   </IonButton>
                 )}
                 {signup && (
-                  <IonButton color="secondary" onClick={signupClickv3}>
+                  <IonButton color="secondary" onClick={onSignup}>
                     Sign Up
                   </IonButton>
                 )}
@@ -271,7 +216,6 @@ const Login: React.FC = () => {
                   {!signup && <span>Sign Up</span>}
                   {signup && <span>Back to Login</span>}
                 </IonButton>
-                
               </IonFooter>
             </IonCard>
           </div>

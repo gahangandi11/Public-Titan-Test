@@ -50,7 +50,7 @@ export function sendEmailVerfication(redirectURl:string) {
 }
 
 export function resetPassword(email: string): Promise<void> {
-  const redirect = window.location.href.replace("/ForgotPassword", "/login");
+  const redirect = window.location.href.replace("/forgotPassword", "/login");
   return sendPasswordResetEmail(auth, email, { url: redirect });
 }
 

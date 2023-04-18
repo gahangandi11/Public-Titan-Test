@@ -36,6 +36,7 @@ import Support from "./pages/Support/Support";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import EmailVerification from "./pages/Login/EmailVerification";
 import RedirectHandler from "./pages/Login/RedirectUrlHandler";
+import ReValidation from "./pages/Login/AccountReValidation";
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
@@ -70,6 +71,10 @@ const App: React.FC = () => {
 
             <Route path="/verification" exact={true}>
               <EmailVerification />
+            </Route>
+
+            <Route path="/renewaccount" exact={true}>
+              <ReValidation />
             </Route>
 
             <RouteGuard path="/" exact={true}>

@@ -21,6 +21,8 @@ import bigQueryService from '../../services/bigQueryService';
 import {FormRequest} from '../../interfaces/FormRequest';
 import {downloadOutline, downloadSharp} from 'ionicons/icons';
 import AuthProvider, {useAuth} from '../../services/contexts/AuthContext/AuthContext';
+import { detectorCounties, probeCounties, wazeIncidentsCounties, wazeJamCounties } from '../../assets/counties';
+import { counties as countiesMO } from '../../assets/counties';
 
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -88,6 +90,19 @@ const DataDownload: React.FC = () => {
     const [attributeOptions, setAttributeOptions] = useState(options);
 
     const [showSelectables, setShowSelectables] = useState(false);
+
+    function getCountyList()
+    {
+        switch(page.name)
+        {
+            case "Probe": return probeCounties;
+            case "WazeIncident": return wazeIncidentsCounties;
+            case "WazeJam": return wazeJamCounties;
+            case "Detector": return detectorCounties;
+            default:return countiesMO;
+
+        }
+    }
 
     function changePage(option: {name: string, value: string}) {
         setPage(option);
@@ -268,7 +283,7 @@ const DataDownload: React.FC = () => {
                                     {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
                                     <FileName file={file} setFile={setFile} form={page.name} />
                                 </div><br />
-                                <CountySelector counties={counties} setCounties={setCounties} width='county-small' /><br />
+                                <CountySelector counties={counties} setCounties={setCounties} options={getCountyList()} width='county-small' /><br />
                                 <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
                             </IonCardContent>
                         </IonCard>

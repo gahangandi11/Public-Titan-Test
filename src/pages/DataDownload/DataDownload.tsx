@@ -77,13 +77,7 @@ const DataDownload: React.FC = () => {
     const [unit, setUnit] = useState<number>(60);
     const [interval, setInterval] = useState<number>(60);
     const [file, setFile] = useState<string>(page.name);
-    const [counties, setCounties] = useState<{name: string, value: string}[]>([
-        {name: 'Saint Charles', value: 'St. Charles'},
-        {name: 'Saint Louis', value: 'St. Louis'},
-        {name: 'Saint Louis City', value: 'St. Louis City'},
-        {name: 'Franklin', value: 'Franklin'},
-        {name: 'Jefferson', value: 'Jefferson'}
-    ]);
+    const [counties, setCounties] = useState<{name: string, value: string}[]>(getCountyList().slice(0,5));
 
     const { currentUser } = useAuth();
 
@@ -93,6 +87,7 @@ const DataDownload: React.FC = () => {
 
     function getCountyList()
     {
+        console.log("Page name: "+page.name);
         switch(page.name)
         {
             case "Probe": return probeCounties;
@@ -112,13 +107,7 @@ const DataDownload: React.FC = () => {
         setUnit(60);
         setInterval(60);
         setFile(option.name);
-        setCounties([
-            {name: 'Saint Charles', value: 'St. Charles'},
-            {name: 'Saint Louis', value: 'St. Louis'},
-            {name: 'Saint Louis City', value: 'St. Louis City'},
-            {name: 'Franklin', value: 'Franklin'},
-            {name: 'Jefferson', value: 'Jefferson'}
-        ]);
+        setCounties(getCountyList().slice(0,5));
         setShowSelectables(false);
         switch (option.value) {
             case 'inrix_probe_query':
@@ -227,33 +216,33 @@ const DataDownload: React.FC = () => {
                             </div>
                             <IonCardContent className="download__card__content">
                                 <IonLabel>{page.name}</IonLabel>
-                                <IonSelect color="light" value={page} interface="popover" placeholder="Select Database" onIonChange={e => changePage(e.detail.value)}>
+                                <IonSelect color="light" value={page} interface='alert'  placeholder="Select Database"  onIonChange={e => changePage(e.detail.value)}>
                                     <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
-                                        Probe Database
+                                        Probe 
                                     </IonSelectOption>
                                     <IonSelectOption value={{
                                         name: 'WazeJam',
                                         value: 'waze_jam_query'
                                     }}>
-                                        Waze Jam Database
+                                        Waze Jam 
                                     </IonSelectOption>
                                     <IonSelectOption value={{
                                         name: 'Incidents',
                                         value: 'transcore_incident_query'
                                     }}>
-                                        Incidents Database
+                                        Incidents 
                                     </IonSelectOption>
                                     <IonSelectOption value={{
                                         name: 'Detector',
                                         value: 'transcore_detector_query'
                                     }}>
-                                        Detector Database
+                                        Detector 
                                     </IonSelectOption>
                                     <IonSelectOption value={{
                                         name: 'WazeIncident',
                                         value: 'waze_incident_query'
                                     }}>
-                                        Waze Incidents Database
+                                        Waze Incidents 
                                     </IonSelectOption>
                                 </IonSelect>
                             </IonCardContent>

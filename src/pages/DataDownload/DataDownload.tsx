@@ -77,7 +77,7 @@ const DataDownload: React.FC = () => {
     const [unit, setUnit] = useState<number>(60);
     const [interval, setInterval] = useState<number>(60);
     const [file, setFile] = useState<string>(page.name);
-    const [counties, setCounties] = useState<{name: string, value: string}[]>(getCountyList().slice(0,5));
+    const [counties, setCounties] = useState<{name: string, value: string}[]>([]);
 
     const { currentUser } = useAuth();
 
@@ -85,10 +85,9 @@ const DataDownload: React.FC = () => {
 
     const [showSelectables, setShowSelectables] = useState(false);
 
-    function getCountyList()
+    function getCountyList(pageName:string)
     {
-        console.log("Page name: "+page.name);
-        switch(page.name)
+        switch(pageName)
         {
             case "Probe": return probeCounties;
             case "WazeIncident": return wazeIncidentsCounties;
@@ -107,7 +106,6 @@ const DataDownload: React.FC = () => {
         setUnit(60);
         setInterval(60);
         setFile(option.name);
-        setCounties(getCountyList().slice(0,5));
         setShowSelectables(false);
         switch (option.value) {
             case 'inrix_probe_query':
@@ -139,6 +137,8 @@ const DataDownload: React.FC = () => {
                 setShowSelectables(true);
                 break;
         }
+        setCounties(getCountyList(option.name).slice(0,5))
+
     }
 
     function convertDateToString(date: Date | null) {
@@ -272,7 +272,7 @@ const DataDownload: React.FC = () => {
                                     {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
                                     <FileName file={file} setFile={setFile} form={page.name} />
                                 </div><br />
-                                <CountySelector counties={counties} setCounties={setCounties} options={getCountyList()} width='county-small' /><br />
+                                <CountySelector counties={counties} setCounties={setCounties} options={getCountyList(page.name)} width='county-small' /><br />
                                 <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
                             </IonCardContent>
                         </IonCard>

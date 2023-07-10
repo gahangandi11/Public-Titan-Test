@@ -16,13 +16,13 @@ import './DataDownload.css';
 import DateTimes from '../../components/Forms/DateTimes';
 import SelectableFields from '../../components/Forms/SelectableFields';
 import FileName from '../../components/Forms/FileName';
-import CountySelector from '../../components/Forms/CountySelector';
 import bigQueryService from '../../services/bigQueryService';
 import {FormRequest} from '../../interfaces/FormRequest';
 import {downloadOutline, downloadSharp} from 'ionicons/icons';
 import AuthProvider, {useAuth} from '../../services/contexts/AuthContext/AuthContext';
 import { detectorCounties, probeCounties, wazeIncidentsCounties, wazeJamCounties } from '../../assets/counties';
-import { counties as countiesMO } from '../../assets/counties';
+import { countiesWithAlias as countiesMO } from '../../assets/counties';
+import CountySelectorWithAlias from '../../components/Forms/CountySelectorWithAlias';
 
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -77,7 +77,7 @@ const DataDownload: React.FC = () => {
     const [unit, setUnit] = useState<number>(60);
     const [interval, setInterval] = useState<number>(60);
     const [file, setFile] = useState<string>(page.name);
-    const [counties, setCounties] = useState<{name: string, value: string}[]>([]);
+    const [counties, setCounties] = useState<{name: string, value: string[]}[]>([]);
 
     const { currentUser } = useAuth();
 
@@ -137,7 +137,7 @@ const DataDownload: React.FC = () => {
                 setShowSelectables(true);
                 break;
         }
-        setCounties(getCountyList(option.name).slice(0,5))
+        // setCounties(getCountyList(option.name).slice(0,5))
 
     }
 
@@ -166,7 +166,7 @@ const DataDownload: React.FC = () => {
             const countyValues: string[] = [];
             if (counties.length > 0) {
                 counties.forEach(county => {
-                    countyValues.push(county.value);
+                    countyValues.push(...county.value);
                 })
             }
             const optionsSelected: number[] = [];
@@ -272,7 +272,7 @@ const DataDownload: React.FC = () => {
                                     {showSelectables && <SelectableFields unit={unit} interval={interval} setUnit={setUnit} setInterval={setInterval} form={page.name} />}
                                     <FileName file={file} setFile={setFile} form={page.name} />
                                 </div><br />
-                                <CountySelector counties={counties} setCounties={setCounties} options={getCountyList(page.name)} width='county-small' /><br />
+                                <CountySelectorWithAlias counties={counties} setCounties={setCounties} options={countiesMO} width='county-small'                 type="counties" /><br />
                                 <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
                             </IonCardContent>
                         </IonCard>

@@ -333,12 +333,12 @@ export const countiesWithAlias=[
   { name: 'Ray', value: ['Ray' ]},
   { name: 'Reynolds', value: ['Reynolds' ]},
   { name: 'Ripley', value: ['Ripley' ]},
-  { name: 'Saint Charles', value: ['St. Charles','ST CHARLES' ]},
-  { name: 'Saint Clair', value: ['St. Clair','ST CLAIR' ]},
-  { name: 'Saint Francois', value: ['St. Francois','ST FRANCOIS' ]},
-  { name: 'Saint Louis', value: ['St. Louis','ST. LOUIS' ]},
-  { name: 'Saint Louis City', value: ['St. Louis City','ST LOUIS CITY' ]},
-  { name: 'Sainte Genevieve', value: ['Ste. Genevieve','STE GENEVIEVE' ]},
+  { name: 'Saint Charles', value: ['St. Charles','ST CHARLES','Saint Charles' ]},
+  { name: 'Saint Clair', value: ['St. Clair','ST CLAIR','Saint Clair' ]},
+  { name: 'Saint Francois', value: ['St. Francois','ST FRANCOIS','Saint Francois' ]},
+  { name: 'Saint Louis', value: ['ST. LOUIS','Saint Louis','ST LOUIS' ]},
+  { name: 'Saint Louis City', value: ['St. Louis City','ST LOUIS CITY','Saint Louis City' ]},
+  { name: 'Sainte Genevieve', value: ['Ste. Genevieve','STE GENEVIEVE','Sainte Genevieve']},
   { name: 'Saline', value: ['Saline' ]},
   { name: 'Schuyler', value: ['Schuyler' ]},
   { name: 'Scotland', value: ['Scotland' ]},
@@ -481,8 +481,6 @@ export const wazeIncidentsCounties = [
   { name: 'SCHUYLER', value: 'SCHUYLER' },
   { name: 'SCOTLAND', value: 'SCOTLAND' },
   { name: 'MARIES', value: 'MARIES' },];
-
-
 
 export const wazeJamCounties = [
   {name: 'HICKORY', value: 'HICKORY'},

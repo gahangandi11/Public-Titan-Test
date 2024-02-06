@@ -9,7 +9,7 @@
 /* Definitely a better way to do this than these media queries */
 @media screen and (min-width: 1825px) {
     .dashboard__split {
-        width: 50%;
+        width: 80%;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;

@@ -282,7 +282,7 @@ const Dashboard: React.FC = () => {
             <div className="data-card__container">
               {dataCards.map((card) => {
                 return (
-                  <IonCol key={card.title} className="data-card__col ">
+                  <IonCol key={card.title} className="data-card__col" >
                     <DataCard
                       content={card}
                       type={

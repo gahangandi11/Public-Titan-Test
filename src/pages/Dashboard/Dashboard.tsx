@@ -89,7 +89,7 @@ const Dashboard: React.FC = () => {
     getDashboardContent().then((data: DashboardData) => {
       const dashboardData: DashboardData = data ? data : new DashboardData();
       const updated = new Date(
-        dashboardData.lastUpdated * 1000
+        dashboardData.lastUpdated.value * 1000
       ).toLocaleString();
       setDataCards([
         {

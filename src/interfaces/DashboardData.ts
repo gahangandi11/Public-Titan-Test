@@ -25,7 +25,7 @@ export class DashboardData {
     fatal_quarterly: string[];
     fatal_quarterly_values: number[];
     safetyDevice: number;
-    lastUpdated: number;
+    lastUpdated: DashboardItem;
 
     constructor()
     constructor(weeklyCrashes: DashboardItem,
@@ -50,7 +50,7 @@ export class DashboardData {
                 fatal_quarterly: string[],
                 fatal_quarterly_values: number[],
                 safetyDevice: number,
-                lastUpdated: number)
+                lastUpdated: DashboardItem)
     constructor(weeklyCrashes?: DashboardItem,
                 clearanceTime?: DashboardItem,
                 freewayCounts?: DashboardItem,
@@ -73,7 +73,7 @@ export class DashboardData {
                 fatal_quarterly?: string[],
                 fatal_quarterly_values?: number[],
                 safetyDevice?: number,
-                lastUpdated?: number){
+                lastUpdated?: DashboardItem){
         this.weeklyCrashes = weeklyCrashes ? weeklyCrashes : DashboardItem.onError('Error retrieving weekly crashes');
         this.clearanceTime = clearanceTime ? clearanceTime :  DashboardItem.onError('Error retrieving clearance time');
         this.freewayCounts = freewayCounts ? freewayCounts :  DashboardItem.onError('Error retrieving freeway counts');
@@ -98,8 +98,7 @@ export class DashboardData {
         this.fatal_quarterly = fatal_quarterly ? fatal_quarterly : [''];
         this.fatal_quarterly_values = fatal_quarterly_values ? fatal_quarterly_values : [0];
         this.safetyDevice = safetyDevice ? safetyDevice : 0;
-        this.lastUpdated = lastUpdated ? lastUpdated :0
-        //  DashboardItem.onError('Error retrieving last updated date');
+        this.lastUpdated = lastUpdated ? lastUpdated : DashboardItem.onError('Error retrieving last updated date');
     }
 }
 

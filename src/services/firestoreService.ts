@@ -27,7 +27,7 @@ export async function getDashboardContent() {
     const dashboardDocs = collection(db, 'Dashboard');
     const dashboardSnapshot = await getDocs(dashboardDocs);
     const dashboardData = dashboardSnapshot.docs[0].data();
-    const devData = dashboardSnapshot.docs[0].data();
+    const devData = dashboardSnapshot.docs[1].data();
     return Object.assign(dashboardData, devData) as DashboardData;
 }
 

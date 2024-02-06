@@ -89,12 +89,12 @@ const Dashboard: React.FC = () => {
     getDashboardContent().then((data: DashboardData) => {
       const dashboardData: DashboardData = data ? data : new DashboardData();
       const updated = new Date(
-        dashboardData.lastUpdated.value * 1000
+        dashboardData.lastUpdated * 1000
       ).toLocaleString();
       setDataCards([
         {
           title: "Crash Value",
-          data: dashboardData.crashVal.value.toString(10),
+          data: dashboardData.crashVal.toString(10),
           updated: updated,
           ios:
             dashboardData.crashTrend === "green"
@@ -106,11 +106,12 @@ const Dashboard: React.FC = () => {
               : arrowUpCircleSharp,
           color:
             dashboardData.crashTrend === "green" ? "icon__green" : "icon__red",
-          source: dashboardData.crashVal.notes.source,
+        //   source: dashboardData.crashVal.notes.source,
+          source: "N/A",
         },
         {
           title: "Fatality Value",
-          data: dashboardData.fatalVal.value.toString(10),
+          data: dashboardData.fatalVal.toString(10),
           updated: updated,
           ios:
             dashboardData.fatalTrend === "green"
@@ -122,7 +123,8 @@ const Dashboard: React.FC = () => {
               : arrowUpCircleSharp,
           color:
             dashboardData.fatalTrend === "green" ? "icon__green" : "icon__red",
-          source: dashboardData.fatalVal.notes.source,
+        //   source: dashboardData.fatalVal.notes.source,
+          source: "N/A",
         },
         {
           title: "Crashes This Week",
@@ -158,7 +160,7 @@ const Dashboard: React.FC = () => {
           ios: statsChartOutline,
           md: statsChartSharp,
           color: "icon__blue",
-          source: "F",
+          source: "N/A",
         },
       ]);
 

@@ -21,15 +21,15 @@ interface DataCardProps {
 }
 
 const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
-    const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-    const openModal = () => {
-      setModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setModalOpen(false);
-    };
+  const openModal = () => {
+    if (props.content.source != "N/A") setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <div>
@@ -66,18 +66,14 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
         <IonRow className="data-card__date">{props.content.updated}</IonRow>
       </IonCard>
 
-     
       <IonAlert
         isOpen={modalOpen}
         header={props.content.title}
         // subHeader="A Sub Header Is Optional"
-        message={"Source: "+props.content.source}
-        buttons={['Okay']}
+        message={"Source: " + props.content.source}
+        buttons={["Okay"]}
         onDidDismiss={closeModal}
       ></IonAlert>
-
-   
-      
     </div>
   );
 };

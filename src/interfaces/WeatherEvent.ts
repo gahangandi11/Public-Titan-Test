@@ -9,6 +9,8 @@ export class WeatherEvent {
     precipitationIntensity: number;
     windGust: number;
     snowAccumulation: number;
+    freezingRangeIntensity:number;
+    sleetIntensity:number;
 
     constructor(
         id: string,
@@ -20,7 +22,11 @@ export class WeatherEvent {
         temperature: number,
         precipitationIntensity: number,
         windGust: number,
-        snowAccumulation: number) {
+        snowAccumulation: number,
+        freezingRangeIntensity: number,
+        sleetIntensity: number,
+        
+        ) {
         this.id = id;
         this.county = county;
         this.timestamp = timestamp;
@@ -31,5 +37,7 @@ export class WeatherEvent {
         this.precipitationIntensity = precipitationIntensity;
         this.windGust = windGust;
         this.snowAccumulation = snowAccumulation;
+        this.freezingRangeIntensity = freezingRangeIntensity;
+        this.sleetIntensity = sleetIntensity;
     }
 }

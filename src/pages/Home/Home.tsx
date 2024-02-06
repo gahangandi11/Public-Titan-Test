@@ -279,12 +279,28 @@ const Home: React.FC = () => {
                             {selectedMarker.precipitationIntensity}
                           </IonLabel>
                         </IonItem>
+
                         <IonItem lines="none">
-                          <IonLabel>Snow Accumulation:</IonLabel>
+                          <IonLabel>Snow Intensity:</IonLabel>
                           <IonLabel slot="end">
-                            {selectedMarker.snowAccumulation}
+                            {selectedMarker.snowIntensity}
                           </IonLabel>
                         </IonItem>
+
+                        <IonItem lines="none">
+                          <IonLabel>Freezing Range Intensity:</IonLabel>
+                          <IonLabel slot="end">
+                            {selectedMarker.freezingRangeIntensity}
+                          </IonLabel>
+                        </IonItem>
+
+                        <IonItem lines="none">
+                          <IonLabel>Sleet Intensity:</IonLabel>
+                          <IonLabel slot="end">
+                            {selectedMarker.sleetIntensity}
+                          </IonLabel>
+                        </IonItem>
+
                       </div>
                     )}
                   </IonList>

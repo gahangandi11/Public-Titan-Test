@@ -13,7 +13,7 @@ import {
     watchTranscoreIncidents,
     watchWazeIncidentsData,
     watchWazeJamsData,
-    watchWeatherData
+    watchWeatherData,
 } from '../../services/firestoreService';
 import {WazeIncident} from '../../interfaces/WazeIncident';
 import {GeoJSON} from 'geojson';
@@ -292,7 +292,9 @@ const Map: React.FC<MapData> = (props: MapData) => {
                                 weatherItem.temperature,
                                 weatherItem.windGust,
                                 weatherItem.precipitationIntensity,
-                                weatherItem.snowAccumulation
+                                weatherItem.snowAccumulation,
+                                weatherItem.freezingRangeIntensity,
+                                weatherItem.sleetIntensity    
                                 ));
                         }
                     }

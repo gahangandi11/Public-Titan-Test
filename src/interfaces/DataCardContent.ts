@@ -5,4 +5,5 @@ export interface DataCardContent {
     ios: string;
     md: string;
     color: string;
+    source:string;
 }

@@ -156,3 +156,7 @@ ion-list{
   width: 30em !important;
   justify-content: initial !important;
 }
+
+ion-modal {
+  --border-radius: 5px!important;
+}

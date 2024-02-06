@@ -5,6 +5,7 @@
     justify-content: center;
 }
 
+
 /* Definitely a better way to do this than these media queries */
 @media screen and (min-width: 1825px) {
     .dashboard__split {

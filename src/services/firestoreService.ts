@@ -27,7 +27,7 @@ export async function getDashboardContent() {
     const dashboardDocs = collection(db, 'Dashboard');
     const dashboardSnapshot = await getDocs(dashboardDocs);
     const dashboardData = dashboardSnapshot.docs[0].data();
-    const devData = dashboardSnapshot.docs[1].data();
+    const devData = dashboardSnapshot.docs[0].data();
     return Object.assign(dashboardData, devData) as DashboardData;
 }
 
@@ -59,7 +59,7 @@ export async function watchDownloads(currentUser: any) {
 }
 
 export async function watchWeatherData() {
-    const weatherCollection = collection(db, "WEATHER", "ACTIVE", "INCIDENTS");
+    const weatherCollection = collection(db, "WEATHER", "RT", "INCIDENTS");
     const weatherDocs = await getDocs(weatherCollection);
     const weather: WeatherEvent[] = [];
     weatherDocs.forEach(doc => {
@@ -67,18 +67,23 @@ export async function watchWeatherData() {
         const weatherEvent = new WeatherEvent(
             doc.id,
             docData.county,
-            docData.pub_millis,
-            docData.weather_code,
+            docData.pub_millis.seconds,
+            docData.weatherCode,
             docData.latitude,
             docData.longitude,
             docData.temperature,
-            docData.precipitation_intensity,
-            docData.wind_gust,
-            docData.snow_accumulation);
+            docData.rainIntensity,
+            docData.windGust,
+            docData.snowIntensity,
+            docData.freezingRainIntensity,
+            docData.sleetIntensity,
+    
+            );
         weather.push(weatherEvent);
     });
     return weather;
 }
+
 
 export async function watchCameras() {
     const camerasCollection = collection(db, "CCTV_UPDATE");

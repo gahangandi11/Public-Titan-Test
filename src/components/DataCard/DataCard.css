@@ -38,6 +38,17 @@
     border-radius: 5px;
 }
 
+.hover-column {
+    transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .hover-column:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff; /* Change to your desired background color on hover */
+    color: #000000; /* Change to your desired text color on hover */
+  }
+  
+
 .icon__green {
     background-color: var(--ion-color-green);
 }

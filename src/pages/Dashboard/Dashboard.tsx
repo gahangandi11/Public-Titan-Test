@@ -92,40 +92,42 @@ const Dashboard: React.FC = () => {
         dashboardData.lastUpdated.value * 1000
       ).toLocaleString();
       setDataCards([
-        {
-          title: "Crash Value",
-          data: dashboardData.crashVal.toString(10),
-          updated: updated,
-          ios:
-            dashboardData.crashTrend === "green"
-              ? arrowDownCircleOutline
-              : arrowUpCircleOutline,
-          md:
-            dashboardData.crashTrend === "green"
-              ? arrowDownCircleSharp
-              : arrowUpCircleSharp,
-          color:
-            dashboardData.crashTrend === "green" ? "icon__green" : "icon__red",
-        //   source: dashboardData.crashVal.notes.source,
-          source: "N/A",
-        },
-        {
-          title: "Fatality Value",
-          data: dashboardData.fatalVal.toString(10),
-          updated: updated,
-          ios:
-            dashboardData.fatalTrend === "green"
-              ? arrowDownCircleOutline
-              : arrowUpCircleOutline,
-          md:
-            dashboardData.fatalTrend === "green"
-              ? arrowDownCircleSharp
-              : arrowUpCircleSharp,
-          color:
-            dashboardData.fatalTrend === "green" ? "icon__green" : "icon__red",
-        //   source: dashboardData.fatalVal.notes.source,
-          source: "N/A",
-        },
+        // {
+        //   title: "Crash Value",
+        //   data: dashboardData.crashVal.toString(10),
+        //   updated: updated,
+        //   ios:
+        //     dashboardData.crashTrend === "green"
+        //       ? arrowDownCircleOutline
+        //       : arrowUpCircleOutline,
+        //   md:
+        //     dashboardData.crashTrend === "green"
+        //       ? arrowDownCircleSharp
+        //       : arrowUpCircleSharp,
+        //   color:
+        //     dashboardData.crashTrend === "green" ? "icon__green" : "icon__red",
+        // //   source: dashboardData.crashVal.notes.source,
+        //   source: "N/A",
+        //   description:"N/A"
+        // },
+        // {
+        //   title: "Fatality Value",
+        //   data: dashboardData.fatalVal.toString(10),
+        //   updated: updated,
+        //   ios:
+        //     dashboardData.fatalTrend === "green"
+        //       ? arrowDownCircleOutline
+        //       : arrowUpCircleOutline,
+        //   md:
+        //     dashboardData.fatalTrend === "green"
+        //       ? arrowDownCircleSharp
+        //       : arrowUpCircleSharp,
+        //   color:
+        //     dashboardData.fatalTrend === "green" ? "icon__green" : "icon__red",
+        // //   source: dashboardData.fatalVal.notes.source,
+        //   source: "N/A",
+        //   description:"N/A"
+        // },
         {
           title: "Crashes This Week",
           data: dashboardData.weeklyCrashes.value.toString(),
@@ -134,6 +136,7 @@ const Dashboard: React.FC = () => {
           md: warningSharp,
           color: "icon__green",
           source: dashboardData.weeklyCrashes.notes.source.toString(),
+          description: dashboardData.weeklyCrashes.notes.Description.toString(),
         },
         {
           title: "Clearance Time",
@@ -143,6 +146,7 @@ const Dashboard: React.FC = () => {
           md: informationCircleSharp,
           color: "icon__yellow",
           source: dashboardData.clearanceTime.notes.source.toString(),
+          description:dashboardData.clearanceTime.notes.Description.toString()
         },
         {
           title: "Freeway Counts",
@@ -152,6 +156,7 @@ const Dashboard: React.FC = () => {
           md: carSportSharp,
           color: "icon__red",
           source: dashboardData.freewayCounts.notes.source.toString(),
+          description: dashboardData.freewayCounts.notes.Description.toString(),
         },
         {
           title: "PTI",
@@ -161,6 +166,7 @@ const Dashboard: React.FC = () => {
           md: statsChartSharp,
           color: "icon__blue",
           source: "N/A",
+          description: "N/A",
         },
       ]);
 
@@ -293,9 +299,7 @@ const Dashboard: React.FC = () => {
                   </IonCol>
                 );
               })}
-            </div>
-          </div>
-          <IonCard color="primary " className="ion-padding">
+              <IonCard color="primary " className="ion-padding">
             <IonRow>
               <IonCol size-lg="12">
                 <IonItem color="primary">
@@ -303,34 +307,24 @@ const Dashboard: React.FC = () => {
                 </IonItem>
                 <IonRow className="ion-justify-content-center ion-padding">
                   {crashes.map((county, index) => {
-                    return (
-                      <IonChip
-                        style={{
-                          backgroundColor: calculateColor(
-                            county.crashes,
-                            index,
-                            crashes.length
-                          ),
-                        }}
-                        key={county.name}
-                      >
-                        {county.name} : {county.crashes}
-                      </IonChip>
-                    );
-                    //   return (
-                    //     <IonItem
-                    //       className="ion-padding-top"
-                    //       color="primary"
-                    //       key={county.name}
-                    //     >
-                    //       {county.name} : {county.crashes}
-                    //     </IonItem>
-                    //   );
+                      return (
+                        <IonItem
+                          className="ion-padding-top"
+                          color="primary"
+                          key={county.name}
+                        >
+                          {county.name} : {county.crashes}
+                        </IonItem>
+                      );
                   })}
                 </IonRow>
               </IonCol>
             </IonRow>
           </IonCard>
+            </div>
+            
+          </div>
+        
         </IonRow>
         <IonRow className="ion-justify-content-evenly">
           {graphData.map((value: GraphData, index: number) => {

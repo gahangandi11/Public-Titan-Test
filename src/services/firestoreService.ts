@@ -67,7 +67,7 @@ export async function watchWeatherData() {
         const weatherEvent = new WeatherEvent(
             doc.id,
             docData.county,
-            docData.pub_millis.seconds,
+            docData.pub_millis,
             docData.weatherCode,
             docData.latitude,
             docData.longitude,

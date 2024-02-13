@@ -69,8 +69,8 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
       <IonAlert
         isOpen={modalOpen}
         header={props.content.title}
-        // subHeader="A Sub Header Is Optional"
-        message={"Source: " + props.content.source}
+        subHeader={"Source: " + props.content.source}
+        message={ props.content.description}
         buttons={["Okay"]}
         onDidDismiss={closeModal}
       ></IonAlert>

@@ -6,4 +6,5 @@ export interface DataCardContent {
     md: string;
     color: string;
     source:string;
+    description:string
 }

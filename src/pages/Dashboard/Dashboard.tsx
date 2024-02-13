@@ -42,7 +42,10 @@ import { CountyData } from "../../interfaces/CountyData";
 import CountySearch from "./CountySearch"; // Adjust the path accordingly
 
 const Dashboard: React.FC = () => {
-    const [selectedCounty, setSelectedCounty] = useState({ name: 'Select County', value: '' });
+  const [selectedCounty, setSelectedCounty] = useState({
+    name: "Select County",
+    value: "",
+  });
 
   const [dataCards, setDataCards] = useState<DataCardContent[]>([]);
   const [graphData, setGraphData] = useState<GraphData[]>([]);
@@ -59,7 +62,10 @@ const Dashboard: React.FC = () => {
     name: string;
     value: string[];
   }) => {
-    setSelectedCounty({name:selectedCounty.name,value:selectedCounty.value[0]})
+    setSelectedCounty({
+      name: selectedCounty.name,
+      value: selectedCounty.value[0],
+    });
   };
 
   const openSearchModal = () => {
@@ -146,11 +152,13 @@ const Dashboard: React.FC = () => {
           md: informationCircleSharp,
           color: "icon__yellow",
           source: dashboardData.clearanceTime.notes.source.toString(),
-          description:dashboardData.clearanceTime.notes.Description.toString()
+          description: dashboardData.clearanceTime.notes.Description.toString(),
         },
         {
           title: "Freeway Counts",
-          data: parseInt(dashboardData.freewayCounts.value.toString()).toString(),
+          data: parseInt(
+            dashboardData.freewayCounts.value.toString()
+          ).toString(),
           updated: updated,
           ios: carSportOutline,
           md: carSportSharp,
@@ -284,47 +292,39 @@ const Dashboard: React.FC = () => {
           style={{ cursor: "pointer" }}
         ></IonInput> */}
         <IonRow className="dashboard__row">
-          <div className="dashboard__split">
-            <div className="data-card__container">
-              {dataCards.map((card) => {
+          {dataCards.map((card) => {
+            return (
+              <IonCol key={card.title} className="data-card__col">
+                <DataCard
+                  content={card}
+                  type={
+                    card.title === "Crash Value" ||
+                    card.title === "Fatality Value"
+                  }
+                />
+              </IonCol>
+            );
+          })}
+        </IonRow>
+        <IonRow>
+          <IonCol size-lg="4">
+            <IonCard color="primary " className="ion-padding" style={{ height: "30em", overflowY: "auto" }}>
+              <IonItem color="primary">
+                <h1>Crash Rates By County</h1>
+              </IonItem>
+              {crashes.map((county, index) => {
                 return (
-                  <IonCol key={card.title} className="data-card__col" >
-                    <DataCard
-                      content={card}
-                      type={
-                        card.title === "Crash Value" ||
-                        card.title === "Fatality Value"
-                      }
-                    />
-                  </IonCol>
+                  <IonItem
+                    className="ion-padding-top"
+                    color="primary"
+                    key={county.name}
+                  >
+                    {county.name} : {county.crashes}
+                  </IonItem>
                 );
               })}
-              <IonCard color="primary " className="ion-padding">
-            <IonRow>
-              <IonCol size-lg="12">
-                <IonItem color="primary">
-                  <h1>Crash Rates By County</h1>
-                </IonItem>
-                <IonRow className="ion-justify-content-center ion-padding">
-                  {crashes.map((county, index) => {
-                      return (
-                        <IonItem
-                          className="ion-padding-top"
-                          color="primary"
-                          key={county.name}
-                        >
-                          {county.name} : {county.crashes}
-                        </IonItem>
-                      );
-                  })}
-                </IonRow>
-              </IonCol>
-            </IonRow>
-          </IonCard>
-            </div>
-            
-          </div>
-        
+            </IonCard>
+          </IonCol>
         </IonRow>
         <IonRow className="ion-justify-content-evenly">
           {graphData.map((value: GraphData, index: number) => {

@@ -9,19 +9,14 @@ import {
   IonRow,
   IonTitle,
   IonToolbar,
-  IonInput,
-  IonPopover,
-  IonChip,
+
 } from "@ionic/react";
 import "./Dashboard.css";
 import Header from "../../components/Header/Header";
 import Map from "../../components/Map/Map";
 import * as React from "react";
 import {
-  arrowDownCircleOutline,
-  arrowDownCircleSharp,
-  arrowUpCircleOutline,
-  arrowUpCircleSharp,
+ 
   carSportOutline,
   carSportSharp,
   informationCircleOutline,
@@ -306,14 +301,20 @@ const Dashboard: React.FC = () => {
             );
           })}
         </IonRow>
+        <IonRow></IonRow>
         <IonRow>
-          <IonCol size-lg="4">
-            <IonCard color="primary " className="ion-padding" style={{ height: "30em", overflowY: "auto" }}>
+             
+          <IonCol >
+            <IonCard 
+              color="primary "
+              className="ion-padding crash-counties-list"
+            >
               <IonItem color="primary">
                 <h1>Crash Rates By County</h1>
               </IonItem>
-              {crashes.map((county, index) => {
-                return (
+             
+               {crashes.map((county, index) => {
+                 return (
                   <IonItem
                     className="ion-padding-top"
                     color="primary"
@@ -321,12 +322,10 @@ const Dashboard: React.FC = () => {
                   >
                     {county.name} : {county.crashes}
                   </IonItem>
-                );
-              })}
+                ); 
+               })} 
             </IonCard>
           </IonCol>
-        </IonRow>
-        <IonRow className="ion-justify-content-evenly">
           {graphData.map((value: GraphData, index: number) => {
             return (
               <IonCol key={index} size-lg="6" size="10">

@@ -68,3 +68,9 @@
 .icon__neutral {
     background-color: var(--ion-color-light);
 }
+
+.bigger-alert{
+   
+    --max-width: auto !important; /* or max-width: auto; */
+}
+  

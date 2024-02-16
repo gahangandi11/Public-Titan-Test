@@ -66,14 +66,15 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
         <IonRow className="data-card__date">{props.content.updated}</IonRow>
       </IonCard>
 
-      <IonAlert
-        isOpen={modalOpen}
-        header={props.content.title}
-        subHeader={"Source: " + props.content.source}
-        message={ props.content.description}
-        buttons={["Okay"]}
-        onDidDismiss={closeModal}
-      ></IonAlert>
+        <IonAlert
+          isOpen={modalOpen}
+          header={props.content.title}
+          subHeader={"Source: " + props.content.source}
+          message={props.content.description}
+          buttons={["Okay"]}
+          onDidDismiss={closeModal}
+          cssClass="bigger-alert"
+        ></IonAlert>
     </div>
   );
 };

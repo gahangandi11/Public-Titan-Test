@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
           description: dashboardData.freewayCounts.notes.Description.toString(),
         },
         {
-          title: "PTI",
+          title: "PTIV",
           data: "3.8",
           updated: updated,
           ios: statsChartOutline,

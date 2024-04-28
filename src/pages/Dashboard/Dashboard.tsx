@@ -36,6 +36,8 @@ import Graph from "../../components/Graph/Graph";
 import { CountyData } from "../../interfaces/CountyData";
 import CountySearch from "./CountySearch"; // Adjust the path accordingly
 
+import GraphDataCard from "../../components/DataCard/GraphDataCard";
+
 const Dashboard: React.FC = () => {
   const [selectedCounty, setSelectedCounty] = useState({
     name: "Select County",
@@ -279,6 +281,7 @@ const Dashboard: React.FC = () => {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <GraphDataCard></GraphDataCard>
         {/* <IonInput
           className="ion-text-center ion-align-items-center"
           placeholder={selectedCounty.name}

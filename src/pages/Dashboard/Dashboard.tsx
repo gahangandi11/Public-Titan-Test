@@ -271,7 +271,8 @@ const Dashboard: React.FC = () => {
       );
     });
   }, []);
-
+  
+  
   return (
     <IonPage>
       <Header title="Dashboard" />
@@ -281,7 +282,18 @@ const Dashboard: React.FC = () => {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <GraphDataCard></GraphDataCard>
+        
+          <div className="graph-data-card">
+          {dataCards.map((card) => {
+            if(card.title=="Crashes This Week")
+              {
+            return(
+              <GraphDataCard key={card.title} content={card} crashList={crashes}></GraphDataCard>
+            );
+          }
+          }
+          )}
+          </div>
         {/* <IonInput
           className="ion-text-center ion-align-items-center"
           placeholder={selectedCounty.name}
@@ -310,8 +322,7 @@ const Dashboard: React.FC = () => {
           <IonCol >
             <IonCard 
               color="primary "
-              className="ion-padding crash-counties-list"
-            >
+              className="ion-padding crash-counties-list">
               <IonItem color="primary">
                 <h1>Crash Rates By County</h1>
               </IonItem>

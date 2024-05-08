@@ -112,17 +112,17 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
                                 },
                                 ]}
                                 dataset={props.newdata.dowWzCongestion}
-                                width={285}
+                                width={300}
                                 height={210}
                             />
                 
                     </div>
                     <div className='work-zone-info'>
                         <div className='work-zone-info-child'>
-                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> WorkZones: {props.newdata.Workzones}
+                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Number of WorkZones: {props.newdata.Workzones}
                         </div>
                         <div className='work-zone-info-child'>
-                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Queue Lengths : {props.newdata['Queue Lengths']}
+                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Avg. Queue Lengths : {props.newdata['Queue Lengths']}
                         </div>
                         <div className='work-zone-info-child'>
                             <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Congested Hours : {props.newdata['Congested Hours']}

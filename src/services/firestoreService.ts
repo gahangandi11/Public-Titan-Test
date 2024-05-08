@@ -28,8 +28,18 @@ export async function getDashboardContent() {
     const dashboardSnapshot = await getDocs(dashboardDocs);
     const dashboardData = dashboardSnapshot.docs[0].data();
     const devData = dashboardSnapshot.docs[1].data();
+    console.log(dashboardSnapshot)
     return Object.assign(dashboardData, devData) as DashboardData;
 }
+
+
+export async function getDashboardCurrent() {
+    const colRef=collection(db,'Dashboard');
+    const dashboardcurrent=await getDocs(colRef);
+    return dashboardcurrent;
+}
+
+
 
 export async function getLinks() {
     const linksCollection = collection(db, "Links");

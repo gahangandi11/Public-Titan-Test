@@ -88,4 +88,48 @@
 }
 
 
+.graph-data-card{
+    display: flex;
+    justify-content: space-between;
+    /* align-items: stretch; */
+    width: 100%;
+    height: auto; /* Adjust height as necessary */
+    margin-bottom: 1em; /* Adds space below each card */
+}
 
+.graph-data-card-item {
+    flex: 1 0 25%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+
+.graph-cards{
+    display: flex;
+    justify-content: space-between;
+    /* align-items: stretch; */
+    width: 100%;
+    height: auto; /* Adjust height as necessary */
+    margin-bottom: 1em; /* Adds space below each card */
+}
+
+
+.graph1 {
+    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    
+}
+
+.graph2{
+    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+.middle-data-card-item{
+    flex: 1 0 30%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+
+}

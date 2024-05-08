@@ -30,11 +30,17 @@ import DataCard from "../../components/DataCard/DataCard";
 import { DataCardContent } from "../../interfaces/DataCardContent";
 import { useEffect, useState } from "react";
 import { DashboardData } from "../../interfaces/DashboardData";
-import { getDashboardContent } from "../../services/firestoreService";
+import { getDashboardContent, getDashboardCurrent } from "../../services/firestoreService";
 import { GraphData } from "../../interfaces/GraphData";
 import Graph from "../../components/Graph/Graph";
 import { CountyData } from "../../interfaces/CountyData";
 import CountySearch from "./CountySearch"; // Adjust the path accordingly
+
+import GraphDataCard from "../../components/DataCard/CrashesDataCard";
+import ClearanceDataCard from "../../components/DataCard/ClearanceDataCard";
+import FreewayDataCard from "../../components/DataCard/FreewayDataCard"
+import CongestionDataCard from "../../components/DataCard/CongestionDataCard"
+import WorkZoneDataCard from "../../components/DataCard/WorkZoneDataCard";
 
 const Dashboard: React.FC = () => {
   const [selectedCounty, setSelectedCounty] = useState({
@@ -45,6 +51,8 @@ const Dashboard: React.FC = () => {
   const [dataCards, setDataCards] = useState<DataCardContent[]>([]);
   const [graphData, setGraphData] = useState<GraphData[]>([]);
   const [crashes, setCrashes] = useState<CountyData[]>([]);
+
+  const [newdashboard,setnewdashboard]=useState(null);
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
@@ -85,6 +93,8 @@ const Dashboard: React.FC = () => {
 
     return color;
   };
+  
+  const books:any[]=[]
 
   useEffect(() => {
     getDashboardContent().then((data: DashboardData) => {
@@ -92,6 +102,16 @@ const Dashboard: React.FC = () => {
       const updated = new Date(
         dashboardData.lastUpdated.value * 1000
       ).toLocaleString();
+    // console.log('data printed')
+    
+    getDashboardCurrent().then((snapshot)=>{
+      
+      snapshot.docs.forEach((doc)=>{
+        books.push({...doc.data(), id: doc.id })
+      })
+      // console.log(books[2]);
+      setnewdashboard(books[2]);
+    });
       setDataCards([
         // {
         //   title: "Crash Value",
@@ -263,13 +283,14 @@ const Dashboard: React.FC = () => {
           color: "blue",
         },
       ]);
-
+      // console.log(dashboardData)
       setCrashes(
         dashboardData.countyCrashes.sort((a, b) => b.crashes - a.crashes)
       );
     });
   }, []);
-
+  
+  
   return (
     <IonPage>
       <Header title="Dashboard" />
@@ -279,6 +300,34 @@ const Dashboard: React.FC = () => {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <div className="graph-data-card">
+           <div className="graph-data-card-item">
+            {dataCards && dataCards.length > 0 && (<GraphDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} />)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards && newdashboard && dataCards.length > 0 && (<ClearanceDataCard key={dataCards[0].title} content={dataCards[1]} crashList={crashes} newdata={newdashboard}/>)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards && newdashboard &&  dataCards.length > 0 && (<FreewayDataCard key={dataCards[0].title} content={dataCards[2]} crashList={crashes} newdata={newdashboard} />)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards && newdashboard && dataCards.length > 0 && (<CongestionDataCard key={dataCards[0].title} content={dataCards[3]} crashList={crashes} newdata={newdashboard} />)}
+            </div>
+        </div>
+
+        {/* <h1>{books[0].active}</h1> */}
+        
+          {/* <div className="graph-data-card">
+              {dataCards.map((card) => {
+                if(card.title=="Crashes This Week")
+                  {
+                    return(
+                      <GraphDataCard key={card.title} content={card} crashList={crashes}></GraphDataCard>
+                    );
+                 }
+               }
+              )}
+          </div> */}
         {/* <IonInput
           className="ion-text-center ion-align-items-center"
           placeholder={selectedCounty.name}
@@ -286,7 +335,7 @@ const Dashboard: React.FC = () => {
           onClick={openSearchModal}
           style={{ cursor: "pointer" }}
         ></IonInput> */}
-        <IonRow className="dashboard__row">
+        {/* <IonRow className="dashboard__row">
           {dataCards.map((card) => {
             return (
               <IonCol key={card.title} className="data-card__col">
@@ -300,15 +349,14 @@ const Dashboard: React.FC = () => {
               </IonCol>
             );
           })}
-        </IonRow>
-        <IonRow></IonRow>
-        <IonRow>
+        </IonRow> */}
+        {/* <IonRow></IonRow> */}
+       
              
-          <IonCol >
+          {/* <IonCol >
             <IonCard 
               color="primary "
-              className="ion-padding crash-counties-list"
-            >
+              className="ion-padding crash-counties-list">
               <IonItem color="primary">
                 <h1>Crash Rates By County</h1>
               </IonItem>
@@ -325,8 +373,8 @@ const Dashboard: React.FC = () => {
                 ); 
                })} 
             </IonCard>
-          </IonCol>
-          {graphData.map((value: GraphData, index: number) => {
+          </IonCol> */}
+          {/* {graphData.map((value: GraphData, index: number) => {
             return (
               <IonCol key={index} size-lg="6" size="10">
                 <Graph
@@ -340,8 +388,35 @@ const Dashboard: React.FC = () => {
                 />
               </IonCol>
             );
-          })}
-        </IonRow>
+          })} */}
+          <div className="graph-cards">
+                <div className="graph1" >
+                  {graphData.length>0 && <Graph
+                          labels={graphData[0].labels}
+                          series={graphData[0].series}
+                          title={graphData[0].title}
+                          subtitle={graphData[0].subtitle}
+                          graphType={graphData[0].graphType}
+                          content={graphData[0].content}
+                          color={graphData[0].color}
+                        />}
+                </div>
+                <div className="middle-data-card-item">
+                             {dataCards && newdashboard && dataCards.length > 0 && (<WorkZoneDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} newdata={newdashboard} />)}
+                </div>
+                <div className="graph2" >
+                        {graphData.length>0 && <Graph
+                              labels={graphData[1].labels}
+                              series={graphData[1].series}
+                              title={graphData[1].title}
+                              subtitle={graphData[1].subtitle}
+                              graphType={graphData[1].graphType}
+                              content={graphData[1].content}
+                              color={graphData[1].color}
+                            />}
+                </div>
+            </div>
+        
       </IonContent>
       <CountySearch
         counties={counties}

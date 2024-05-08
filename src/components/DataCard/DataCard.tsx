@@ -31,6 +31,7 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
     setModalOpen(false);
   };
 
+
   return (
     <div>
       <IonCard

@@ -89,57 +89,47 @@
 
 
 .graph-data-card{
-    width: 23%; /* Takes the full width of its container */
+    display: flex;
+    justify-content: space-between;
+    /* align-items: stretch; */
+    width: 100%;
+    height: auto; /* Adjust height as necessary */
+    margin-bottom: 1em; /* Adds space below each card */
+}
+
+.graph-data-card-item {
+    flex: 1 0 25%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+
+.graph-cards{
+    display: flex;
+    justify-content: space-between;
+    /* align-items: stretch; */
+    width: 100%;
     height: auto; /* Adjust height as necessary */
     margin-bottom: 1em; /* Adds space below each card */
 }
 
 
-@media screen and (max-width: 1825px) {
-    .crash-counties.crash-counties {
-        max-height: 18.6em;
-        margin-top: 1.1em;
-        overflow-y: auto;
-    }
-}
-
-@media screen and (max-width: 1340px) {
-    .crash-counties.crash-counties {
-        max-height: 28.1em;
-        margin-top: 1em;
-        overflow-y: auto;
-    }
-} 
-
-@media screen and (max-width: 900px) {
-    .crash-counties.crash-counties{
-        max-height: 30.6em;
-        margin-top: 1em;
-        overflow-y: auto;
-    }
-}
-
-.crash-counties {
-    max-height: 40.6em;
-    margin-top: 1.1em;
-    overflow-y: auto;
-}
-
-.counties-with-bar {
-    padding: 5px;
-}
-
-
-.counties-and-percentage{
-    display: flex;
-}
-
-.percentage{
-    margin-left: auto;
-}
-
-.header-title{
+.graph1 {
+    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
     
-    padding-top: 14px;
-    font-weight: bold;
+}
+
+.graph2{
+    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+.middle-data-card-item{
+    flex: 1 0 30%; /* Flex grow, flex shrink, flex basis */
+    padding: 5px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+
 }

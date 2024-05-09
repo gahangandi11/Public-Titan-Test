@@ -107,29 +107,29 @@
 .graph-cards{
     display: flex;
     justify-content: space-between;
-    /* align-items: stretch; */
     width: 100%;
-    height: auto; /* Adjust height as necessary */
-    margin-bottom: 1em; /* Adds space below each card */
+    height: auto; 
+    margin-bottom: 1em; 
 }
 
 
 .graph1 {
-    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
-    padding: 5px; /* Adjust padding as needed */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    flex: 1 0 20%; 
+    padding: 5px; 
+    box-sizing: border-box; 
     
 }
 
 .graph2{
-    flex: 1 0 20%; /* Flex grow, flex shrink, flex basis */
-    padding: 5px; /* Adjust padding as needed */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    flex: 1 0 20%; 
+    padding: 5px; 
+    box-sizing: border-box; 
 }
 
 .middle-data-card-item{
-    flex: 1 0 30%; /* Flex grow, flex shrink, flex basis */
-    padding: 5px; /* Adjust padding as needed */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    flex: 1 0 30%; 
+    padding: 5px; 
+    box-sizing: border-box;
 
 }
+

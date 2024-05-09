@@ -82,7 +82,9 @@
     color: aliceblue;
 }
 
-.gauge-container .css-bx1j65-MuiGauge-container text{
+.gauge-container .css-bx1j65-MuiGauge-container text, 
+.gauge-container .css-1uso5f2 text
+{
     fill: rgba(252, 251, 251, 0.87) !important;
 }
 

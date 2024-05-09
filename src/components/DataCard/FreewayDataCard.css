@@ -77,7 +77,9 @@
 }
 
 
-.freeway-gauge-container .css-kg4hl1-MuiGauge-container text{
+.freeway-gauge-container .css-kg4hl1-MuiGauge-container text,
+.freeway-gauge-container .css-17oit0k text
+{
     fill: rgba(252, 251, 251, 0.87) !important;
 }
 

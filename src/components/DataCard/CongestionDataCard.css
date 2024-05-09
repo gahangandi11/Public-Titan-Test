@@ -107,6 +107,8 @@
     color: aliceblue;
 }
 
-.congestion-gauge-container .css-m88e9q-MuiGauge-container text{
+.congestion-gauge-container .css-m88e9q-MuiGauge-container text,
+.congestion-gauge-container .css-iw48nb text
+{
     fill: rgba(252, 251, 251, 0.87) !important;
 }

@@ -45,7 +45,8 @@ const Login: React.FC = () => {
           getUserByID(usercredential.user.uid).then((userData) => {
             if (userData.verified == true) {
               clear();
-              history.push("/home");
+              // history.push("/home");
+              history.push("/homepage")
             } else {
               history.push("/verification");
             }

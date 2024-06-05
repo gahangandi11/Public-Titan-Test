@@ -92,3 +92,33 @@
    
     --max-width: auto !important; /* or max-width: auto; */
 }
+
+.custom-alert{
+    --background: #ffffff;
+}
+
+/* .alert-class{
+    width: 30em;
+} */
+
+.alert-title{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.alert-buttons{
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    background-color: aliceblue;
+}
+
+
+.alert-source{
+    display: flex;
+    justify-content: center;
+}
+

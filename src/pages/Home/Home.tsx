@@ -31,6 +31,8 @@ import { watchCameras } from "../../services/firestoreService";
 import { arrowDownCircle } from "ionicons/icons";
 import { Marker } from "../../interfaces/Marker";
 
+
+
 const Home: React.FC = () => {
   const [weather, setWeather] = useState(false);
   const [traffic, setTraffic] = useState(true);
@@ -218,7 +220,7 @@ const Home: React.FC = () => {
                   </IonItem>
                 </IonList>
               </IonCard>
-              {selectedMarker && (
+              {/* {selectedMarker && (
                 <IonCard className="controls-div">
                   <IonItemDivider  color="light">
                     <IonLabel class="header-font">Marker Information</IonLabel>
@@ -305,7 +307,7 @@ const Home: React.FC = () => {
                     )}
                   </IonList>
                 </IonCard>
-              )}
+              )} */}
             </div>
           </IonCardContent>
         </IonCard>

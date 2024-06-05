@@ -2,6 +2,7 @@ import { Redirect, Route, useHistory } from "react-router-dom";
 import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home/Home";
+import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
 
 /* Ionic CSS */
@@ -78,7 +79,12 @@ const App: React.FC = () => {
             </Route>
 
             <RouteGuard path="/" exact={true}>
-              <Redirect to="/home" />
+              <Redirect to="/homepage" />
+              {/* <Homepage /> */}
+            </RouteGuard>
+
+            <RouteGuard path="/homepage" exact={true}>
+              <Homepage />
             </RouteGuard>
 
             <RouteGuard path="/home" exact={true}>

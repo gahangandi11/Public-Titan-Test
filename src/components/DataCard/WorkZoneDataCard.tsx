@@ -10,7 +10,8 @@ import { green } from '@material-ui/core/colors';
 import { colorFill } from 'ionicons/icons';
 import { color } from '@mui/system';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-
+import Table from 'react-bootstrap/Table';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
 import { styled } from '@mui/material/styles';
@@ -18,6 +19,9 @@ import { useHistory } from 'react-router-dom';
 import { LineChart } from '@mui/x-charts/LineChart';
 import CircleIcon from '@mui/icons-material/Circle';
 import { BarChart } from '@mui/x-charts/BarChart';
+
+import Tooltip from '@mui/material/Tooltip';
+
 interface GraphDataCardprops {
   content: DataCardContent;
   crashList: CountyData[];
@@ -67,9 +71,11 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
     <IonCard  className='workzone-main-container'>
             <IonCardTitle className="crash-data-card-title">
               <div className='crashes-header-title'>WorkZones</div>
+              <Tooltip title="More Information">
               <div onClick={openModal} className="crashes-data-card-icon">
-                <IonIcon  color="light" ios={props.content.ios} md={props.content.md}/>
+                <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
               </div>
+              </Tooltip>
             </IonCardTitle>
 
             <div className='workone'>
@@ -118,7 +124,7 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
                 
                     </div>
                     <div className='work-zone-info'>
-                        <div className='work-zone-info-child'>
+                        {/* <div className='work-zone-info-child'>
                             <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Number of WorkZones: {props.newdata.Workzones}
                         </div>
                         <div className='work-zone-info-child'>
@@ -126,7 +132,24 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
                         </div>
                         <div className='work-zone-info-child'>
                             <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Congested Hours : {props.newdata['Congested Hours']}
-                        </div>
+                        </div> */}
+
+                        <Table striped bordered hover>
+                              <tbody>
+                                  <tr>
+                                    <td>Number of WorkZones</td>
+                                    <td>{props.newdata.Workzones.value}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Avg. Queue Length</td>
+                                    <td>{props.newdata['Queue Lengths'].value}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Congested Hours</td>
+                                    <td>{props.newdata['Congested Hours'].value}</td>
+                                  </tr>                                
+                              </tbody>
+                          </Table>
                     </div>
           
             </div>

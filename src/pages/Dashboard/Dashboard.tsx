@@ -52,7 +52,9 @@ const Dashboard: React.FC = () => {
   const [graphData, setGraphData] = useState<GraphData[]>([]);
   const [crashes, setCrashes] = useState<CountyData[]>([]);
 
-  const [newdashboard,setnewdashboard]=useState(null);
+  const [mydata, setMydata] = useState<any>(null);
+
+  // const [newdashboard,setnewdashboard]=useState(null);
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
@@ -79,39 +81,34 @@ const Dashboard: React.FC = () => {
     setIsSearchModalOpen(false);
   };
 
-  const calculateColor = (crashCount: number, index: number, size: number) => {
-    // Set the base color to red
-    const baseColor = "#FF0000";
 
-    // Calculate the opacity based on the index
-    const opacity = 1 - index / size; // Assuming a range of 10 for the index
-
-    // Combine the base color with adjusted opacity to simulate shades of grey
-    const color = `${baseColor}${Math.round(opacity * 255)
-      .toString(16)
-      .padStart(2, "0")}`;
-
-    return color;
-  };
   
   const books:any[]=[]
 
   useEffect(() => {
     getDashboardContent().then((data: DashboardData) => {
       const dashboardData: DashboardData = data ? data : new DashboardData();
+      setMydata(dashboardData);
+      console.log('data printed')
+      console.log(dashboardData);
       const updated = new Date(
         dashboardData.lastUpdated.value * 1000
       ).toLocaleString();
     // console.log('data printed')
     
-    getDashboardCurrent().then((snapshot)=>{
+    // getDashboardCurrent().then((snapshot)=>{
       
-      snapshot.docs.forEach((doc)=>{
-        books.push({...doc.data(), id: doc.id })
-      })
-      // console.log(books[2]);
-      setnewdashboard(books[2]);
-    });
+    //   snapshot.docs.forEach((doc)=>{
+    //     books.push({...doc.data(), id: doc.id })
+    //   })
+    //   setnewdashboard(books[2]);
+    // });
+
+
+
+
+
+
       setDataCards([
         // {
         //   title: "Crash Value",
@@ -300,7 +297,27 @@ const Dashboard: React.FC = () => {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
+
+
         <div className="graph-data-card">
+           <div className="graph-data-card-item">
+            {dataCards && dataCards.length > 0 && (<GraphDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} />)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards && dataCards.length > 0 && (<ClearanceDataCard key={dataCards[0].title} content={dataCards[1]} crashList={crashes} newdata={mydata}/>)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards &&  dataCards.length > 0 && (<FreewayDataCard key={dataCards[0].title} content={dataCards[2]} crashList={crashes} newdata={mydata} />)}
+            </div>
+            <div className="graph-data-card-item">
+            {dataCards && dataCards.length > 0 && (<CongestionDataCard key={dataCards[0].title} content={dataCards[3]} crashList={crashes} newdata={mydata} />)}
+            </div>
+        </div>
+
+
+        
+
+        {/* <div className="graph-data-card">
            <div className="graph-data-card-item">
             {dataCards && dataCards.length > 0 && (<GraphDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} />)}
             </div>
@@ -313,7 +330,12 @@ const Dashboard: React.FC = () => {
             <div className="graph-data-card-item">
             {dataCards && newdashboard && dataCards.length > 0 && (<CongestionDataCard key={dataCards[0].title} content={dataCards[3]} crashList={crashes} newdata={newdashboard} />)}
             </div>
-        </div>
+        </div> */}
+
+
+
+
+
 
         {/* <h1>{books[0].active}</h1> */}
         
@@ -389,6 +411,22 @@ const Dashboard: React.FC = () => {
               </IonCol>
             );
           })} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         
+          
           <div className="graph-cards">
                 <div className="graph1" >
                   {graphData.length>0 && <Graph
@@ -402,7 +440,7 @@ const Dashboard: React.FC = () => {
                         />}
                 </div>
                 <div className="middle-data-card-item">
-                             {dataCards && newdashboard && dataCards.length > 0 && (<WorkZoneDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} newdata={newdashboard} />)}
+                             {dataCards && dataCards.length > 0 && (<WorkZoneDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} newdata={mydata} />)}
                 </div>
                 <div className="graph2" >
                         {graphData.length>0 && <Graph

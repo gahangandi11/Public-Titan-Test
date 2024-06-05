@@ -1,10 +1,7 @@
 import React,{useState} from 'react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonItem, IonIcon,IonAlert } from '@ionic/react';
-import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
-import Stack from '@mui/material/Stack';
+import { IonCard, IonCardTitle, IonIcon,IonAlert } from '@ionic/react';
 import { DataCardContent } from "../../interfaces/DataCardContent";
 import { CountyData } from "../../interfaces/CountyData";
-import ProgressBar from "@ramonak/react-progress-bar";
 import { useHistory } from 'react-router-dom';
 import { LineChart } from '@mui/x-charts/LineChart';
 
@@ -12,6 +9,20 @@ import "./ClearanceDataCard.css"
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CircleIcon from '@mui/icons-material/Circle';
+import Tooltip from '@mui/material/Tooltip';
+
+
+import Button from '@mui/material/Button';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+
+
 
 interface GraphDataCardprops {
     content: DataCardContent;
@@ -23,6 +34,15 @@ interface dayClearance{
   clearance: number;
   name: string;
 }
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
   
   const ClearanceDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> {
 
@@ -49,9 +69,11 @@ interface dayClearance{
       <IonCard className='clearance-main-container'>
               <IonCardTitle className="clearance-data-card-title">
                 <div className='clearance-header-title'>{props.content.title}</div>
+                <Tooltip title="More Information">
                 <div onClick={openModal} className="clearance-data-card-icon">
-                  <IonIcon  color="light" ios={props.content.ios} md={props.content.md}/>
+                  <IonIcon className='colorin' color="light" aria-label="myicon" ios={props.content.ios} md={props.content.md}/>                  
                 </div>
+                </Tooltip>
               </IonCardTitle>
           
           <div className="clearance-gauge-container">
@@ -102,6 +124,7 @@ interface dayClearance{
           <IonCardTitle className='clearance-by-county-title' style={{ color: 'white' }}>
                   Clearance Time By County
         </IonCardTitle>
+
         
          
          <div className='counties-and-time'>
@@ -126,7 +149,7 @@ interface dayClearance{
           
           <div className='clearance-last-updated'>{props.content.updated}</div>
       </IonCard>
-
+{/* 
       <IonAlert
           isOpen={modalOpen}
           header={props.content.title}
@@ -135,7 +158,31 @@ interface dayClearance{
           buttons={[{text:"More Information", handler: handleOkay}]}
           onDidDismiss={closeModal}
           cssClass="bigger-alert"
-        ></IonAlert>
+        ></IonAlert> */}
+
+    <Dialog
+      className='alert-class'
+        open={modalOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={closeModal}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        {/* <DialogTitle className='alert-title'>{props.content.title}</DialogTitle> */}
+        <h3 className='alert-title'>{props.content.title}</h3>
+        <DialogContent>
+        <h6 className='alert-source'>
+        {"Source: " + props.content.source}
+        </h6>
+          <DialogContentText id="alert-dialog-slide-description">
+            {props.content.description}
+          </DialogContentText>
+        </DialogContent>
+        <div className='alert-buttons'>
+          <Button onClick={closeModal}>Close</Button>
+          <Button onClick={handleOkay}>More Information</Button>
+        </div>
+      </Dialog>
       
   
     </>

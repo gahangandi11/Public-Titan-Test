@@ -77,7 +77,7 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
               </div>
               </Tooltip>
             </IonCardTitle>
-
+          <div className='scroll-container'>
             <div className='workone'>
 
                     <div className="workzone-line-chart">
@@ -197,7 +197,7 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
                         }}
                     />
              </div>
-       
+             </div>
         <div className='crash-last-updated'>{props.content.updated}</div>
         
 

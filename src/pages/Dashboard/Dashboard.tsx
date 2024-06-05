@@ -453,7 +453,7 @@ const Dashboard: React.FC = () => {
                               color={graphData[1].color}
                             />}
                 </div>
-            </div>
+          </div>
         
       </IonContent>
       <CountySearch

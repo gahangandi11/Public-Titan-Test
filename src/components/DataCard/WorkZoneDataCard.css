@@ -1,8 +1,9 @@
 
 .workzone-main-container{
     --background: #015990;
-    max-height: 26em;
-    overflow-y: auto;
+    /* max-height: 26em;
+    overflow-y: auto; */
+    /* height: 24.5em; */
 }
 
 .crashes-header-title{
@@ -121,5 +122,10 @@
    
 }
 
+.scroll-container{
+    max-height: 18.4em;
+    overflow-y: auto;
+
+}
 
 

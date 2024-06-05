@@ -1,42 +1,51 @@
-import React,{ useRef, useEffect,useState } from 'react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonItem, IonIcon, IonAlert, IonRouterLink,IonLabel } from '@ionic/react';
+import React,{useState } from 'react';
+import { IonCard, IonCardTitle, IonIcon, IonAlert, IonRouterLink,IonLabel, IonButton } from '@ionic/react';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
-import Stack from '@mui/material/Stack';
+
 import { DataCardContent } from "../../interfaces/DataCardContent";
 import { CountyData } from "../../interfaces/CountyData";
-// import ProgressBar from "@ramonak/react-progress-bar";
+
 import "./CrashesDataCard.css"
-import { green } from '@material-ui/core/colors';
-import { colorFill } from 'ionicons/icons';
-import { color } from '@mui/system';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+
 
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
 import { styled } from '@mui/material/styles';
 import { useHistory } from 'react-router-dom';
 
+import Tooltip from '@mui/material/Tooltip';
 
+import Button from '@mui/material/Button';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
 interface GraphDataCardprops {
   content: DataCardContent;
   crashList: CountyData[];
 }
 
-
+ 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    // backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
-    backgroundColor:'#456e97',
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: '#ec4561'
-    // backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
-  },
+  [`&.${linearProgressClasses.colorPrimary}`]: {backgroundColor:'#456e97'},
+  [`& .${linearProgressClasses.bar}`]: {borderRadius: 5,backgroundColor: '#ec4561'},
 }));
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 
 const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> {
@@ -52,8 +61,8 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
   const history = useHistory();
 
   const handleOkay = () => {
-    closeModal();  // Close the modal first
-    history.push('/app-center/TranscoreAnalytics');  // Navigate to the desired path
+    closeModal();  
+    history.push('/app-center/TranscoreAnalytics');  
   };
 
     return(
@@ -61,10 +70,11 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
     <IonCard  className='main-container'>
             <IonCardTitle className="crash-data-card-title">
               <div className='crashes-header-title'>{props.content.title}</div>
+              <Tooltip title="More Information">
               <div onClick={openModal} className="crashes-data-card-icon">
-                <IonIcon  color="light" ios={props.content.ios} md={props.content.md}/>
-                
+                <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
               </div>
+              </Tooltip>
             </IonCardTitle>
         
             <div className="gauge-container unique-class-to-change-color">
@@ -86,8 +96,6 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
                          <div>{county.name} : {county.crashes}</div> <div className='percentage'> {Math.floor(((county.crashes)/Number(props.content.data))*100)}% </div>
                       </div>
                       <div style={{ width: '100%' }}> 
-                         {/* <ProgressBar className='bars' key={county.name} completed = {Math.floor(((county.crashes)/Number(props.content.data))*100)} bgColor = "#EA7B26" animateOnRender = {true} isLabelVisible = {false} />  */}
-                         {/* <ProgressBar className='bars' key={county.name} variant="warning" now={Math.floor(((county.crashes)/Number(props.content.data))*100)} /> */}
                          <BorderLinearProgress variant="determinate" value={Math.floor(((county.crashes)/Number(props.content.data))*100)} />
                       </div>
                     </div>
@@ -99,15 +107,54 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
 
 
     </IonCard>
-    <IonAlert
+     
+
+    {/* <IonButton id="present-alert">Click Me</IonButton>
+      <IonAlert
+        isOpen={modalOpen}
+        header="A Short Title Is Best"
+        subHeader="A Sub Header Is Optional"
+        message="A message should be a short, complete sentence."
+        buttons={['Action']}
+      ></IonAlert> */}
+
+    {/* <IonAlert
+          
           isOpen={modalOpen}
           header={props.content.title}
           subHeader={"Source: " + props.content.source}
           message={props.content.description}
-          buttons={[{text:"More Information", handler: handleOkay}]}
+          buttons={[{text:"Close", role: 'cancel'},{text:"More Information", handler: handleOkay}]}
           onDidDismiss={closeModal}
-          cssClass="bigger-alert"
-        ></IonAlert>
+          cssClass="custom-alert"
+          // cssClass="bigger-alert"
+        ></IonAlert> */}
+
+
+
+      <Dialog
+      className='alert-class'
+        open={modalOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={closeModal}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        {/* <DialogTitle className='alert-title'>{props.content.title}</DialogTitle> */}
+        <h3 className='alert-title'>{props.content.title}</h3>
+        <DialogContent>
+        <h6 className='alert-source'>
+        {"Source: " + props.content.source}
+        </h6>
+          <DialogContentText id="alert-dialog-slide-description">
+            {props.content.description}
+          </DialogContentText>
+        </DialogContent>
+        <div className='alert-buttons'>
+          <Button onClick={closeModal}>Close</Button>
+          <Button onClick={handleOkay}>More Information</Button>
+        </div>
+      </Dialog>
     
     
 

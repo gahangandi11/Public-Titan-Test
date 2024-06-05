@@ -85,3 +85,11 @@
     background-color:#004068;
     color: aliceblue;
 }
+
+.colorin{
+    pointer-events: none;
+}
+
+/* IonIcon{
+    pointer-events: none;
+} */

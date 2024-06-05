@@ -1,0 +1,52 @@
+/* Home.css */
+.home-background {
+    background-image: url('/src/assets/backgroundimg.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; 
+  }
+  
+  .ion-page {
+    position: relative;
+  }
+
+ 
+
+  .display-cards {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+   
+
+  }
+
+
+.display-cards ion-card{
+  height: 250px;
+  width: 300px;
+  display:flex;
+   justify-content:center;  
+   align-items: center;
+   flex-direction: column;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+} 
+
+.display-cards ion-card:hover {
+  background-color: #0080FF; /* Change to your desired hover background color */
+}
+
+.icon-style{
+  height: 3em;
+  width: 3em;
+}

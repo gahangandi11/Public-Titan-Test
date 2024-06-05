@@ -153,9 +153,13 @@
   }
 
 @media only screen and (min-width: 1023px) {
-    .box {
+    /* .box {
       display: flex;
       justify-content: space-around;
+    } */
+
+    .box {
+        position: relative; /* Ensures the .controls-box can be positioned absolutely relative to this container */
     }
   
     .controls-box {
@@ -166,10 +170,28 @@
     }
   
     .map-div {
-      width: 65%;
+      /* width: 65%; */
+      width: 100%;
+      position: relative;
     }
   
-    .controls-div {
+    .controls-box {
+        position: absolute;
+        top: 0;
+        right: 0;
+        max-height: 45em;
+        width: 25em;
+        overflow-y: auto;
+        /* background-color: rgba(255, 255, 255, 0.9);
+        z-index: 10; 
       max-height: 45em;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
+
     }
+
+  
+
+    
+
+
   }

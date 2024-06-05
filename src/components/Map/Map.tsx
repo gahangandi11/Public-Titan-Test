@@ -3,7 +3,7 @@ import {IonCard, IonIcon} from '@ionic/react';
 import './Map.css';
 import {Marker as MarkerData}  from '../../interfaces/Marker';
 
-import ReactMapGl, {InteractiveMapProps, Layer, LayerProps, Marker, Source} from 'react-map-gl';
+import ReactMapGl, {InteractiveMapProps, Layer, LayerProps, Marker, Source, Popup} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import {useEffect, useState} from 'react';
 import {Missouri} from './Missouri';
@@ -140,6 +140,10 @@ interface MapData {
 }
 
 const Map: React.FC<MapData> = (props: MapData) => {
+    const [selectedIncident, setSelectedIncident] = useState<any>(null);
+    const [weatherIncident, setweatherIncident] = useState<any>(null);
+
+
     const accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
     const [weather, setWeather] = useState<WeatherEvent[]>([]);
     const [wazeIncidents, setWazeIncidents] = useState<WazeIncident[]>([]);
@@ -297,6 +301,22 @@ const Map: React.FC<MapData> = (props: MapData) => {
                                 weatherItem.sleetIntensity    
                                 ));
                         }
+
+
+                        setweatherIncident({
+                            latitude: weatherItem.latitude,
+                            longitude: weatherItem.longitude,
+                            eventClass: 'Weather Event',
+                            county: weatherItem.county,
+                            date: new Date(weatherItem.timestamp),
+                            description: weatherType,
+                            temperature:weatherItem.temperature,
+                            wind:weatherItem.windGust,
+                            precipitation:weatherItem.precipitationIntensity,
+                            snow: weatherItem.snowAccumulation,
+                            freezing:  weatherItem.freezingRangeIntensity,
+                            sleet:  weatherItem.sleetIntensity,
+                          });
                     }
                     }
                     />
@@ -352,6 +372,17 @@ const Map: React.FC<MapData> = (props: MapData) => {
                             incident.on_street_name
                         ));
                     }
+
+
+                    setSelectedIncident({
+                        latitude: incident.latitude,
+                        longitude: incident.longitude,
+                        eventClass: incident.event_class,
+                        county: incident.county,
+                        date: new Date(incident.pub_millis),
+                        description: incident.event_description,
+                        street: incident.on_street_name
+                      });
                 }}
                 className="marker-icon" color={iconColor} src={iconType} />
             </Marker>
@@ -449,6 +480,18 @@ const Map: React.FC<MapData> = (props: MapData) => {
                         incident.report_description,
                         incident.street
                     ));
+
+
+
+                    setSelectedIncident({
+                        latitude: incident.latitude,
+                        longitude: incident.longitude,
+                        eventClass: incident.event_class,
+                        county: incident.county,
+                        date: new Date(incident.pub_millis),
+                        description: incident.report_description,
+                        street: incident.street
+                      });
                 }
             }}
             color={iconColor} src={iconType}
@@ -485,6 +528,61 @@ const Map: React.FC<MapData> = (props: MapData) => {
                 {props.weather && weatherMarkers}
                 {props.showCameras && cameraMarkers}
                 {props.incidents && wazeIncidentMarkers}
+
+                {selectedIncident && (
+                        <Popup
+                            latitude={selectedIncident.latitude}
+                            longitude={selectedIncident.longitude}
+                            closeButton={true}
+                            closeOnClick={false}
+                            onClose={() => setSelectedIncident(null)}
+                            anchor="top"
+                        >
+                        <div>
+                        <h3>{selectedIncident.eventClass}</h3>
+                        <p><strong>County:</strong> {selectedIncident.county}</p>
+                        <p><strong>Recorded:</strong> {selectedIncident.date.toLocaleString()}</p>
+                        {selectedIncident.description !== "" && <p><strong>Description:</strong> {selectedIncident.description}</p>}
+                         <p><strong>Street:</strong> {selectedIncident.street}</p>
+                         <p><strong>Latitude:</strong> {selectedIncident.latitude}</p>
+                         <p><strong>Longitude:</strong> {selectedIncident.longitude}</p>
+                          
+                        </div>
+                    </Popup>
+                    )}
+                
+
+                {weatherIncident && (
+                        <Popup
+                            latitude={weatherIncident.latitude}
+                            longitude={weatherIncident.longitude}
+                            closeButton={true}
+                            closeOnClick={false}
+                            onClose={() => setweatherIncident(null)}
+                            anchor="top"
+                        >
+                        <div>
+                        <h3>{weatherIncident.eventClass}</h3>
+                        <p><strong>County:</strong> {weatherIncident.county}</p>
+                        <p><strong>Recorded:</strong> {weatherIncident.date.toLocaleString()}</p>
+                        {weatherIncident.description !== "" && <p><strong>Description:</strong> {weatherIncident.description}</p>}
+
+                         <p><strong>Latitude:</strong> {weatherIncident.latitude}</p>
+                         <p><strong>Longitude:</strong> {weatherIncident.longitude}</p>
+                         <p><strong>Temperature:</strong> {weatherIncident.temperature}°F</p>
+                         <p><strong>Wind Gust:</strong> {weatherIncident.wind}MPH</p>
+                         <p><strong>Precipitation:</strong> {weatherIncident.precipitation}</p>
+                         <p><strong>Snow Intensity:</strong> {weatherIncident.snow}</p>
+                         <p><strong>Freezing Range Intensity:</strong> {weatherIncident.freezing}</p>
+                         <p><strong>Sleet Intensity:</strong> {weatherIncident.sleet}</p>
+
+
+                          
+                        </div>
+                    </Popup>
+                    )}
+
+
                 {props.transcore && transcoreMarkers}
                 {props.traffic &&
                 <Source id='traffic' type='vector' url='mapbox://mapbox.mapbox-traffic-v1' minzoom={5}>

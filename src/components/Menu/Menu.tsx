@@ -22,8 +22,15 @@ const Menu = () => {
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
 
-    const generalPages: AppPage[] = [{
-        title: 'Home',
+    const generalPages: AppPage[] = [
+        {
+            title: 'HomePage',
+            url: '/homepage',
+            iosIcon: homeOutline,
+            mdIcon: homeSharp
+        },
+    {
+        title: 'Live Data',
         url: '/home',
         iosIcon: homeOutline,
         mdIcon: homeSharp

@@ -316,7 +316,7 @@ const Dashboard: React.FC = () => {
 
 
         
-
+        {/* {testing} */}
         {/* <div className="graph-data-card">
            <div className="graph-data-card-item">
             {dataCards && dataCards.length > 0 && (<GraphDataCard key={dataCards[0].title} content={dataCards[0]} crashList={crashes} />)}
@@ -453,7 +453,7 @@ const Dashboard: React.FC = () => {
                               color={graphData[1].color}
                             />}
                 </div>
-            </div>
+          </div>
         
       </IonContent>
       <CountySearch

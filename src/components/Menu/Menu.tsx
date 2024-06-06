@@ -45,7 +45,13 @@ const Menu = () => {
         url: '/data',
         iosIcon: downloadOutline,
         mdIcon: downloadSharp
-    }];
+    },
+    {
+        title: 'Apps',
+        url: '/newpage',
+        iosIcon: homeOutline,
+        mdIcon: homeSharp
+    },];
 
     useEffect(() => {
         if (currentUser) {

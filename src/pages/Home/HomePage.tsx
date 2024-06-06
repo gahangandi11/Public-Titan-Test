@@ -62,14 +62,15 @@ const Homepage: React.FC = () => {
           
           <IonCard color="primary" onClick={() => handleCardClick('/data')}>
            
-          <h1>Download</h1>
-          <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
+            <h1>Download</h1>
+            <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
           </IonCard>
 
-          <IonCard color="primary" onClick={() => handleCardClick('/home')}>
+          <IonCard color="primary" onClick={() => handleCardClick('/newpage')}>
           
-          <h1>App center</h1>
-          <Icon className="icon-style" color="white" icon="material-symbols:apps" />
+              <h1>App center</h1>
+              
+             <Icon className="icon-style" color="white" icon="material-symbols:apps" />
           </IonCard>
           
           </div>

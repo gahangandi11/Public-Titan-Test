@@ -22,6 +22,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 
+import tourService from "../../services/tourService";
+import Tour from "reactour";
+
+
+
 
 
 interface GraphDataCardprops {
@@ -64,19 +69,22 @@ const Transition = React.forwardRef(function Transition(
     const clearanceValues = props.newdata.weekdayClearance.map((day:any )=> Math.floor(day.clearance));
     const dayNames = props.newdata.weekdayClearance.map((day:any) => day.name.substring(0, 3));    
 
+    const steps = tourService.getStepsFor("Dashboard");
+const isTour = tourService.StartTour();
+
       return(
     <>
-      <IonCard className='clearance-main-container'>
+      <IonCard className='clearance-main-container clearance-tour-main'>
               <IonCardTitle className="clearance-data-card-title">
                 <div className='clearance-header-title'>{props.content.title}</div>
                 <Tooltip title="More Information">
-                <div onClick={openModal} className="clearance-data-card-icon">
+                <div onClick={openModal} className="clearance-data-card-icon clearance-tour-icon">
                   <IonIcon className='colorin' color="light" aria-label="myicon" ios={props.content.ios} md={props.content.md}/>                  
                 </div>
                 </Tooltip>
               </IonCardTitle>
           
-          <div className="clearance-gauge-container">
+          <div className="clearance-gauge-container clearance-tour-gauge">
            
             <LineChart
               sx={{
@@ -127,7 +135,7 @@ const Transition = React.forwardRef(function Transition(
 
         
          
-         <div className='counties-and-time'>
+         <div className='counties-and-time clearance-tour-counties'>
          {
            props.newdata.countyClearance.map((day:any,index:number)=>{
             return(
@@ -183,6 +191,15 @@ const Transition = React.forwardRef(function Transition(
           <Button onClick={handleOkay}>More Information</Button>
         </div>
       </Dialog>
+
+      <Tour
+          steps={steps}
+          isOpen={isTour}
+          accentColor="black"
+          onRequestClose={() => {
+            tourService.GoBack(history);
+          }}
+        />
       
   
     </>

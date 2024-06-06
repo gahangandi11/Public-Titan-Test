@@ -35,6 +35,13 @@ import {getLinks} from '../../services/firestoreService';
 import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
 
+
+
+import tourService from "../../services/tourService";
+import Tour from "reactour";
+
+
+
 interface AppPage {
     url: string;
     iosIcon: string;
@@ -123,7 +130,7 @@ const Newapp: React.FC = () => {
                       category = 'other';
                       break;
                   }
-                
+                console.log(link)
                 apps.push({
                     title: link.name,
                     url: "/app-center/" + link.name,
@@ -137,6 +144,11 @@ const Newapp: React.FC = () => {
         });
     }
 }, [currentUser]);
+
+// const steps = tourService.getStepsFor("AppCenter");
+// const isTour = tourService.StartTour();
+
+
  return(
         <IonPage>
     <Header title={"Home"} />
@@ -188,10 +200,11 @@ const Newapp: React.FC = () => {
             <div className="my-first-row">
             {appCenter.map((page, index) => {
                     if(page.category=='safety')
+                        // const uniqueClassName = page.title.replace(/\s+/g, '-').toLowerCase();
                             return(
-                                <IonCard color="primary" className="my-first-row-card" routerLink={page.url}>
+                                <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
-                                    <IonIcon className="icon-large" ios={page.iosIcon} md={page.mdIcon} />
+                                    <IonIcon className="icon-large custom-icon-size" ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
                             );
                         })}
@@ -201,7 +214,7 @@ const Newapp: React.FC = () => {
             {appCenter.map((page, index) => {
                     if(page.category=='livedata')
                             return(
-                                <IonCard color="primary" className="my-second-row-card" routerLink={page.url}>
+                                <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
                                     <IonIcon className="icon-large" ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
@@ -213,7 +226,7 @@ const Newapp: React.FC = () => {
             {appCenter.map((page, index) => {
                     if(page.category=='operations')
                             return(
-                                <IonCard color="primary" className="my-third-row-card" routerLink={page.url}>
+                                <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
                                     <IonIcon className="icon-large" ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
@@ -225,6 +238,14 @@ const Newapp: React.FC = () => {
 
 
       </div>
+      {/* <Tour
+          steps={steps}
+          isOpen={isTour}
+          accentColor="black"
+          onRequestClose={() => {
+            tourService.GoBack(history);
+          }}
+        /> */}
       
         </IonContent>
         </IonPage>

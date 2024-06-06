@@ -24,6 +24,11 @@ import { detectorCounties, probeCounties, wazeIncidentsCounties, wazeJamCounties
 import { countiesWithAlias as countiesMO } from '../../assets/counties';
 import CountySelectorWithAlias from '../../components/Forms/CountySelectorWithAlias';
 
+import tourService from "../../services/tourService";
+import Tour from "reactour";
+import { useHistory} from "react-router";
+
+
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 const pages: {name: string, value: string}[] = [
@@ -204,6 +209,10 @@ const DataDownload: React.FC = () => {
         changePage(pages[0]);
     }, []);
 
+    // const steps = tourService.getStepsFor("Downloads");
+    // const isTour = tourService.StartTour();
+    const history = useHistory();
+
     return (
         <AuthProvider>
             <IonPage>
@@ -211,13 +220,13 @@ const DataDownload: React.FC = () => {
                 <IonContent color="light">
                     <IonRow className="ion-justify-content-center download__container">
                         <IonCard className="download__card">
-                            <div className='download__icon download__green'>
+                            <div className='download__icon download__green first-step'>
                                 <IonIcon size="large" color="light" ios={downloadOutline} md={downloadSharp} />
                             </div>
                             <IonCardContent className="download__card__content">
                                 <IonLabel>{page.name}</IonLabel>
                                 <IonSelect color="light" value={page} interface='alert'  placeholder="Select Database"  onIonChange={e => changePage(e.detail.value)}>
-                                    <IonSelectOption value={{name: 'Probe', value: 'inrix_probe_query'}}>
+                                    <IonSelectOption className='second-step' value={{name: 'Probe', value: 'inrix_probe_query'}}>
                                         Probe 
                                     </IonSelectOption>
                                     <IonSelectOption value={{
@@ -282,6 +291,14 @@ const DataDownload: React.FC = () => {
                             <Downloads page={page.value} />
                         </AuthProvider>
                     </IonRow>
+                    {/* <Tour
+          steps={steps}
+          isOpen={isTour}
+          accentColor="black"
+          onRequestClose={() => {
+            tourService.GoBack(history);
+          }}
+        /> */}
                 </IonContent>
             </IonPage>
         </AuthProvider>

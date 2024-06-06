@@ -6,6 +6,7 @@ import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
 
 import Newapp from "./pages/AppCenter/newapp";
+import Tutorials from "./pages/Tutorials/Tutorials";
 
 
 /* Ionic CSS */
@@ -104,6 +105,10 @@ const App: React.FC = () => {
 
             <RouteGuard path="/myapps" exact={true}>
               <Newapp />
+            </RouteGuard>
+
+            <RouteGuard path="/tutorials" exact={true}>
+              <Tutorials />
             </RouteGuard>
 
 

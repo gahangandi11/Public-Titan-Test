@@ -1,0 +1,72 @@
+.outer-tutorial-card {
+    height: 21em;
+    overflow: visible;
+    margin: 1rem 0;
+}
+
+.tutorial-content-container {
+    width: 100%;
+    height: 12em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tutorial-button {
+    width: 15em;
+    color: black;
+}
+
+.tutorial-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 5rem;
+    width: 10rem;
+    border-radius: 3px;
+    margin: -2rem 0 0 1rem;
+    padding-top: 25px;
+}
+
+.footer-row {
+    display: flex;
+    justify-content: center;
+}
+
+.card-dark {
+    background-color: var(--ion-color-dark);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-dark), 0.2);
+}
+
+.card-pink {
+    background-color: var(--ion-color-pink);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-pink), 0.2);
+}
+
+.card-purple {
+    background-color: var(--ion-color-purple);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-purple), 0.2);
+}
+
+.card-yellow {
+    background-color: var(--ion-color-yellow);
+    box-shadow: 2px 7px 8px rgba(var(--ion-color-yellow), 0.2);
+}
+
+.top-border {
+    border-top: 1px solid #d7d8da;
+}
+
+.card-content-md {
+    width: 100% !important;
+}
+
+@media screen and (max-width: 480px) {
+    .card-title{
+        font-size: 1.5em;
+    }
+}
+.tour-card {
+    margin-bottom: 2em;
+}

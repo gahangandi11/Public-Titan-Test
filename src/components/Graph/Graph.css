@@ -45,7 +45,7 @@
     overflow: visible;
     margin: 1rem 0;
     font-family: 'Inter', sans-serif;
-    height: 23.5em;
+    /* height: 23.5em; */
 }
 
 .card-content {

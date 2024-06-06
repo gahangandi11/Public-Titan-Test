@@ -20,7 +20,17 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import CircleIcon from '@mui/icons-material/Circle';
 import { BarChart } from '@mui/x-charts/BarChart';
 
+
+
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
 interface GraphDataCardprops {
   content: DataCardContent;
@@ -43,11 +53,20 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
-    if (props.content.source != "N/A") setModalOpen(true);
+    if (props.newdata.Workzones.notes.source != "N/A") setModalOpen(true);
   };
 
   const closeModal = () => {
@@ -203,7 +222,7 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
 
 
     </IonCard>
-    <IonAlert
+    {/* <IonAlert
           isOpen={modalOpen}
           header={props.content.title}
           subHeader={"Source: " + props.content.source}
@@ -211,7 +230,31 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
           buttons={[{text:"More Information", handler: handleOkay}]}
           onDidDismiss={closeModal}
           cssClass="bigger-alert"
-        ></IonAlert>
+        ></IonAlert> */}
+      
+      <Dialog
+      className='alert-class'
+        open={modalOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={closeModal}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        {/* <DialogTitle className='alert-title'>{props.content.title}</DialogTitle> */}
+        <h3 className='alert-title'>Work Zones</h3>
+        <DialogContent>
+        <h6 className='alert-source'>
+        {"Source: " + props.newdata.Workzones.notes.source}
+        </h6>
+          <DialogContentText id="alert-dialog-slide-description">
+            {props.newdata.Workzones.notes.Description}
+          </DialogContentText>
+        </DialogContent>
+        <div className='alert-buttons'>
+          <Button onClick={closeModal}>Close</Button>
+          <Button onClick={handleOkay}>More Information</Button>
+        </div>
+      </Dialog>
     
     
 

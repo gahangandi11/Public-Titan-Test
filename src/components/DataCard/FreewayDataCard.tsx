@@ -21,6 +21,9 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 
 
+import tourService from "../../services/tourService";
+import Tour from "reactour";
+
 interface GraphDataCardprops {
   content: DataCardContent;
   crashList: CountyData[];
@@ -54,19 +57,21 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
     closeModal();  // Close the modal first
     history.push('/app-center/TrafficCounts');  // Navigate to the desired path
   };
+  const steps = tourService.getStepsFor("Dashboard");
+const isTour = tourService.StartTour();
     return(
   <>
-    <IonCard className='freeway-main-container'>
+    <IonCard className='freeway-main-container freeway-tour-main'>
             <IonCardTitle className="freeway-data-card-title">
               <div className='freeway-header-title'>{props.content.title}</div>
               <Tooltip title="More Information">
-              <div onClick={openModal} className="freeway-data-card-icon">
+              <div onClick={openModal} className="freeway-data-card-icon freeway-tour-icon">
                 <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
               </div>
               </Tooltip>
             </IonCardTitle>
         
-        <div className="freeway-gauge-container">
+        <div className="freeway-gauge-container freeway-tour-gauge">
             <Gauge width={200} height={150} value={Number(props.newdata.Active.value)} startAngle={-110} endAngle={110} valueMax={100} innerRadius="75%"
                 outerRadius="100%" sx={{[`& .${gaugeClasses.valueArc}`]: {
                   fill: '#ec4561',
@@ -81,7 +86,7 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
                   Data Rate
         </IonCardTitle>
         
-       <div className='freeway-bar-chart'>
+       <div className='freeway-bar-chart freeway-tour-chart'>
           <BarChart
             dataset={props.newdata.roadAadt}
             yAxis={[{ scaleType: 'band', dataKey: 'name' }]}
@@ -154,6 +159,15 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
           <Button onClick={handleOkay}>More Information</Button>
         </div>
       </Dialog>
+
+      <Tour
+          steps={steps}
+          isOpen={isTour}
+          accentColor="black"
+          onRequestClose={() => {
+            tourService.GoBack(history);
+          }}
+        />
     
 
   </>

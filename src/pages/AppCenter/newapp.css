@@ -1,0 +1,92 @@
+.my-first-row {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+
+}
+
+
+.my-first-row-card{
+    height: 14em;
+    width: 20em;
+    display:flex ;
+    justify-content:center ;  
+    align-items: center ;
+    flex-direction: column ;
+    border-radius: 20px;
+    text-align: center;
+
+}
+
+.my-second-row{
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.my-second-row-card{
+    height: 14em;
+    width: 20em;
+    display:flex ;
+    justify-content:center ;  
+    align-items: center ;
+    flex-direction: column ;
+    border-radius: 20px;
+    text-align: center;
+
+}
+
+.my-third-row{
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.my-third-row-card{
+    height: 14em;
+    width: 20em;
+    display:flex ;
+    justify-content:center ;  
+    align-items: center ;
+    flex-direction: column ;
+    border-radius: 20px;
+    text-align: center;
+
+}
+
+
+
+/* 
+.my-first-row {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+  
+  .my-first-row-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px; 
+    height: 200px; 
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px; 
+  }
+  
+  .card-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+   */
+

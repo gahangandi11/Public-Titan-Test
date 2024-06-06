@@ -25,6 +25,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 
+import tourService from "../../services/tourService";
+import Tour from "reactour";
+
 interface GraphDataCardprops {
   content: DataCardContent;
   crashList: CountyData[];
@@ -65,19 +68,22 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
     history.push('/app-center/TranscoreAnalytics');  
   };
 
+
+const steps = tourService.getStepsFor("Dashboard");
+const isTour = tourService.StartTour();
     return(
   <>
-    <IonCard  className='main-container'>
+    <IonCard  className='main-container crashes-tour-main'>
             <IonCardTitle className="crash-data-card-title">
               <div className='crashes-header-title'>{props.content.title}</div>
               <Tooltip title="More Information">
-              <div onClick={openModal} className="crashes-data-card-icon">
+              <div onClick={openModal} className="crashes-data-card-icon crashes-tour-icon">
                 <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
               </div>
               </Tooltip>
             </IonCardTitle>
         
-            <div className="gauge-container unique-class-to-change-color">
+            <div className="gauge-container unique-class-to-change-color crashes-tour-gauge">
                 <Gauge width={200} height={150} value={Number(props.content.data)} startAngle={-110} endAngle={110} valueMax={200} innerRadius="75%" outerRadius="100%" 
                 sx={{[`& .${gaugeClasses.valueArc}`]: {fill: '#ec4561',},
                     [`& .${gaugeClasses.valueText}`]: {fontSize: 60,transform: 'translate(0px, 0px)',fill:'red' },
@@ -88,7 +94,7 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
                   Crash Rates By County
         </IonCardTitle>
       
-        <div className=" crash-counties">
+        <div className=" crash-counties crashes-tour-counties">
               {props.crashList.map((county, index) => {
                   return (
                     <div className='crashes-counties-with-bar' key={county.name}>   
@@ -155,6 +161,14 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
           <Button onClick={handleOkay}>More Information</Button>
         </div>
       </Dialog>
+      <Tour
+          steps={steps}
+          isOpen={isTour}
+          accentColor="black"
+          onRequestClose={() => {
+            tourService.GoBack(history);
+          }}
+        />
     
     
 

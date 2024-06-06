@@ -66,7 +66,7 @@ const Homepage: React.FC = () => {
             <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
           </IonCard>
 
-          <IonCard color="primary" onClick={() => handleCardClick('/newpage')}>
+          <IonCard color="primary" onClick={() => handleCardClick('/myapps')}>
           
               <h1>App center</h1>
               

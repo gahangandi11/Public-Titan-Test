@@ -5,7 +5,7 @@ import Home from "./pages/Home/Home";
 import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
 
-import AppCenterPage from "./pages/AppCenter/AppCenterNew";
+import Newapp from "./pages/AppCenter/newapp";
 
 
 /* Ionic CSS */
@@ -102,9 +102,11 @@ const App: React.FC = () => {
               <DataDownload />
             </RouteGuard>
 
-            <RouteGuard path="/newpage" exact={true}>
-              <AppCenterPage/>
+            <RouteGuard path="/myapps" exact={true}>
+              <Newapp />
             </RouteGuard>
+
+
 
 
 

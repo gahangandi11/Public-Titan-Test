@@ -47,11 +47,12 @@ const Menu = () => {
         mdIcon: downloadSharp
     },
     {
-        title: 'Apps',
-        url: '/newpage',
-        iosIcon: homeOutline,
-        mdIcon: homeSharp
-    },];
+        title: 'App Center',
+        url: '/myapps',
+        iosIcon: downloadOutline,
+        mdIcon: downloadSharp
+    },
+   ];
 
     useEffect(() => {
         if (currentUser) {
@@ -90,7 +91,7 @@ const Menu = () => {
                             );
                         })}
                     </IonList>
-                    <IonList>
+                    {/* <IonList>
                         <IonListHeader color="medium">App Center</IonListHeader>
                         {appCenter.map((page, index) => {
                             return(
@@ -102,7 +103,7 @@ const Menu = () => {
                                 </IonMenuToggle>
                             );
                         })}
-                    </IonList>
+                    </IonList> */}
                     <IonList>{currentUser &&
                     <IonMenuToggle  autoHide={false}>
                     <IonItem color="medium"  routerLink={"support"} routerDirection="none" lines="none" detail={false}>

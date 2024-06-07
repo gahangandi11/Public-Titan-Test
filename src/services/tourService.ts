@@ -225,7 +225,11 @@ const tourService = {
 
     GoBack: (history: RouteComponentProps["history"]): void => {
         history.push('/Tutorials');
-    }
+    },
+
+    // ResetTour: (goTo: (step: number) => void): void => {
+    //     goTo(0);
+    // }
 };
 
 export default tourService;

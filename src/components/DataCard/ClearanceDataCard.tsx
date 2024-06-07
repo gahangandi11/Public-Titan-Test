@@ -195,6 +195,7 @@ const isTour = tourService.StartTour();
       <Tour
           steps={steps}
           isOpen={isTour}
+          startAt={0}
           accentColor="black"
           onRequestClose={() => {
             tourService.GoBack(history);

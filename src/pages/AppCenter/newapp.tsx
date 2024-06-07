@@ -146,8 +146,9 @@ const Newapp: React.FC = () => {
 }, [currentUser]);
 
 // const steps = tourService.getStepsFor("AppCenter");
-// const isTour = tourService.StartTour();
+// const isTouri = tourService.StartTour();
 
+// const [isTour,setisTour]=useState(isTouri);
 
  return(
         <IonPage>
@@ -204,7 +205,7 @@ const Newapp: React.FC = () => {
                             return(
                                 <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
-                                    <IonIcon className="icon-large custom-icon-size" ios={page.iosIcon} md={page.mdIcon} />
+                                    <IonIcon className=" custom-icon-size"  ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
                             );
                         })}
@@ -216,7 +217,7 @@ const Newapp: React.FC = () => {
                             return(
                                 <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
-                                    <IonIcon className="icon-large" ios={page.iosIcon} md={page.mdIcon} />
+                                    <IonIcon className=" custom-icon-size" ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
                             );
                         })}
@@ -228,7 +229,7 @@ const Newapp: React.FC = () => {
                             return(
                                 <IonCard key={index} color="primary" className={`my-first-row-card ${page.title.replace(/\s+/g, '-').toLowerCase()}`} routerLink={page.url}>
                                     <h4>{page.title}</h4>
-                                    <IonIcon className="icon-large" ios={page.iosIcon} md={page.mdIcon} />
+                                    <IonIcon className=" custom-icon-size" ios={page.iosIcon} md={page.mdIcon} />
                                 </IonCard>
                             );
                         })}
@@ -241,8 +242,10 @@ const Newapp: React.FC = () => {
       {/* <Tour
           steps={steps}
           isOpen={isTour}
+          startAt={0}
           accentColor="black"
           onRequestClose={() => {
+            setisTour(false);
             tourService.GoBack(history);
           }}
         /> */}

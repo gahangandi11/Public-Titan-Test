@@ -160,7 +160,7 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
                                     <td>{props.newdata.Workzones.value}</td>
                                   </tr>
                                   <tr>
-                                    <td>Avg. Queue Length</td>
+                                    <td>Avg. Queue Length (ft)</td>
                                     <td>{props.newdata['Queue Lengths'].value}</td>
                                   </tr>
                                   <tr>

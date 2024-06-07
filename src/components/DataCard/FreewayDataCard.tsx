@@ -59,6 +59,8 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
   };
   const steps = tourService.getStepsFor("Dashboard");
 const isTour = tourService.StartTour();
+
+
     return(
   <>
     <IonCard className='freeway-main-container freeway-tour-main'>
@@ -164,7 +166,10 @@ const isTour = tourService.StartTour();
           steps={steps}
           isOpen={isTour}
           accentColor="black"
+          startAt={0}
+
           onRequestClose={() => {
+
             tourService.GoBack(history);
           }}
         />

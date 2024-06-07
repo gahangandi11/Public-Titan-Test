@@ -21,12 +21,12 @@ interface CardProps extends RouteProps {
 const TutorialCard: React.FC<CardProps> = (props: CardProps) => {
     return(
         <IonCol size="12" size-sm="12" size-md="6" size-lg="4" size-xl="3">
-            <IonCard className={"outer-tutorial-card"}>
+            <IonCard color='primary' className={"outer-tutorial-card"}>
                 <IonGrid>
                     <IonRow>
                         <IonCol size="5">
                             <div className={"tutorial-card " + props.cardData.color}>
-                                <IonIcon color="primary" size="large" ios={props.cardData.iosIcon} md={props.cardData.mdIcon}/>
+                                <IonIcon color="light" size="large" ios={props.cardData.iosIcon} md={props.cardData.mdIcon}/>
                             </div>
                         </IonCol>
                         <IonCol size="7">

@@ -71,6 +71,8 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
   const steps = tourService.getStepsFor("Dashboard");
   const isTour = tourService.StartTour();
 
+
+
     return(
   <>
     <IonCard  className='congestion-main-container congestion-tour-main'>
@@ -128,15 +130,20 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
           onDidDismiss={closeModal}
           cssClass="bigger-alert"
         ></IonAlert>
+*/}
 
-        <Tour
+<Tour
           steps={steps}
           isOpen={isTour}
           accentColor="black"
+          startAt={0}
+
           onRequestClose={() => {
+            
+
             tourService.GoBack(history);
           }}
-        /> */}
+        /> 
          <Dialog
       className='alert-class'
         open={modalOpen}

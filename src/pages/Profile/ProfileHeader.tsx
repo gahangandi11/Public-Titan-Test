@@ -28,6 +28,7 @@ const ProfileHeader: React.FC = () => {
             className="profile-image"
           />
         </IonCol>
+        
       </IonRow>
       <IonRow>
         <IonCol className="center-text">

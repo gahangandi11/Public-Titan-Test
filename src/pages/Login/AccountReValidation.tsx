@@ -5,7 +5,6 @@ import {
   IonFooter,
   IonCard,
   IonCardContent,
-  IonCardHeader,
   IonContent,
   IonLabel,
   IonPage,
@@ -15,14 +14,7 @@ import {
 } from "@ionic/react";
 // import { getFireUser } from '../../firebaseConfig';
 // import './Registration.css';
-import {
-  arrowBackOutline,
-  arrowBackSharp,
-  arrowForwardOutline,
-  arrowForwardSharp,
-  checkmarkCircleOutline,
-  checkmarkCircleSharp,
-} from "ionicons/icons";
+import {arrowBackOutline,arrowBackSharp,} from "ionicons/icons";
 import { useHistory } from "react-router";
 // import firebaseService from '../../services/firebaseService';
 import { User } from "../../interfaces/User";
@@ -42,8 +34,7 @@ const ReValidation: React.FC = () => {
   const userAuth = getCurrentUser();
 
   const [error, setError] = useState<string>("");
-  const [renewalRequires, setRenewalRequires] =
-    useState<boolean>(false);
+  const [renewalRequires, setRenewalRequires] =useState<boolean>(false);
   const [verfieid, setVerified] = useState<boolean>(false);
 
   const history = useHistory();
@@ -55,30 +46,37 @@ const ReValidation: React.FC = () => {
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+
     async function fetchUserData() {
       if (userAuth) {
-        console.log("Getting user document");
+        // console.log("Getting user document");
         const doc = await getDoc(getUserDocumentRef(userAuth.uid));
         if (doc.exists()) {
           const document = doc.data() as User;
           setRenewalRequires(document.requiresRenewal ?? false);
-          setVerified(document.verified ?? false);
-          if (document.verified && !document.requiresRenewal) {
-            history.push("/home");
+          // setVerified(document.verified ?? false);
+          if (!document.requiresRenewal) {
+            // history.push("/home");
+            history.push("/homepage");
             return;
           }
         }
 
-        console.log("Listening to user docs");
+        // console.log("Listening to user docs");
         unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
           const data = doc.data();
           if (data) {
             const document = data as User;
             setRenewalRequires(document.requiresRenewal ?? false);
-            setVerified(document.verified ?? false);
-            if (document.verified && !document.requiresRenewal) {
-              history.push("/home");
+            // setVerified(document.verified ?? false);
+            if (!document.requiresRenewal) {
+              // history.push("/home");
+              history.push("/homepage");
             }
+            // if (document.verified && !document.requiresRenewal) {
+            //   // history.push("/home");
+            //   history.push("/homepage");
+            // }
           }
         });
       }
@@ -94,8 +92,8 @@ const ReValidation: React.FC = () => {
   function getErrorMessage(): string {
     if (renewalRequires)
       return "Your account has been disabled temporarily and requires renewal. Please contact support.";
-    else if (!renewalRequires && verfieid)
-      return "Your account has been renewed.";
+    // else if (!renewalRequires && verfieid)
+    //   return "Your account has been renewed.";
     else return "Your account doesn't requires renewal at the moment.";
   }
 

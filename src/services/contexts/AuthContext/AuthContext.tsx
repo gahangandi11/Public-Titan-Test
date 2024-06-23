@@ -105,14 +105,16 @@ export function getReidrectedUrl(
 const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userDoc, setUserDoc] = useState<any>(null);
-
+  // console.log('auth user Doc', userDoc);
   useEffect(() => {
     return auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      console.log('current user set');
       if (user) {
         localStorage.setItem("authKey", user.uid);
         getUserByID(user.uid).then((doc) => {
           setUserDoc(doc);
+          console.log('user doc set');
         });
       } else {
         localStorage.removeItem("authKey");

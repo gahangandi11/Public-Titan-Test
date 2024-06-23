@@ -34,7 +34,8 @@ const Login: React.FC = () => {
   const history = useHistory();
   const [signup, setSignup] = useState(false);
   const [present, dismiss] = useIonToast();
-
+  const [shortDescription, setShortDescription] = useState('');
+  
   const registrationRedirect = window.location.href;
 
   async function login() {
@@ -87,7 +88,7 @@ const Login: React.FC = () => {
         setSignup(!signup);
         clear();
         setEmail(email);
-        await createUser(userCredential);
+        await createUser(userCredential, shortDescription);
         history.push("/verification");
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
@@ -134,7 +135,7 @@ const Login: React.FC = () => {
           <div className="background" />
           <div className="card--container">
             <IonCard
-              className="card--login ion-padding ion-margin"
+              className={`card--login ion-padding ion-margin ${signup ? 'card--signup' : ''}`}
               color="primary"
             >
               <IonCardHeader className="titan-container">
@@ -188,6 +189,29 @@ const Login: React.FC = () => {
                   }}
                 />
               )}
+
+                 {signup && (
+                  <>
+                    <IonLabel color="light" position="floating">
+                      Why do you want to access Titan? (Please explain shortly):
+                    </IonLabel>
+                    <IonInput
+                      className="login-input"
+                      type="text"
+                      value={shortDescription}
+                      onIonChange={(val) => {
+                        const inputShortDescription = val.detail.value;
+                        if (inputShortDescription) {
+                          setShortDescription(inputShortDescription);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+
+
+
+
               {!signup && (
                 <div className="links">
                   <IonRouterLink className="link" routerLink="/forgotPassword">

@@ -212,6 +212,8 @@ export async function verifyUser(user: User) {
     });
 }
 
+
+
 export async function updateVerificationAndAdminFlag(userId: string, isVerfied: boolean, isAdmin: boolean) {
     const userRef = doc(db, "Users", userId);
     await updateDoc(userRef, {
@@ -219,13 +221,20 @@ export async function updateVerificationAndAdminFlag(userId: string, isVerfied: 
     });
 }
 
-export async function createUser(currentUser: any) {
+export async function createUser(currentUser: any, shortDescription: string) {
     const date = new Date();
     const formattedDate = date.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
     })
+
+    const oneYearFromNow = new Date(date.setFullYear(date.getFullYear() + 1));
+    const formattedRenewalDate = oneYearFromNow.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
     currentUser = currentUser.user;
     const defaultData = {
         uid: currentUser.uid,
@@ -237,7 +246,9 @@ export async function createUser(currentUser: any) {
         subscriptions: [],
         requiresRenewal: false,
         registeredDate: formattedDate,
-        renewalDate: formattedDate
+        renewalDate: formattedRenewalDate,
+        shortDescription: shortDescription,
+        fullAccess: false,
     };
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
@@ -266,4 +277,60 @@ export async function getAttachementUrl(ref: StorageReference): Promise<string> 
     return getDownloadURL(ref);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function setUserRole(user: User, fullAccess: boolean) {
+    const userRef = doc(db, "Users", user.uid);
+    await updateDoc(userRef, {
+        fullAccess: fullAccess,
+    });
+}
+
+
+export async function reverifyUser(user: User, renewalstatus: boolean) {
+    const userRef = doc(db, "Users", user.uid);
+    await updateDoc(userRef, {
+        verified: true,
+        requiresRenewal: renewalstatus,
+    });
+}
+
+export async function setNewrenewalDate(user: User) {
+    const userRef = doc(db, "Users", user.uid);
+    const oneYearFromNow = new Date();
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1); 
+
+    const formattedDate = oneYearFromNow.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+      });
+    await updateDoc(userRef, {
+        renewalDate: formattedDate,
+    });
+}
+
+export async function deleteDocument(currentUser: any) {
+    const docRef = doc(db, "Users", currentUser.uid);
+    await deleteDoc(docRef);
+}
+
+export async function getreverifyUsers() {
+    const userCollection = collection(db, "Users");
+    const userQuery = query(userCollection, where("requiresRenewal", "==", true));
+    const userDocs = await getDocs(userQuery);
+    const foundDocs: User[] = [];
+    userDocs.forEach(doc => {
+        foundDocs.push(doc.data() as User);
+    });
+    return foundDocs;
+}
+
+
+export async function updateRenewalStatus(userId: string, requiresRenewal: boolean) {
+    const userRef = doc(db, "Users", userId);
+    await updateDoc(userRef, {
+        requiresRenewal: requiresRenewal,
+    });
+}
 

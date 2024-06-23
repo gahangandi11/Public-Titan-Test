@@ -14,6 +14,8 @@ export class User {
     registeredDate?:string|null
     renewalDate?:string|null
     subscriptions?: string[];
+    fullAccess?: boolean;
+    shortDescription?: string;
 
     constructor()
     constructor (uid: string,
@@ -31,6 +33,8 @@ export class User {
                  requiresRenewal?:boolean,
                   registeredDate?:string|null,
                   renewalDate?:string|null,
+                  fullAccess?: boolean,
+                  shortDescription?: string,
                  )
     constructor (uid?: string,
                  admin?: boolean,
@@ -47,6 +51,8 @@ export class User {
                  requiresRenewal?:boolean,
                  registeredDate?:string|null,
                  renewalDate?:string|null,
+                 fullAccess?: boolean,
+                 shortDescription?: string,
                  ){
         this.uid = uid ? uid : '';
         this.email = email ? email : '';
@@ -63,5 +69,7 @@ export class User {
         this.deviceIDs = deviceIDs ? deviceIDs : [];
         this.registeredDate=registeredDate?registeredDate:'';
         this.renewalDate=renewalDate?renewalDate:'';
+        this.fullAccess=fullAccess? fullAccess : false;
+        this.shortDescription=shortDescription?shortDescription : '';
     }
 }

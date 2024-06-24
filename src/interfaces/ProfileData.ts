@@ -1,6 +1,7 @@
 export interface ProfileQuickActionsProps
 {
     onActionTapped:(actionType:ProfileQuickActionType)=>void,
+    refreshUserList: () => void; // Added this line
 
 }
 

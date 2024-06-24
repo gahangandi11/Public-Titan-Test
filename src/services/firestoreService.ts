@@ -334,3 +334,30 @@ export async function updateRenewalStatus(userId: string, requiresRenewal: boole
     });
 }
 
+export async function updateallusersRegisteredDate() {
+    const userCollection = collection(db, "Users");
+    const userQuery = query(userCollection, where("uid", "==", "m6jtJFHB9rbBrsPzLvB94dBF4402"));
+    const userDocs = await getDocs(userQuery);
+
+    userDocs.forEach(doc => {
+        console.log('updating user:',doc.data())
+    });
+
+    // console.log('updating user:',userDocs)
+
+    userDocs.forEach(async (docSnapshot) => {
+        if (!docSnapshot.data().registeredDate) {
+            const date = new Date();
+            const formattedDate = date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            })
+
+            await updateDoc(doc(db, "Users", docSnapshot.id), {
+                registeredDate: formattedDate
+            });
+        }
+    });
+    
+}

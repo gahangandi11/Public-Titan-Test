@@ -25,7 +25,9 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
     }
      function onAdminSettingTapped(){
                 props.onActionTapped(ProfileQuickActionType.ADMIN_SETTING);
+                props.refreshUserList();
     }
+    
 
   return (
     <IonCard className="profile-card">

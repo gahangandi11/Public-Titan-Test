@@ -86,17 +86,13 @@ const appcentersteps = [
 
 const Downloadsteps = [
     {
-        selector: '.first-step',
-        content: 'This is the Probe Data Querying Page. ' +
-            'This is one of the download pages that we offer which will allow you to select and download ' +
-            'groups of historical data. \n' +
-            'Follow the steps to learn how to query historical data on traffic, incidents, jams, ' +
-            'and more!',
+        selector: '.first-step-tutorial',
+        content: 'This is the Probe Data Querying Page. ' ,
         style: {color: 'black'}
     },
     {
-        selector: '.second-step',
-        content: 'Here you can select the desired date range for the data you\'d like to receive.',
+        selector: '.second-step-tutorial',
+        content: 'Here you can select the desired date range for the data you like to receive.',
         style: {color: 'black'}
     },
 ];
@@ -209,7 +205,7 @@ const tourService = {
                steps = [{
                    selector: '.error',
                    content: 'Error grabbing Correct tour steps.',
-                   style: {color: 'black'}
+                   style: {color: 'blue'}
                }];
                break;
        }
@@ -223,13 +219,33 @@ const tourService = {
         return isTour;
    },
 
+   StartTourApp: (): boolean => {
+    const query = new URLSearchParams(useLocation().search);
+    let isTour: boolean;
+    query.get('tour') === '\'app-true\'' ? isTour = true: isTour = false;
+    return isTour;
+   },
+
+   StartTourDashboard: (): boolean => {
+    const query = new URLSearchParams(useLocation().search);
+    let isTour: boolean;
+    query.get('tour') === '\'dash-true\'' ? isTour = true: isTour = false;
+    return isTour;
+   },
+
+   StartTourData: (): boolean => {
+    const query = new URLSearchParams(useLocation().search);
+    let isTour: boolean;
+    query.get('tour') === '\'data-true\'' ? isTour = true: isTour = false;
+    return isTour;
+   },
+
+
+
     GoBack: (history: RouteComponentProps["history"]): void => {
         history.push('/Tutorials');
     },
 
-    // ResetTour: (goTo: (step: number) => void): void => {
-    //     goTo(0);
-    // }
 };
 
 export default tourService;

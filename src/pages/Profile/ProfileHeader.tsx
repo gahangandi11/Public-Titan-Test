@@ -33,7 +33,7 @@ const ProfileHeader: React.FC = () => {
       <IonRow>
         <IonCol className="center-text">
           <IonText mode="ios" color="primary">
-            <h1>{currentUser?.email}</h1>
+            <h2>{currentUser?.email}</h2>
           </IonText>
         </IonCol>
       </IonRow>

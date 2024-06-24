@@ -15,12 +15,12 @@
     padding-top: 2em;
     padding-left: 2em;
     padding-right: 2em;
-    padding-bottom: 3em;
+    padding-bottom: 1em;
 }
 
 .profile-card {
 
-    margin-top: 0px;
+    margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
     margin-bottom: 2em;
@@ -74,8 +74,8 @@ ion-item-divider {
 }
 
 .profile-image {
-    width: 12em;
-    height: 12em;
+    width: 10em;
+    height: 10em;
 }
 
 .no-margin-card {

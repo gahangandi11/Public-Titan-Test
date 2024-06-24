@@ -150,6 +150,9 @@ const Newapp: React.FC = () => {
 
 // const [isTour,setisTour]=useState(isTouri);
 
+    const steps = tourService.getStepsFor("AppCenter");
+    const isTour = tourService.StartTourApp();
+
  return(
         <IonPage>
     <Header title={"Home"} />
@@ -239,16 +242,15 @@ const Newapp: React.FC = () => {
 
 
       </div>
-      {/* <Tour
+      <Tour
           steps={steps}
           isOpen={isTour}
           startAt={0}
           accentColor="black"
           onRequestClose={() => {
-            setisTour(false);
             tourService.GoBack(history);
           }}
-        /> */}
+        />
       
         </IonContent>
         </IonPage>

@@ -25,7 +25,7 @@ import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole } from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, updateallusersRegisteredDate } from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
 import UserList from "./UserList";
 import Box from '@mui/material/Box';
@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
           <IonRow>
             <ProfileHeader />
             <IonCol size="auto">
-               <ProfileActions onActionTapped={setProfileAction} />
+               <ProfileActions refreshUserList={refreshUserList} onActionTapped={setProfileAction} />
             </IonCol>
           </IonRow>
           <IonRow>
@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
                               <TabList onChange={handleChange} aria-label="lab API tabs example">
                                 <Tab label="Users Awaiting Verification" value="1" />
                                 <Tab label="Users Awaiting Re-verification" value="2" />
-                                <Tab label="Rejected Users" value="3" />
+                                <Tab label="Item Three" value="3" />
                               </TabList>
                             </Box>
                             <TabPanel value="1">
@@ -147,7 +147,7 @@ const Profile: React.FC = () => {
                               <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser}/>
                             </TabPanel>
                             <TabPanel value="3">
-                              Item Three
+                              <button onClick={updateallusersRegisteredDate}>Click Me</button>
                             </TabPanel>
                           </TabContext>
                         </Box>

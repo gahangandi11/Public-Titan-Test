@@ -13,6 +13,8 @@ import {
   IonText,
   IonToggle,
 } from "@ionic/react";
+
+import { Button } from "@material-ui/core";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
@@ -25,8 +27,14 @@ import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser } from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole} from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
+import UserList from "./UserList";
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 const Profile: React.FC = () => {
   const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
@@ -39,19 +47,47 @@ const Profile: React.FC = () => {
 
   const [newUsers, setNewUsers] = useState<User[]>([]);
 
+  const [reverifyUsers, setreverifyUsers] = useState<User[]>([]);
+  const [access, setAccess] = useState('');
+  console.log('access', access);
   function onRefreshProfileRequestReceived() {
     refreshAllProfileSiblingComponents(!refreshSiblingComponents);
   }
 
-  function changeUserStatus(user: User) {
+  async function changeUserStatus(user: User) {
+    const isFullAccess = access === 'full';
     verifyUser(user);
+    setUserRole(user, isFullAccess);
     setTimeout(function () {
       refreshUserList();
+      // window.alert('User is approved');
+    }, 1000);
+   
+  }
+
+
+  function reverifyUserStatus(user: User) {
+    const renewalstatus = false;
+    reverifyUser(user, renewalstatus);
+    setNewrenewalDate(user);
+    setTimeout(function () {
+      refreshReVerifyUserList();
     }, 1000);
   }
 
+
+  function removeUser(user: User) {
+    deleteDocument(user);
+    setTimeout(function () {
+      refreshUserList();
+    }, 1000);
+
+   }
+
   useEffect(() => {
     refreshUserList();
+    refreshReVerifyUserList();
+    console.log('component called');
   }, []);
 
   function refreshUserList() {
@@ -60,6 +96,17 @@ const Profile: React.FC = () => {
     });
   }
 
+  function refreshReVerifyUserList() {
+    getreverifyUsers().then((docs) => {
+      setreverifyUsers(docs);
+    });
+  }
+
+  const [value, setValue] = React.useState('1');
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+
   return (
     <IonPage color="light">
       <Header title="Profile" hideProfileButton={true} />
@@ -67,6 +114,9 @@ const Profile: React.FC = () => {
         <IonGrid>
           <IonRow>
             <ProfileHeader />
+            <IonCol size="auto">
+               <ProfileActions refreshUserList={refreshUserList} onActionTapped={setProfileAction} />
+            </IonCol>
           </IonRow>
           <IonRow>
             <IonCol>
@@ -81,40 +131,49 @@ const Profile: React.FC = () => {
                   onProfileSegmentUpdated={onRefreshProfileRequestReceived}
                 />
               )}
-                {userDoc?.admin &&
-              profileAction == ProfileQuickActionType.ADMIN_SETTING && (
+                {userDoc?.admin && profileAction == ProfileQuickActionType.ADMIN_SETTING && (
                 <div>
-                  <IonItem lines="none" className="div-subtitle space-between">
-                    <IonLabel className="bold-label">Users Awaiting Verification</IonLabel>
-                  </IonItem>
-                  {newUsers.map((user, index) => {
-                    return (
-                      <IonItem key={index}>
-                        <div className="applied-user">
-                          <div className="email-container">
-                            <IonRow className="ion-align-items-start">
-                              <div>{user.email}</div>
-                            </IonRow>
-                            <IonRow className="ion-align-items-end">
-                              <div className="toggle-container">
-                                <IonToggle
-                                  checked={user.verified}
-                                  onIonChange={() => changeUserStatus(user)}
-                                />
-                              </div>
-                            </IonRow>
-                          </div>
-                        </div>
-                      </IonItem>
-                    );
-                  })}
+                  <Box sx={{ width: '100%', typography: 'body1' }}>
+                          <TabContext value={value}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider', backgroundColor:'aliceblue', margin:'1em', marginBottom:'0em' }}>
+                              <TabList onChange={handleChange} aria-label="lab API tabs example">
+                                <Tab label="Users Awaiting Verification" value="1" />
+                                <Tab label="Users Awaiting Re-verification" value="2" />
+                              </TabList>
+                              
+                            </Box>
+                            <TabPanel value="1">
+                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser}/>
+                            </TabPanel>
+                            <TabPanel value="2">
+                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser}/>
+                            </TabPanel>
+                          </TabContext>
+                        </Box>
+                  
+                 
                 </div>
               )}
             </IonCol>
           
-            <IonCol size="auto">
+            {/* <IonCol size="auto">
               <ProfileActions onActionTapped={setProfileAction} />
-            </IonCol>
+            </IonCol> */}
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default Profile;
+
+
+
+
+
+
+
             {/* { userDoc?.admin && <IonCol>
               <IonText>Users awaiting verification: </IonText><br /><br />
               {newUsers.map((user, index) => {
@@ -131,11 +190,3 @@ const Profile: React.FC = () => {
                 );
               })}
             </IonCol>} */}
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
-  );
-};
-
-export default Profile;

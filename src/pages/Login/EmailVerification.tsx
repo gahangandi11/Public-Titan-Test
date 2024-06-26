@@ -79,7 +79,8 @@ const EmailVerification: React.FC = () => {
   };
 
   const toDashboard = () => {
-    history.push("/home");
+    // history.push("/home");
+    history.push("/homepage");
   };
 
 
@@ -105,7 +106,8 @@ const EmailVerification: React.FC = () => {
             const document = data as User;
             setUser(document);
             if (document.verified && isEmailVerifiedByUser()) {
-              history.push("/home");
+              // history.push("/home");
+              history.push("/homepage");
             }
           }
         });

@@ -1,6 +1,8 @@
 import { Redirect, Route, useHistory } from "react-router-dom";
 import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+
+
 import Home from "./pages/Home/Home";
 import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
@@ -42,6 +44,7 @@ import ForgotPassword from "./pages/Login/ForgotPassword";
 import EmailVerification from "./pages/Login/EmailVerification";
 import RedirectHandler from "./pages/Login/RedirectUrlHandler";
 import ReValidation from "./pages/Login/AccountReValidation";
+import RoleRouteGuard from "./components/Guard/RoleRouteGard";
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
@@ -99,17 +102,17 @@ const App: React.FC = () => {
               <Dashboard />
             </RouteGuard>
 
-            <RouteGuard path="/data" exact={true}>
+            <RoleRouteGuard path="/data" exact={true}>
               <DataDownload />
-            </RouteGuard>
+            </RoleRouteGuard>
 
-            <RouteGuard path="/myapps" exact={true}>
+            <RoleRouteGuard path="/myapps" exact={true}>
               <Newapp />
-            </RouteGuard>
+            </RoleRouteGuard>
 
-            <RouteGuard path="/tutorials" exact={true}>
+            <RoleRouteGuard path="/tutorials" exact={true}>
               <Tutorials />
-            </RouteGuard>
+            </RoleRouteGuard>
 
 
 
@@ -125,9 +128,9 @@ const App: React.FC = () => {
 
             {links.map((link) => {
               return (
-                <RouteGuard path={"/app-center/" + link.name} key={link.name}>
+                <RoleRouteGuard path={"/app-center/" + link.name} key={link.name}>
                   <AppCenter title={link.name} />
-                </RouteGuard>
+                </RoleRouteGuard>
               );
             })}
           </IonRouterOutlet>

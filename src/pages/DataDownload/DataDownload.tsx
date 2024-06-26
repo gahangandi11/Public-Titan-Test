@@ -209,8 +209,8 @@ const DataDownload: React.FC = () => {
         changePage(pages[0]);
     }, []);
 
-    // const steps = tourService.getStepsFor("Downloads");
-    // const isTour = tourService.StartTour();
+    const steps = tourService.getStepsFor("Downloads");
+    const isTour = tourService.StartTourData();
     const history = useHistory();
 
     return (
@@ -220,15 +220,17 @@ const DataDownload: React.FC = () => {
                 <IonContent color="light">
                     <IonRow className="ion-justify-content-center download__container">
                         <IonCard className="download__card">
-                            <div className='download__icon download__green first-step'>
+                            <div className='download__icon download__green first-step-tutorial'>
                                 <IonIcon size="large" color="light" ios={downloadOutline} md={downloadSharp} />
                             </div>
                             <IonCardContent className="download__card__content">
-                                <IonLabel>{page.name}</IonLabel>
+                                <IonLabel className='second-step-tutorial'>{page.name}</IonLabel>
                                 <IonSelect color="light" value={page} interface='alert'  placeholder="Select Database"  onIonChange={e => changePage(e.detail.value)}>
-                                    <IonSelectOption className='second-step' value={{name: 'Probe', value: 'inrix_probe_query'}}>
+                                    
+                                    <IonSelectOption  value={{name: 'Probe', value: 'inrix_probe_query'}}>
                                         Probe 
                                     </IonSelectOption>
+                                    
                                     <IonSelectOption value={{
                                         name: 'WazeJam',
                                         value: 'waze_jam_query'
@@ -282,7 +284,7 @@ const DataDownload: React.FC = () => {
                                     <FileName file={file} setFile={setFile} form={page.name} />
                                 </div><br />
                                 <CountySelectorWithAlias counties={counties} setCounties={setCounties} options={countiesMO} width='county-small'                 type="counties" /><br />
-                                <IonButton color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
+                                <IonButton  color="secondary" type="submit" onClick={submit}>Submit Query</IonButton>
                             </IonCardContent>
                         </IonCard>
                     </IonRow>
@@ -291,14 +293,15 @@ const DataDownload: React.FC = () => {
                             <Downloads page={page.value} />
                         </AuthProvider>
                     </IonRow>
-                    {/* <Tour
+                    <Tour
           steps={steps}
           isOpen={isTour}
+          startAt={0}
           accentColor="black"
           onRequestClose={() => {
             tourService.GoBack(history);
           }}
-        /> */}
+        />
                 </IonContent>
             </IonPage>
         </AuthProvider>

@@ -12,6 +12,10 @@
     color: black;
 }
 
+.card--signup {
+  height: 40em;
+}
+
 .titan-t {
     width: 4em;
     height: 4em;

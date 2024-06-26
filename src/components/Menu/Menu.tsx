@@ -14,10 +14,11 @@ interface AppPage {
     mdIcon: string;
     title: string;
     link?: string;
+    pageFullAccess?: boolean;
 }
 
 const Menu = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, userDoc } = useAuth();
 
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
@@ -28,31 +29,36 @@ const Menu = () => {
             url: '/homepage',
             iosIcon: homeOutline ,
             mdIcon:homeSharp ,
+            pageFullAccess: true,
         },
     {
         title: 'Live Data',
         url: '/home',
         iosIcon: iconService.getIcon('analytics', "ios"),
-        mdIcon: iconService.getIcon('analytics', "android")
+        mdIcon: iconService.getIcon('analytics', "android"),
+        pageFullAccess: true,
     },
     {
         title: 'Dashboard',
         url: '/dashboard',
         iosIcon: gridOutline,
-        mdIcon: gridSharp
+        mdIcon: gridSharp,
+        pageFullAccess: true,
     }, {
         title: 'Data Download',
         url: '/data',
         iosIcon: downloadOutline,
-        mdIcon: downloadSharp
+        mdIcon: downloadSharp,
+        pageFullAccess: false,
     },
     {
         title: 'App Center',
         url: '/myapps',
         // iosIcon: downloadOutline,
         // mdIcon: downloadSharp
-        iosIcon: iconService.getIcon('git', "ios"),
-        mdIcon: iconService.getIcon('git', "android")
+        iosIcon: iconService.getIcon('apps', "ios"),
+        mdIcon: iconService.getIcon('apps', "android"),
+        pageFullAccess: false,
     },
     {
         title: 'Tutorials',
@@ -60,7 +66,8 @@ const Menu = () => {
         // iosIcon: downloadOutline,
         // mdIcon: downloadSharp
         iosIcon: iconService.getIcon('walk', "ios"),
-        mdIcon: iconService.getIcon('walk', "android")
+        mdIcon: iconService.getIcon('walk', "android"),
+        pageFullAccess: false,
     },
    ];
 
@@ -76,7 +83,8 @@ const Menu = () => {
                         title: link.name,
                         url: "/app-center/" + link.name,
                         iosIcon: iconService.getIcon(link.icon, "ios"),
-                        mdIcon: iconService.getIcon(link.icon, "android")
+                        mdIcon: iconService.getIcon(link.icon, "android"),
+                        pageFullAccess: false,
                     });
                 });
                 setAppCenter(apps);
@@ -92,12 +100,14 @@ const Menu = () => {
                         <IonListHeader color="medium">Welcome to TITAN</IonListHeader>
                         {generalPages.map((page, index) => {
                             return(
+                                userDoc?.fullAccess || page.pageFullAccess ? (
                                 <IonMenuToggle key={index} autoHide={false}>
                                     <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
                                         <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
                                         <IonLabel>{page.title}</IonLabel>
                                     </IonItem>
                                 </IonMenuToggle>
+                                   ) : null
                             );
                         })}
                     </IonList>

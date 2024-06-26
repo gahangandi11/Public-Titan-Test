@@ -137,7 +137,8 @@ const Support: React.FC = () => {
       duration: 5000,
       color: "success",
     });
-    history.push("/home");
+    // history.push("/home");
+    history.push("/homepage");
   }
 
   function clear() {

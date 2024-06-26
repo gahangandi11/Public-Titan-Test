@@ -70,7 +70,7 @@ const GraphDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> 
 
 
 const steps = tourService.getStepsFor("Dashboard");
-const isTour = tourService.StartTour();
+const isTour = tourService.StartTourDashboard();
 
 console.log(steps);
 console.log(isTour);

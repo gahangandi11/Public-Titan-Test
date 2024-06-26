@@ -188,7 +188,7 @@ export function getUserDocumentRef(id: string): DocumentReference<DocumentData> 
 
 export async function getNewUsers() {
     const userCollection = collection(db, "Users");
-    const userQuery = query(userCollection, where("verified", "==", false));
+    const userQuery = query(userCollection, where("verified", "==", false),where("applied", "==", false));
     const userDocs = await getDocs(userQuery);
     const foundDocs: User[] = [];
     userDocs.forEach(doc => {
@@ -312,7 +312,17 @@ export async function setNewrenewalDate(user: User) {
 
 export async function deleteDocument(currentUser: any) {
     const docRef = doc(db, "Users", currentUser.uid);
-    await deleteDoc(docRef);
+
+    // await deleteDoc(docRef);
+    //delete doc has to be implemented with admin auth and delete the user from the Auth as well.
+
+    //just adding a temporary check so the admin feels user is deleted.
+    //but the user is not deleted from the database and still wont have access beacuse of the verified flag.
+    await updateDoc(docRef, {
+        applied: true,
+    });
+
+
 }
 
 export async function getreverifyUsers() {
@@ -334,30 +344,17 @@ export async function updateRenewalStatus(userId: string, requiresRenewal: boole
     });
 }
 
-export async function updateallusersRegisteredDate() {
-    const userCollection = collection(db, "Users");
-    const userQuery = query(userCollection, where("uid", "==", "m6jtJFHB9rbBrsPzLvB94dBF4402"));
-    const userDocs = await getDocs(userQuery);
+// export async function updateallusersRegisteredDate() {
+//     const userCollection = collection(db, "Users");
+//     const userDocs = await getDocs(userCollection);
 
-    userDocs.forEach(doc => {
-        console.log('updating user:',doc.data())
-    });
+//      userDocs.forEach(async (docSnapshot) => {
+//                     await updateDoc(doc(db, "Users", docSnapshot.id), {
+//                         fullAccess: true
+//                     });
+          
+        
+//     });
 
-    // console.log('updating user:',userDocs)
-
-    userDocs.forEach(async (docSnapshot) => {
-        if (!docSnapshot.data().registeredDate) {
-            const date = new Date();
-            const formattedDate = date.toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            })
-
-            await updateDoc(doc(db, "Users", docSnapshot.id), {
-                registeredDate: formattedDate
-            });
-        }
-    });
     
-}
+// }

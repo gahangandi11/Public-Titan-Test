@@ -98,9 +98,9 @@ const App: React.FC = () => {
               <Home />
             </RouteGuard>
 
-            <RoleRouteGuard path="/dashboard" exact={true}>
+            <RouteGuard path="/dashboard" exact={true}>
               <Dashboard />
-            </RoleRouteGuard>
+            </RouteGuard>
 
             <RoleRouteGuard path="/data" exact={true}>
               <DataDownload />
@@ -118,9 +118,9 @@ const App: React.FC = () => {
 
 
 
-            <RoleRouteGuard path="/profile" exact={true}>
+            <RouteGuard path="/profile" exact={true}>
               <Profile />
-            </RoleRouteGuard>
+            </RouteGuard>
 
             <RouteGuard path="/support" exact={true}>
               <Support />

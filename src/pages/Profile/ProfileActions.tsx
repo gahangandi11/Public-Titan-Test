@@ -27,6 +27,9 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
                 props.onActionTapped(ProfileQuickActionType.ADMIN_SETTING);
                 props.refreshUserList();
     }
+    function RefreshUserList(){
+      props.refreshUserList();
+}
     
 
   return (
@@ -48,6 +51,10 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
       </IonItem>
       { (userDoc?.admin) && <IonItem onClick={onAdminSettingTapped} button={true}>
         <IonLabel>Verify Users</IonLabel>
+      </IonItem>
+}
+{ (userDoc?.admin) && <IonItem onClick={RefreshUserList} button={true}>
+        <IonLabel>Refresh Users List</IonLabel>
       </IonItem>
 }
     </IonCard>

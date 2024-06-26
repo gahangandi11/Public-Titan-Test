@@ -3,7 +3,7 @@ import Header from "../../components/Header/Header";
 import './HomePage.css'
 
 
-
+import {useAuth} from '../../services/contexts/AuthContext/AuthContext';
 
 import {
     IonButton,
@@ -35,6 +35,8 @@ const Homepage: React.FC = () => {
   const handleCardClick = (path: string) => {
     history.push(path); // Redirects to the given path
   }
+
+  // const { currentUser, userDoc } = useAuth();
  return(
         <IonPage>
     <Header title={"Home"} />
@@ -43,13 +45,14 @@ const Homepage: React.FC = () => {
 
          <div className="display-cards">
 
-          
+         
           <IonCard color="primary" onClick={() => handleCardClick('/home')}>
            
                 <h1>Live Data</h1>
                 <Icon className="icon-style" color="white" icon="arcticons:maps" />
            
-          </IonCard>
+          </IonCard> 
+          
 
           <IonCard color="primary" onClick={() => handleCardClick('/dashboard')}>
           
@@ -59,13 +62,15 @@ const Homepage: React.FC = () => {
           </IonCard>
          
           
-          
+         
           <IonCard color="primary" onClick={() => handleCardClick('/data')}>
            
             <h1>Download</h1>
             <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
           </IonCard>
 
+
+    
           <IonCard color="primary" onClick={() => handleCardClick('/myapps')}>
           
               <h1>App center</h1>

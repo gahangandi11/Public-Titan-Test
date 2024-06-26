@@ -45,7 +45,9 @@ import {
     cloudDownloadOutline,
     warning,
     thunderstormOutline,
-    thunderstormSharp, arrowForwardSharp
+    thunderstormSharp, arrowForwardSharp,
+    appsOutline,
+    appsSharp,
 } from 'ionicons/icons';
 
 const iconService = {
@@ -98,6 +100,8 @@ const iconService = {
                 return ios ? cloudUploadOutline : cloudUploadSharp;
             case 'arrowForward':
                 return ios ? arrowForwardOutline : arrowForwardSharp;
+            case 'apps':
+                    return ios ? appsOutline : appsSharp;
             case 'warning':
                 return warning;
             case 'weather':

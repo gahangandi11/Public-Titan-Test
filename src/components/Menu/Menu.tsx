@@ -43,7 +43,7 @@ const Menu = () => {
         url: '/dashboard',
         iosIcon: gridOutline,
         mdIcon: gridSharp,
-        pageFullAccess: false,
+        pageFullAccess: true,
     }, {
         title: 'Data Download',
         url: '/data',
@@ -56,8 +56,8 @@ const Menu = () => {
         url: '/myapps',
         // iosIcon: downloadOutline,
         // mdIcon: downloadSharp
-        iosIcon: iconService.getIcon('git', "ios"),
-        mdIcon: iconService.getIcon('git', "android"),
+        iosIcon: iconService.getIcon('apps', "ios"),
+        mdIcon: iconService.getIcon('apps', "android"),
         pageFullAccess: false,
     },
     {

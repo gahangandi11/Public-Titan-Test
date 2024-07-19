@@ -1,0 +1,13 @@
+
+
+.notification-overlay {
+    position: fixed; /* Or 'absolute' if positioning relative to a container */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above other content */
+}

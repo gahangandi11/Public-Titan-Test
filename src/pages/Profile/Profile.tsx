@@ -18,7 +18,7 @@ import { Button } from "@material-ui/core";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
-import { personCircleOutline } from "ionicons/icons";
+import { personCircleOutline, send } from "ionicons/icons";
 import {
   ProfileQuickActionsProps,
   ProfileQuickActionType,
@@ -27,7 +27,7 @@ import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole} from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail} from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
 import UserList from "./UserList";
 import Box from '@mui/material/Box';
@@ -35,6 +35,9 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+
+import Notification from "../../components/notifications/notification";
+
 
 const Profile: React.FC = () => {
   const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
@@ -49,6 +52,7 @@ const Profile: React.FC = () => {
 
   const [reverifyUsers, setreverifyUsers] = useState<User[]>([]);
   const [access, setAccess] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
   console.log('access', access);
   function onRefreshProfileRequestReceived() {
     refreshAllProfileSiblingComponents(!refreshSiblingComponents);
@@ -56,8 +60,10 @@ const Profile: React.FC = () => {
 
   async function changeUserStatus(user: User) {
     const isFullAccess = access === 'full';
+    setShowNotification(true);
     verifyUser(user);
     setUserRole(user, isFullAccess);
+    sendApprovalEmail(user);
     setTimeout(function () {
       refreshUserList();
       // window.alert('User is approved');
@@ -110,6 +116,7 @@ const Profile: React.FC = () => {
   return (
     <IonPage color="light">
       <Header title="Profile" hideProfileButton={true} />
+      {showNotification && <Notification setShowNotification={setShowNotification}/>}
       <IonContent>
         <IonGrid>
           <IonRow>

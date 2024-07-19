@@ -212,6 +212,19 @@ export async function verifyUser(user: User) {
     });
 }
 
+export async function sendApprovalEmail(currentUser: User) {
+    const uid = currentUser.uid;
+    const emailDoc={
+        toUids : [uid],
+        template: {
+            name: 'adminApproval',
+        
+        }
+    }
+    await addDoc(collection(db, "email"), emailDoc);
+}
+
+
 
 
 export async function updateVerificationAndAdminFlag(userId: string, isVerfied: boolean, isAdmin: boolean) {
@@ -250,6 +263,12 @@ export async function createUser(currentUser: any, shortDescription: string) {
         shortDescription: shortDescription,
         fullAccess: false,
     };
+    if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {
+        
+        defaultData.verified = true;
+        defaultData.fullAccess = true;
+
+      }
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
 

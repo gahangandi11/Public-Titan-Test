@@ -1,0 +1,35 @@
+
+
+.date-time-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3em;
+    color: white;
+   
+}
+
+.form-item-one {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    color: white;
+    font-weight: bold;
+   
+    .date-time{
+    background-color: #1E90FF;
+    padding: 7px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    }
+}
+
+
+
+/* .MuiInputBase-root{
+    display: flex;
+    
+} */
+

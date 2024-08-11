@@ -7,8 +7,8 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+// const {onRequest} = require("firebase-functions/v2/https");
+// const logger = require("firebase-functions/logger");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -89,3 +89,17 @@ const logger = require("firebase-functions/logger");
 //       console.log('Error fetching user data:', error);
 //     });
 //     });
+
+
+// const {onCall, HttpsError} = require("firebase-functions/v2/https");
+// const {logger} = require("firebase-functions/v2");
+
+// // Dependencies for the addMessage function.
+// const {getDatabase} = require("firebase-admin/database");
+// const sanitizer = require("./sanitizer");
+
+const functions=require("firebase-functions");
+
+exports.sayHello=functions.https.onCall((data,context)=>{
+    return `Hello from firebase functions`
+});

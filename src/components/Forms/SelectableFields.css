@@ -1,0 +1,35 @@
+
+
+.selectable{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.selectable-form-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3em;
+
+    span{
+        color: black;
+        font-weight: bold;
+    }
+
+   
+}
+
+.form-selectors{
+    background-color: #1E90FF;
+    color: white;
+    padding: 0px 5px;
+    border-radius: 10px;
+    width: 150px;
+}
+
+.selector-title{
+    width: 150px;
+}

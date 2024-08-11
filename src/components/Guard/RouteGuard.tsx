@@ -7,6 +7,7 @@ import { getDoc, onSnapshot } from 'firebase/firestore';
 import { User } from '../../interfaces/User';
 import { useAuth } from '../../services/contexts/AuthContext/AuthContext';
 
+
 const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
     const userExists = localStorage.getItem("authKey");
     const userAuth = getCurrentUser();
@@ -26,6 +27,7 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
             const isAdmin=document.admin;
               if(!isAdmin && currentDate > renewalDate){
                 updateRenewalStatus(document.uid,true);
+
                 history.push("/renewaccount");
               }
             }

@@ -1,5 +1,9 @@
 import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
+import {getFunctions} from 'firebase/functions'
+import { httpsCallable } from 'firebase/functions';
+
+import firebase from 'firebase/compat/app';
 
 
 import { DashboardData } from '../interfaces/DashboardData';
@@ -16,6 +20,12 @@ import { push, pushOutline } from 'ionicons/icons';
 
 const db = getFirestore(app);
 const storage = getStorage(app);
+const functions = getFunctions(app);
+
+
+// export const sayHello = firebase.functions().httpsCallable('sayHello');
+
+
 
 export async function getAuthToken() {
     const tokenDoc = doc(db, 'API-TOKEN', '1');

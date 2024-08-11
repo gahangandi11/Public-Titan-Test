@@ -2,6 +2,9 @@ import {IonInput, IonItem, IonLabel} from '@ionic/react';
 import * as React from 'react';
 import {RouteProps} from 'react-router';
 
+import './FileName.css';
+
+
 interface FileNameProps extends RouteProps {
     file: string,
     setFile: ((file: string) => void),
@@ -10,11 +13,14 @@ interface FileNameProps extends RouteProps {
 
 const FileName: React.FC<FileNameProps> = (props: FileNameProps) => {
     return (
-        <div className="form-div">
-            <IonItem color="secondary" className="form-item">
-                <IonLabel position="stacked">File Name</IonLabel>
-                <IonInput value={props.file} name="file" onInput={e => {props.setFile((e.target as HTMLInputElement).value)}} />
-            </IonItem>
+        <div className="file-name">
+            
+                <span className='selector-title'>File Name</span>
+                <span>:</span>
+                <div className='input-box'>
+                  <IonInput className="ion-input-custom" value={props.file} name="file" onInput={e => {props.setFile((e.target as HTMLInputElement).value)}} />
+                </div>
+            
         </div>
     )
 };

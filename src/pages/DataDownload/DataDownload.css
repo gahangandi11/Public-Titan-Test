@@ -20,14 +20,18 @@
     justify-content: flex-end;
 }
 
-.download__container {
+/* .download__container {
     height: 60em;
-}
+} */
 
 .download__card {
-    width: 100em;
-    padding: 1em;
-    display:inline-block;
+    /* width: 100em; */
+    padding: 3em;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 0.5em;
 }
 
 .download__card__content {
@@ -35,8 +39,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .second-step-tutorial{
     font-size: 2em;
+    font-weight: bold;
+    }
+
+    .database-selector{
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+
 }
+
+
 
 .download__header {
     display: flex;
@@ -52,12 +69,9 @@
     width: 8em;
     height: 8em;
     position: relative;
-    top: 1em;
-    left: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 1em;
 }
 
 .downloads {
@@ -75,11 +89,16 @@
 }
 
 .forms-container {
-    overflow: hidden;
-    border-radius: 10px;
+    /* overflow: hidden;
+    border-radius: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;  
 }
 
-.attribute-option {
+/* .attribute-option {
     width: 25%;
     display: flex;
     justify-content: space-around;
@@ -93,4 +112,59 @@
     display: flex;
     justify-content: flex-start !important;
     flex-wrap: wrap !important;
+} */
+
+.attributes-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4em;
+}
+
+.attribute-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+    background-color: #1E90FF;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.query-selectors{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.file-name{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.radio-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    ion-item {
+        --border-style: none;
+      }
+
+
+}
+
+
+.alert-class{
+    border-radius: 10px;
+    h3{
+        padding: 10px;
+    }
 }

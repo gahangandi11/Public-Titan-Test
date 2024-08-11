@@ -5,6 +5,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import * as React from 'react';
 import {RouteProps} from 'react-router';
 
+import './DateTimes.css';
+
 interface DateTimeProps extends RouteProps {
     startDate: Date | null,
     endDate: Date | null,
@@ -102,13 +104,19 @@ const DateTimes: React.FC<DateTimeProps> = (props: DateTimeProps) => {
             break;
     }
     return (
-        <div className="form-div second-step">
-            <IonItem color="secondary" className="form-item">
-                <IonLabel className="form-time-item">{startText}</IonLabel>
-                <MuiThemeProvider theme={customTheme}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <div>
-                            { !includeTime &&<KeyboardDatePicker
+        <div className=" date-time-div second-step">
+            {/* <IonItem color="secondary" className="form-item"> */}
+                <div className='form-item-one'>
+                    {/* <div>
+                        <IonLabel className="form-time-item">{startText}</IonLabel>
+                    </div> */}
+                    <span>{startText}</span>
+                    <span>:</span>
+                    <div className='date-time'>
+                        <MuiThemeProvider theme={customTheme}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <div>
+                        { !includeTime &&<KeyboardDatePicker
                                 format="yyyy/MM/dd"
                                 minDate="1/1/2009"
                                 maxDate={new Date()}
@@ -128,16 +136,23 @@ const DateTimes: React.FC<DateTimeProps> = (props: DateTimeProps) => {
                                     disableUnderline: true,
                                 }}
                             />}
-                        </div>
-                    </MuiPickersUtilsProvider>
-                </MuiThemeProvider>
-            </IonItem>
-            <IonItem color="secondary" className="form-item">
-                <IonLabel>{endText}</IonLabel>
+
+                            </div>
+                        </MuiPickersUtilsProvider>
+                        </MuiThemeProvider>
+                        
+                        
+                    </div>
+                </div>
+            {/* </IonItem> */}
+            <div className='form-item-one'>
+                <span>{endText}</span>
+                <span>:</span>
+                <div className='date-time'>
                 <MuiThemeProvider theme={customTheme}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <div>
-                        { !includeTime && <KeyboardDatePicker
+                    { !includeTime && <KeyboardDatePicker
                             format="yyyy/MM/dd"
                             minDate={props.startDate}
                             maxDate={new Date()}
@@ -157,10 +172,11 @@ const DateTimes: React.FC<DateTimeProps> = (props: DateTimeProps) => {
                                 disableUnderline: true,
                             }}
                         />}
-                        </div>
+                       </div>
                     </MuiPickersUtilsProvider>
                 </MuiThemeProvider>
-            </IonItem>
+                </div>
+            </div>
         </div>
     );
 };

@@ -1,0 +1,30 @@
+
+
+.file-name{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3em;
+
+    span{
+        color: black;
+        font-weight: bold;
+    
+    }
+}
+
+.input-box{
+    width: 150px;
+    border: 1px solid black; 
+    border-radius: 5px;
+
+
+}
+
+.ion-input-custom {
+    width: 70%; /* or any specific width */
+}
+
+.selector-title{
+    width: 150px;
+}

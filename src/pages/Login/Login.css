@@ -13,7 +13,8 @@
 }
 
 .card--signup {
-  height: 40em;
+  height: 45em;
+
 }
 
 .titan-t {
@@ -51,6 +52,18 @@
     margin-bottom: 1em;
 }
 
+
+
+.signup-input {
+  --background: var(--ion-color-light) !important;
+  margin-bottom: 1em;
+  width: 20em;
+}
+
+.signup-fields{
+  display: flex;
+  gap: 2em;
+}
 
 .login-container {
   display: flex;

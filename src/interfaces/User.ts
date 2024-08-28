@@ -16,6 +16,12 @@ export class User {
     subscriptions?: string[];
     fullAccess?: boolean;
     shortDescription?: string;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    companyName?: string;
+
 
     constructor()
     constructor (uid: string,
@@ -35,6 +41,12 @@ export class User {
                   renewalDate?:string|null,
                   fullAccess?: boolean,
                   shortDescription?: string,
+                  firstName?: string,
+                  middleName?: string,
+                  lastName?: string,
+                  phoneNumber?: string,
+                  companyName?: string,
+                  
                  )
     constructor (uid?: string,
                  admin?: boolean,
@@ -53,6 +65,11 @@ export class User {
                  renewalDate?:string|null,
                  fullAccess?: boolean,
                  shortDescription?: string,
+                 firstName?: string,
+                 middleName?: string,
+                 lastName?: string,
+                 phoneNumber?: string,
+                 companyName?: string,
                  ){
         this.uid = uid ? uid : '';
         this.email = email ? email : '';
@@ -71,5 +88,10 @@ export class User {
         this.renewalDate=renewalDate?renewalDate:'';
         this.fullAccess=fullAccess? fullAccess : false;
         this.shortDescription=shortDescription?shortDescription : '';
+        this.firstName= firstName ? firstName : '';
+        this.middleName= middleName ? middleName : '';
+        this.lastName= lastName ? lastName : '';
+        this.phoneNumber= phoneNumber? phoneNumber: '';
+        this.companyName= companyName? companyName: '';
     }
 }

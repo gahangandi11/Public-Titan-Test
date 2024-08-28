@@ -31,10 +31,19 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
+  const [firstName, setfirstName] = useState("");
+  const [middleName, setmiddleName] = useState("");
+  const [lastName, setlastName] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
+  const [companyName, setcompanyName] = useState("");
+
+
+  
+  const [shortDescription, setShortDescription] = useState('');
   const history = useHistory();
   const [signup, setSignup] = useState(false);
   const [present, dismiss] = useIonToast();
-  const [shortDescription, setShortDescription] = useState('');
+
   
   const registrationRedirect = window.location.href;
 
@@ -88,7 +97,7 @@ const Login: React.FC = () => {
         setSignup(!signup);
         clear();
         setEmail(email);
-        await createUser(userCredential, shortDescription);
+        await createUser(userCredential, firstName, middleName, lastName, phoneNumber, companyName, shortDescription);
         history.push("/verification");
         present({
           buttons: [{ text: "dismiss", handler: () => dismiss() }],
@@ -136,81 +145,228 @@ const Login: React.FC = () => {
           <div className="card--container">
             <IonCard
               className={`card--login ion-padding ion-margin ${signup ? 'card--signup' : ''}`}
-              color="primary"
-            >
+              color="primary">
               <IonCardHeader className="titan-container">
                 <IonImg className="titan-t" src={TitanT} />
                 {!signup && <IonLabel color="light">Login</IonLabel>}
                 {signup && <IonLabel color="light">Sign Up</IonLabel>}
               </IonCardHeader>
-              <IonLabel color="light" position="floating">
-                Email:{" "}
-              </IonLabel>
-              <IonInput
-                className="login-input"
-                value={email}
-                onIonChange={(val) => {
-                  const inputEmail = val.detail.value;
-                  if (inputEmail) {
-                    setEmail(inputEmail);
-                  }
-                }}
-              />
-              <IonLabel color="light" position="floating">
-                Password:{" "}
-              </IonLabel>
-              <IonInput
-                onKeyDown={onEnterKeyPressedOnPasswordField}
-                className="login-input"
-                type="password"
-                value={password}
-                onIonChange={(val) => {
-                  const inputPassword = val.detail.value;
-                  if (inputPassword) {
-                    setPassword(inputPassword);
-                  }
-                }}
-              />
-              {signup && (
+
+
+              {!signup && (
+                <>
                 <IonLabel color="light" position="floating">
-                  Confirm Password:{" "}
-                </IonLabel>
-              )}
-              {signup && (
-                <IonInput
-                  className="login-input"
-                  type="password"
-                  value={checkPassword}
-                  onIonChange={(val) => {
-                    const inputCheck = val.detail.value;
-                    if (inputCheck) {
-                      setCheckPassword(inputCheck);
-                    }
-                  }}
-                />
-              )}
-
-                 {signup && (
-                  <>
-                    <IonLabel color="light" position="floating">
-                      Why do you want to access Titan? (Please explain shortly):
-                    </IonLabel>
-                    <IonInput
-                      className="login-input"
-                      type="text"
-                      value={shortDescription}
-                      onIonChange={(val) => {
-                        const inputShortDescription = val.detail.value;
-                        if (inputShortDescription) {
-                          setShortDescription(inputShortDescription);
-                        }
-                      }}
-                    />
-                  </>
-                )}
+                     Email:{" "}
+                 </IonLabel>
+                  <IonInput
+                    className="login-input"
+                    value={email}
+                    onIonChange={(val) => {
+                      const inputEmail = val.detail.value;
+                      if (inputEmail) {
+                        setEmail(inputEmail);
+                      }
+                    }}
+                  />
+              </>
+              )
+            }
 
 
+            {!signup && (
+              <>
+                  <IonLabel color="light" position="floating">
+                    Password:{" "}
+                  </IonLabel>
+                  <IonInput
+                    onKeyDown={onEnterKeyPressedOnPasswordField}
+                    className="login-input"
+                    type="password"
+                    value={password}
+                    onIonChange={(val) => {
+                      const inputPassword = val.detail.value;
+                      if (inputPassword) {
+                        setPassword(inputPassword);
+                      }
+                    }}
+                  />
+              </>
+            )
+          }
 
+
+              {
+                signup && (
+                <>
+                <div className="signup-fields">
+                      
+                  <div className="email-password"> 
+                    <div>  
+                        <IonLabel color="light" position="floating">
+                              Email:{" "}
+                        </IonLabel>
+                        <IonInput
+                              className="signup-input"
+                              value={email}
+                              onIonChange={(val) => {
+                                const inputEmail = val.detail.value;
+                                if (inputEmail) {
+                                  setEmail(inputEmail);
+                                }
+                              }}
+                        />
+                    </div>
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                            Password:{" "}
+                      </IonLabel>
+                      <IonInput
+                            onKeyDown={onEnterKeyPressedOnPasswordField}
+                            className="signup-input"
+                            type="password"
+                            value={password}
+                            onIonChange={(val) => {
+                              const inputPassword = val.detail.value;
+                              if (inputPassword) {
+                                setPassword(inputPassword);
+                              }
+                            }}
+                      />
+                    </div>
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                          Confirm Password:{" "}
+                      </IonLabel>
+                      <IonInput
+                            className="signup-input"
+                            type="password"
+                            value={checkPassword}
+                            onIonChange={(val) => {
+                              const inputCheck = val.detail.value;
+                              if (inputCheck) {
+                                setCheckPassword(inputCheck);
+                              }
+                            }}
+                      />
+                    </div>
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                            Company Name:
+                      </IonLabel>
+                      <IonInput
+                              className="signup-input"
+                              type="text"
+                              value={companyName}
+                              onIonChange={(val) => {
+                                const companyName = val.detail.value;
+                                if (companyName) {
+                                  setcompanyName(companyName);
+                                }
+                              }}
+                      />
+                    </div>
+                  </div> 
+
+                  <div className="name-phone">
+                    <div>
+                      <IonLabel color="light" position="floating">
+                              First Name:
+                      </IonLabel>
+                      <IonInput
+                              className="signup-input"
+                              type="text"
+                              value={firstName}
+                              onIonChange={(val) => {
+                                const firstName = val.detail.value;
+                                if (firstName) {
+                                  setfirstName(firstName);
+                                }
+                              }}
+                      />
+                    </div>
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                            Middle Name:
+                      </IonLabel>
+                      <IonInput
+                              className="signup-input"
+                              type="text"
+                              value={middleName}
+                              onIonChange={(val) => {
+                                const middleName = val.detail.value;
+                                if (middleName) {
+                                  setmiddleName(middleName);
+                                }
+                              }}
+                      />
+                    </div>
+
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                              Last Name:
+                      </IonLabel>
+                      <IonInput
+                              className="signup-input"
+                              type="text"
+                              value={lastName}
+                              onIonChange={(val) => {
+                                const lastName = val.detail.value;
+                                if (lastName) {
+                                  setlastName(lastName);
+                                }
+                              }}
+                      />
+                    </div>
+
+                    <div>
+                      <IonLabel color="light" position="floating">
+                            Phone Number:
+                      </IonLabel>
+                      <IonInput
+                              className="signup-input"
+                              type="text"
+                              value={phoneNumber}
+                              onIonChange={(val) => {
+                                const phoneNumber = val.detail.value;
+                                if (phoneNumber) {
+                                  setphoneNumber(phoneNumber);
+                                }
+                              }}
+                      />
+                    </div>
+
+                    
+                  </div>
+
+                </div>
+
+              <div>
+                  <IonLabel color="light" position="floating">
+                    Why do you want to access Titan? (Please explain shortly):
+                  </IonLabel>
+                  <IonInput
+                    className="login-input"
+                    type="text"
+                    value={shortDescription}
+                    onIonChange={(val) => {
+                      const inputShortDescription = val.detail.value;
+                      if (inputShortDescription) {
+                        setShortDescription(inputShortDescription);
+                      }
+                    }}
+                  />
+              </div>
+              </>
+                )
+              }
+
+
+          
 
               {!signup && (
                 <div className="links">

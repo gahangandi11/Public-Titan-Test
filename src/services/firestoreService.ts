@@ -244,7 +244,7 @@ export async function updateVerificationAndAdminFlag(userId: string, isVerfied: 
     });
 }
 
-export async function createUser(currentUser: any, shortDescription: string) {
+export async function createUser(currentUser: any, firstName:string, middleName: string, lastName: string, phoneNumber: string, companyName: string, shortDescription: string) {
     const date = new Date();
     const formattedDate = date.toLocaleString('en-US', {
         year: 'numeric',
@@ -271,6 +271,11 @@ export async function createUser(currentUser: any, shortDescription: string) {
         registeredDate: formattedDate,
         renewalDate: formattedRenewalDate,
         shortDescription: shortDescription,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
+        companyName: companyName,
         fullAccess: false,
     };
     if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {

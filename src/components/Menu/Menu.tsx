@@ -8,6 +8,10 @@ import {LinkData} from '../../interfaces/LinkData';
 import iconService from '../../services/iconService';
 import AuthProvider, {logout, useAuth} from '../../services/contexts/AuthContext/AuthContext';
 
+import { getRoles } from '../../services/firestoreService';
+import { UserRole } from '../../interfaces/UserRoles';
+import { getRolePermissions } from '../../services/firestoreService';
+
 interface AppPage {
     url: string;
     iosIcon: string;
@@ -18,10 +22,16 @@ interface AppPage {
 }
 
 const Menu = () => {
-    const { currentUser, userDoc } = useAuth();
+    const { currentUser, userDoc, permissions } = useAuth();
+    
+    console.log('currentUser in Menu:', currentUser)
+    console.log('userDoc in Menu:',userDoc)
+    console.log('permissions in Menu:', permissions)
 
     const location = useLocation();
     const [appCenter, setAppCenter] = useState<AppPage[]>([]);
+
+
 
     const generalPages: AppPage[] = [
         {
@@ -29,27 +39,25 @@ const Menu = () => {
             url: '/homepage',
             iosIcon: homeOutline ,
             mdIcon:homeSharp ,
-            pageFullAccess: true,
         },
     {
         title: 'Live Data',
         url: '/home',
         iosIcon: iconService.getIcon('analytics', "ios"),
         mdIcon: iconService.getIcon('analytics', "android"),
-        pageFullAccess: true,
     },
     {
         title: 'Dashboard',
         url: '/dashboard',
         iosIcon: gridOutline,
         mdIcon: gridSharp,
-        pageFullAccess: true,
+
     }, {
         title: 'Data Download',
         url: '/data',
         iosIcon: downloadOutline,
         mdIcon: downloadSharp,
-        pageFullAccess: false,
+
     },
     {
         title: 'App Center',
@@ -58,7 +66,7 @@ const Menu = () => {
         // mdIcon: downloadSharp
         iosIcon: iconService.getIcon('apps', "ios"),
         mdIcon: iconService.getIcon('apps', "android"),
-        pageFullAccess: false,
+
     },
     {
         title: 'Tutorials',
@@ -67,7 +75,7 @@ const Menu = () => {
         // mdIcon: downloadSharp
         iosIcon: iconService.getIcon('walk', "ios"),
         mdIcon: iconService.getIcon('walk', "android"),
-        pageFullAccess: false,
+
     },
    ];
 
@@ -84,7 +92,7 @@ const Menu = () => {
                         url: "/app-center/" + link.name,
                         iosIcon: iconService.getIcon(link.icon, "ios"),
                         mdIcon: iconService.getIcon(link.icon, "android"),
-                        pageFullAccess: false,
+
                     });
                 });
                 setAppCenter(apps);
@@ -92,15 +100,19 @@ const Menu = () => {
         }
     }, [currentUser]);
 
+
+
+
     return(
-        <AuthProvider>
+        
             <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
                 <IonContent color="medium">
                     <IonList>
                         <IonListHeader color="medium">Welcome to TITAN</IonListHeader>
-                        {generalPages.map((page, index) => {
+                        {permissions && generalPages.map((page, index) => {
                             return(
-                                userDoc?.fullAccess || page.pageFullAccess ? (
+
+                                 permissions?.includes(page.title) ? (
                                 <IonMenuToggle key={index} autoHide={false}>
                                     <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
                                         <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
@@ -108,22 +120,11 @@ const Menu = () => {
                                     </IonItem>
                                 </IonMenuToggle>
                                    ) : null
+                                
                             );
                         })}
                     </IonList>
-                    {/* <IonList>
-                        <IonListHeader color="medium">App Center</IonListHeader>
-                        {appCenter.map((page, index) => {
-                            return(
-                                <IonMenuToggle key={index} autoHide={false}>
-                                    <IonItem color="medium" className={location.pathname === page.url ? 'selected' : ''} routerLink={page.url} routerDirection="none" lines="none" detail={false}>
-                                        <IonIcon slot="start" ios={page.iosIcon} md={page.mdIcon} />
-                                        <IonLabel>{page.title}</IonLabel>
-                                    </IonItem>
-                                </IonMenuToggle>
-                            );
-                        })}
-                    </IonList> */}
+                  
                     <IonList>{currentUser &&
                     <IonMenuToggle  autoHide={false}>
                     <IonItem color="medium"  routerLink={"support"} routerDirection="none" lines="none" detail={false}>
@@ -142,7 +143,7 @@ const Menu = () => {
                     </IonList>
                 </IonContent>
             </IonMenu>
-        </AuthProvider>
+        
     );
 };
 

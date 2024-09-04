@@ -102,21 +102,17 @@ const App: React.FC = () => {
               <Dashboard />
             </RouteGuard>
 
-            <RoleRouteGuard path="/data" exact={true}>
+            <RouteGuard path="/data" exact={true}>
               <DataDownload />
-            </RoleRouteGuard>
+            </RouteGuard>
 
-            <RoleRouteGuard path="/myapps" exact={true}>
+            <RouteGuard path="/myapps" exact={true}>
               <Newapp />
-            </RoleRouteGuard>
+            </RouteGuard>
 
-            <RoleRouteGuard path="/tutorials" exact={true}>
+            <RouteGuard path="/tutorials" exact={true}>
               <Tutorials />
-            </RoleRouteGuard>
-
-
-
-
+            </RouteGuard>
 
             <RouteGuard path="/profile" exact={true}>
               <Profile />
@@ -128,9 +124,9 @@ const App: React.FC = () => {
 
             {links.map((link) => {
               return (
-                <RoleRouteGuard path={"/app-center/" + link.name} key={link.name}>
+                <RouteGuard path={"/app-center/" + link.name} key={link.name}>
                   <AppCenter title={link.name} />
-                </RoleRouteGuard>
+                </RouteGuard>
               );
             })}
           </IonRouterOutlet>

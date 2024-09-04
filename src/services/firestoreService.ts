@@ -18,6 +18,9 @@ import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
 import { push, pushOutline } from 'ionicons/icons';
 
+import { UserRole } from '../interfaces/UserRoles';
+
+
 const db = getFirestore(app);
 const storage = getStorage(app);
 const functions = getFunctions(app);
@@ -277,6 +280,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         phoneNumber: phoneNumber,
         companyName: companyName,
         fullAccess: false,
+        role:'',
     };
     if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {
         
@@ -313,10 +317,10 @@ export async function getAttachementUrl(ref: StorageReference): Promise<string> 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-export async function setUserRole(user: User, fullAccess: boolean) {
+export async function setUserRole(user: User, access:string) {
     const userRef = doc(db, "Users", user.uid);
     await updateDoc(userRef, {
-        fullAccess: fullAccess,
+        role:access,
     });
 }
 
@@ -392,3 +396,58 @@ export async function updateRenewalStatus(userId: string, requiresRenewal: boole
 
     
 // }
+
+
+export async function createRole(name:string,permissions:string []){
+      
+    const data={
+        permissions:permissions,
+    }
+    await setDoc(doc(db, "Roles", name), data);
+}
+
+
+export async function getRoles(){
+
+    const rolesCollection = collection(db, 'Roles');
+    const snapshot = await getDocs(rolesCollection);
+
+    const roles = snapshot.docs.map(doc => ({
+        role: doc.id,
+        permissions: doc.data().permissions || [],
+    } as UserRole));
+
+    return roles;
+
+}
+
+
+export async function getRoleCount(Roles: UserRole [] | null)
+{
+    const userCollection=collection(db,'Users');
+    const snapshot=await getDocs(userCollection);
+
+    const roleCount: {[role:string]:number} ={"FullAccess":0,"LimitedAccess":0};
+
+    snapshot.docs.forEach(doc =>{
+        const userRole=doc.data().fullAccess;
+
+        if(userRole)
+            {
+                roleCount["FullAccess"]+=1;
+            }
+            else{
+                roleCount["LimitedAccess"]+=1;
+            }
+    })
+
+    return roleCount;
+}
+
+export async function getRolePermissions(role:string)
+{
+    const roleDocRef = doc(db, 'Roles', role);
+    const roleDoc =await getDoc(roleDocRef);
+
+    return roleDoc.data();
+}

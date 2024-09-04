@@ -29,7 +29,12 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
     }
     function RefreshUserList(){
       props.refreshUserList();
-}
+    }
+
+    function onAdminCreateRoles(){
+      props.onActionTapped(ProfileQuickActionType.CREATE_ROLES);
+     
+    }
     
 
   return (
@@ -52,11 +57,15 @@ const ProfileActions: React.FC<ProfileQuickActionsProps> = (props) => {
       { (userDoc?.admin) && <IonItem onClick={onAdminSettingTapped} button={true}>
         <IonLabel>Verify Users</IonLabel>
       </IonItem>
-}
-{ (userDoc?.admin) && <IonItem onClick={RefreshUserList} button={true}>
-        <IonLabel>Refresh Users List</IonLabel>
-      </IonItem>
-}
+      }
+      { (userDoc?.admin) && <IonItem onClick={RefreshUserList} button={true}>
+              <IonLabel>Refresh Users List</IonLabel>
+            </IonItem>
+      }
+       { (userDoc?.admin) && <IonItem onClick={onAdminCreateRoles} button={true}>
+              <IonLabel>Create Roles</IonLabel>
+            </IonItem>
+      }
     </IonCard>
   );
 };

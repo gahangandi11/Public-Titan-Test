@@ -258,7 +258,7 @@ const DataDownload: React.FC = () => {
     const history = useHistory();
 
     return (
-        <AuthProvider>
+        
             <IonPage>
                 <Header title="Data Download" />
                 <IonContent color="light">
@@ -369,9 +369,9 @@ const DataDownload: React.FC = () => {
                         </IonCard>
                     </IonRow>
                     <IonRow className="ion-justify-content-center">
-                        <AuthProvider>
+                        
                             <Downloads page={page.value} />
-                        </AuthProvider>
+                        
                     </IonRow>
                    
                     <Dialog
@@ -407,7 +407,7 @@ const DataDownload: React.FC = () => {
         />
                 </IonContent>
             </IonPage>
-        </AuthProvider>
+        
     );
 };
 

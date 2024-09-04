@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -15,12 +15,16 @@ import {
 import { getUserByID, } from "../../firestoreService";
 import { sendPasswordResetEmail,getRedirectResult } from "firebase/auth";
 
+import { getRolePermissions } from "../../firestoreService";
+
 const auth = getAuth();
 const AuthContext = createContext<{
   currentUser: any;
   userDoc: any;
+  permissions: string [] | null;
+  loading: boolean;
   value: string;
-}>({ currentUser: null, userDoc: null, value: "" });
+}>({ currentUser: null, userDoc: null, permissions: null,loading:true, value: "" });
 
 export function emailLogin(email: string, password:string) {
   return signInWithEmailAndPassword(auth, email, password);
@@ -105,30 +109,64 @@ export function getReidrectedUrl(
 const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userDoc, setUserDoc] = useState<any>(null);
-  // console.log('auth user Doc', userDoc);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [permissions, setPermissions] = useState<string [] | null>(null);
+
+
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
+    const fetchdata = async () => {
+      if (userDoc) {
+        console.log('hello from authcontext');
+        const data = await getRolePermissions(userDoc.role);
+        setPermissions(data?.permissions || []);
+        console.log(data?.permissions);
+        setLoading(false);
+      }
+    };
+
+    fetchdata();
+  }, [userDoc]); // Adding userDoc as a dependency
+
+
+  useEffect(() => {
+     auth.onAuthStateChanged((user) => {
+      // if(!user){
+      //   console.log('not user called.............')
+      //   setLoading(true);
+      // }
       setCurrentUser(user);
-      // console.log('current user set');
       if (user) {
         localStorage.setItem("authKey", user.uid);
         getUserByID(user.uid).then((doc) => {
           setUserDoc(doc);
-          // console.log('user doc set');
+  
         });
       } else {
         localStorage.removeItem("authKey");
+        setLoading(false);
       }
     });
   }, []);
 
-  const value = {
-    currentUser: currentUser,
-    userDoc: userDoc,
-    value: "",
-  };
+  // const value = {
+  //   currentUser: currentUser,
+  //   userDoc: userDoc,
+  //   permissions: permissions,
+  //   loading: loading,
+  //   value: "",
+  // };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const value = useMemo(() => {
+    return {
+      currentUser: currentUser,
+      userDoc: userDoc,
+      permissions: permissions,
+      loading: loading,
+      value: "",
+    };
+  }, [userDoc,permissions])
+
+  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

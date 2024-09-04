@@ -97,7 +97,7 @@ const ForgotPassword: React.FC = () => {
 
 
   return (
-    <AuthProvider>
+    
       <IonPage>
         <IonContent color="light">
           <div className="background" />
@@ -145,7 +145,7 @@ const ForgotPassword: React.FC = () => {
           </div>
         </IonContent>
       </IonPage>
-    </AuthProvider>
+    
   );
 
                      

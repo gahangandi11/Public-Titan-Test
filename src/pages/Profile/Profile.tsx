@@ -37,6 +37,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 
 import Notification from "../../components/notifications/notification";
+import CreateRoles from "./CreateRoles";
 
 
 const Profile: React.FC = () => {
@@ -59,10 +60,10 @@ const Profile: React.FC = () => {
   }
 
   async function changeUserStatus(user: User) {
-    const isFullAccess = access === 'full';
+
     setShowNotification(true);
     verifyUser(user);
-    setUserRole(user, isFullAccess);
+    setUserRole(user, access);
     sendApprovalEmail(user);
     setTimeout(function () {
       refreshUserList();
@@ -160,6 +161,9 @@ const Profile: React.FC = () => {
                   
                  
                 </div>
+              )}
+              {userDoc?.admin && profileAction == ProfileQuickActionType.CREATE_ROLES && (
+                  <CreateRoles/>
               )}
             </IonCol>
           

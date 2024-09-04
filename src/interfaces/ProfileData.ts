@@ -14,6 +14,6 @@ export interface ProfileUpdateAction
 }
 
 export enum ProfileQuickActionType{
-        CHANGE_EMAIL,CHANGE_PASSWORD,PROFILE_DETAIL,ADMIN_SETTING
+        CHANGE_EMAIL,CHANGE_PASSWORD,PROFILE_DETAIL,ADMIN_SETTING, CREATE_ROLES
 }
 

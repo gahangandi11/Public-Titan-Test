@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { IonItem, IonRow, IonSelect, IonSelectOption, IonButton, IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
@@ -13,6 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import { getRoles } from '../../services/firestoreService';
+import { UserRole } from '../../interfaces/UserRoles';
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -36,6 +38,19 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, changeUserStatus, removeUser }) => {
 
     const [selections, setSelections] = useState<DropdownSelections>({});
+    const [Roles,setRoles]=useState<UserRole [] | null>(null);
+
+
+    useEffect(()=>{
+       
+        const fetchdata = async () => {
+            const data = await getRoles();
+            setRoles(data);
+        };
+
+        fetchdata();
+
+     },[]);
 
     const handleDropdownChange = (userId: string, value: string) => {
         setSelections(prevSelections => ({
@@ -75,16 +90,21 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
                             <TableCell align="right">                                
                                 <FormControl variant="standard" sx={{width: 100}}>
                                     <InputLabel id="demo-simple-select-standard-label">Access</InputLabel>
-                                    <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={selections[user.uid] || ''}
-                                    label="Age"
-                                    onChange={(e) =>handleDropdownChange(user.uid, e.target.value)}
-                                    >
-                                        <MenuItem value={'full'}>Full</MenuItem>
-                                        <MenuItem value={'limited'}>Limited</MenuItem>
-                                    </Select>
+                                        <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={selections[user.uid] || ''}
+                                        label="Age"
+                                        onChange={(e) =>handleDropdownChange(user.uid, e.target.value)}
+                                        >
+                                            {
+                                                Roles && Roles.map((role,index)=>(
+                                                    <MenuItem key={index} value={role.role}>{role.role}</MenuItem>
+                                                ))
+                                            }
+                                            {/* <MenuItem value={'full'}>Full</MenuItem>
+                                            <MenuItem value={'limited'}>Limited</MenuItem> */}
+                                        </Select>
                                 </FormControl>
                           
                             </TableCell>

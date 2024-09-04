@@ -138,7 +138,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <AuthProvider>
+    
       <IonPage>
         <IonContent color="light">
           <div className="background" />
@@ -402,7 +402,7 @@ const Login: React.FC = () => {
           </div>
         </IonContent>
       </IonPage>
-    </AuthProvider>
+    
   );
 };
 

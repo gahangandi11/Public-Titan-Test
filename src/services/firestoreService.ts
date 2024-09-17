@@ -18,6 +18,8 @@ import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
 import { push, pushOutline } from 'ionicons/icons';
 
+
+
 import { UserRole } from '../interfaces/UserRoles';
 
 
@@ -201,7 +203,7 @@ export function getUserDocumentRef(id: string): DocumentReference<DocumentData> 
 
 export async function getNewUsers() {
     const userCollection = collection(db, "Users");
-    const userQuery = query(userCollection, where("verified", "==", false),where("applied", "==", false));
+    const userQuery = query(userCollection, where("verified", "==", false));
     const userDocs = await getDocs(userQuery);
     const foundDocs: User[] = [];
     userDocs.forEach(doc => {
@@ -237,6 +239,24 @@ export async function sendApprovalEmail(currentUser: User) {
     await addDoc(collection(db, "email"), emailDoc);
 }
 
+
+
+
+export async function sendRejectionEmail(currentUser: User, userDeleteMessage: string) {
+
+    const email = currentUser.email;
+    const emailDoc={
+        to : [email],
+        template: {
+            name: 'adminRejection',
+            data:{
+                rejectMessage: userDeleteMessage,
+            }
+        
+        }
+    }
+    await addDoc(collection(db, "email"), emailDoc);
+}
 
 
 
@@ -351,14 +371,14 @@ export async function setNewrenewalDate(user: User) {
 export async function deleteDocument(currentUser: any) {
     const docRef = doc(db, "Users", currentUser.uid);
 
-    // await deleteDoc(docRef);
-    //delete doc has to be implemented with admin auth and delete the user from the Auth as well.
+    await deleteDoc(docRef);
+    // delete doc has to be implemented with admin auth and delete the user from the Auth as well.
 
-    //just adding a temporary check so the admin feels user is deleted.
-    //but the user is not deleted from the database and still wont have access beacuse of the verified flag.
-    await updateDoc(docRef, {
-        applied: true,
-    });
+    // just adding a temporary check so the admin feels user is deleted.
+    // but the user is not deleted from the database and still wont have access beacuse of the verified flag is still false.
+    // await updateDoc(docRef, {
+    //     applied: true,
+    // });
 
 
 }

@@ -134,8 +134,10 @@ const AuthProvider: React.FC = ({ children }) => {
       //   console.log('not user called.............')
       //   setLoading(true);
       // }
+      console.log('called');
       setCurrentUser(user);
       if (user) {
+        console.log('who is user:',user);
         localStorage.setItem("authKey", user.uid);
         getUserByID(user.uid).then((doc) => {
           setUserDoc(doc);
@@ -164,7 +166,7 @@ const AuthProvider: React.FC = ({ children }) => {
       loading: loading,
       value: "",
     };
-  }, [userDoc,permissions])
+  }, [ userDoc,permissions,loading])
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };

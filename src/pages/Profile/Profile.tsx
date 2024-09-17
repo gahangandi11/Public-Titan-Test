@@ -27,7 +27,7 @@ import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail} from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail, sendRejectionEmail} from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
 import UserList from "./UserList";
 import Box from '@mui/material/Box';
@@ -38,6 +38,8 @@ import TabPanel from '@mui/lab/TabPanel';
 
 import Notification from "../../components/notifications/notification";
 import CreateRoles from "./CreateRoles";
+import { functions } from '../../firebaseConfig';
+import { httpsCallable } from 'firebase/functions';
 
 
 const Profile: React.FC = () => {
@@ -54,7 +56,9 @@ const Profile: React.FC = () => {
   const [reverifyUsers, setreverifyUsers] = useState<User[]>([]);
   const [access, setAccess] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  console.log('access', access);
+  const [userDeleteMessae,setUserDeleteMessage] = useState<string>('');
+
+ 
   function onRefreshProfileRequestReceived() {
     refreshAllProfileSiblingComponents(!refreshSiblingComponents);
   }
@@ -83,13 +87,24 @@ const Profile: React.FC = () => {
   }
 
 
-  function removeUser(user: User) {
-    deleteDocument(user);
-    setTimeout(function () {
-      refreshUserList();
-    }, 1000);
+  const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
 
+  const callfunction = async (uid:any) =>{
+      
+     await deleteUserFn({uid}).then((result) => {
+          console.log(result.data);  // Should log: "Hello from firebase functions"
+        }).catch((error) => {
+          console.error("Error calling function:", error);
+        });
    }
+
+
+  async function removeUser(user: User) {
+    await sendRejectionEmail(user, userDeleteMessae);
+    await callfunction(user.uid);
+    await deleteDocument(user);
+    refreshUserList();
+    }
 
   useEffect(() => {
     refreshUserList();
@@ -151,10 +166,10 @@ const Profile: React.FC = () => {
                               
                             </Box>
                             <TabPanel value="1">
-                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser}/>
+                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
                             </TabPanel>
                             <TabPanel value="2">
-                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser}/>
+                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
                             </TabPanel>
                           </TabContext>
                         </Box>

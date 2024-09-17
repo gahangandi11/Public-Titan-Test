@@ -1,4 +1,5 @@
 import {initializeApp} from 'firebase/app';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 export const firebaseConfig = {
     apiKey: `${process.env.REACT_APP_FIREBASE_API_KEY}`,
@@ -13,3 +14,4 @@ export const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
+export const functions = getFunctions(app);

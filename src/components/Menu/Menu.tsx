@@ -12,6 +12,8 @@ import { getRoles } from '../../services/firestoreService';
 import { UserRole } from '../../interfaces/UserRoles';
 import { getRolePermissions } from '../../services/firestoreService';
 
+
+
 interface AppPage {
     url: string;
     iosIcon: string;
@@ -103,6 +105,7 @@ const Menu = () => {
 
 
 
+
     return(
         
             <IonMenu color="medium" contentId="main" type="reveal" menuId="main" swipeGesture={false}>
@@ -140,6 +143,8 @@ const Menu = () => {
                             </IonItem>
                            
                         </IonMenuToggle>
+
+                        
                     </IonList>
                 </IonContent>
             </IonMenu>

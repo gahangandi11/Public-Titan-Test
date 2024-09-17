@@ -23,22 +23,44 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { set } from 'date-fns';
 
+import DeleteUserAlert from './DeleteUserAlert';
+
 interface UserListProps {
     newUsers: User[]; // Adjust the type according to your data structure
     access: string; // Adjust the type according to your data structure
     setAccess: (value: any) => void; // Specify the correct type for `value`
     changeUserStatus: (user: any) => void; // Specify the correct type for `user`
     removeUser: (user: any) => void; // Specify the correct type for `user`
+    setUserDeleteMessage : (value:any) => void;
   }
   interface DropdownSelections {
     [userId: string]: string; // Maps userId to the selected dropdown value
   }
 
 
-const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, changeUserStatus, removeUser }) => {
+const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, changeUserStatus, removeUser, setUserDeleteMessage }) => {
 
     const [selections, setSelections] = useState<DropdownSelections>({});
     const [Roles,setRoles]=useState<UserRole [] | null>(null);
+
+    const [deleteUser, setDeleteUser]=useState<User | null> (null);
+    
+    console.log(newUsers);
+
+    const [open, setOpen] = useState<boolean>(false);
+
+    const handleClickOpen = () => {
+      setOpen(true);
+      console.log(open);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const callremoveUser =()=>{
+        removeUser(deleteUser);
+    }  
 
 
     useEffect(()=>{
@@ -61,7 +83,7 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
       };
 
     return (
-
+        <>
         <TableContainer component={Paper}>
 
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -118,7 +140,7 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
                              </IonButton>     
                             </TableCell>
                             <TableCell align="right">
-                                <IonButton color="danger" onClick={() => removeUser(user)}>
+                                <IonButton color="danger" onClick={() => {setDeleteUser(user); handleClickOpen();}}>
                                     <IonIcon icon={closeCircleOutline} />
                                 </IonButton>
                             </TableCell>
@@ -128,6 +150,8 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
             </Table>
         
         </TableContainer>
+        <DeleteUserAlert open={open} handleClose={handleClose} callremoveUser={callremoveUser} setUserDeleteMessage={setUserDeleteMessage}/>
+        </>
       );
 
 

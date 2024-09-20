@@ -63,10 +63,12 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <AuthProvider>
+    
       <IonApp>
         <IonReactRouter>
+        <AuthProvider>
           <Menu />
+        </AuthProvider>
           <IonRouterOutlet id="main">
             <Route path="/login" exact={true}>
               <Login />
@@ -84,7 +86,7 @@ const App: React.FC = () => {
             <Route path="/renewaccount" exact={true}>
               <ReValidation />
             </Route>
-
+          <AuthProvider>
             <RouteGuard path="/" exact={true}>
               <Redirect to="/homepage" />
               {/* <Homepage /> */}
@@ -129,10 +131,11 @@ const App: React.FC = () => {
                 </RouteGuard>
               );
             })}
+        </AuthProvider>
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
-    </AuthProvider>
+    
   );
 };
 

@@ -1,28 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  IonButton,
-  IonCard,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonPage,
-  IonRow,
-  IonText,
-  IonToggle,
-} from "@ionic/react";
-
-import { Button } from "@material-ui/core";
+import {IonCol,IonContent,IonGrid,IonPage,IonRow} from "@ionic/react";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
-import { personCircleOutline, send } from "ionicons/icons";
-import {
-  ProfileQuickActionsProps,
-  ProfileQuickActionType,
-} from "../../interfaces/ProfileData";
+import {ProfileQuickActionType,} from "../../interfaces/ProfileData";
 import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
@@ -35,28 +16,32 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-
 import Notification from "../../components/notifications/notification";
 import CreateRoles from "./CreateRoles";
-import { functions } from '../../firebaseConfig';
-import { httpsCallable } from 'firebase/functions';
+import { DeleteUserFromAuth } from "../../services/firestoreService";
 
 
 const Profile: React.FC = () => {
-  const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
-    ProfileQuickActionType.PROFILE_DETAIL
-  );
-  const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =
-    useState(false);
 
-  const { currentUser, userDoc } = useAuth();
+  const {userDoc } = useAuth();
+
+  const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(ProfileQuickActionType.PROFILE_DETAIL);
+  const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =useState(false);
 
   const [newUsers, setNewUsers] = useState<User[]>([]);
-
   const [reverifyUsers, setreverifyUsers] = useState<User[]>([]);
+
   const [access, setAccess] = useState('');
+  const [value, setValue] = React.useState('1');
+
   const [showNotification, setShowNotification] = useState(false);
   const [userDeleteMessae,setUserDeleteMessage] = useState<string>('');
+
+  useEffect(() => {
+    refreshUserList();
+    refreshReVerifyUserList();
+    console.log('component called');
+  }, []);
 
  
   function onRefreshProfileRequestReceived() {
@@ -64,53 +49,30 @@ const Profile: React.FC = () => {
   }
 
   async function changeUserStatus(user: User) {
-
     setShowNotification(true);
-    verifyUser(user);
-    setUserRole(user, access);
-    sendApprovalEmail(user);
-    setTimeout(function () {
-      refreshUserList();
-      // window.alert('User is approved');
-    }, 1000);
+    await verifyUser(user);
+    await setUserRole(user, access);
+    await sendApprovalEmail(user);
+    refreshUserList();
    
   }
 
 
-  function reverifyUserStatus(user: User) {
+  async function reverifyUserStatus(user: User) {
     const renewalstatus = false;
-    reverifyUser(user, renewalstatus);
-    setNewrenewalDate(user);
-    setTimeout(function () {
-      refreshReVerifyUserList();
-    }, 1000);
+    await reverifyUser(user, renewalstatus);
+    await setNewrenewalDate(user);
+    refreshReVerifyUserList();
   }
-
-
-  const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
-
-  const callfunction = async (uid:any) =>{
-      
-     await deleteUserFn({uid}).then((result) => {
-          console.log(result.data);  // Should log: "Hello from firebase functions"
-        }).catch((error) => {
-          console.error("Error calling function:", error);
-        });
-   }
 
 
   async function removeUser(user: User) {
     await sendRejectionEmail(user, userDeleteMessae);
-    await callfunction(user.uid);
+    await DeleteUserFromAuth(user.uid);
     await deleteDocument(user);
     refreshUserList();
     }
 
-  useEffect(() => {
-    refreshUserList();
-    refreshReVerifyUserList();
-    console.log('component called');
-  }, []);
 
   function refreshUserList() {
     getNewUsers().then((docs) => {
@@ -124,7 +86,7 @@ const Profile: React.FC = () => {
     });
   }
 
-  const [value, setValue] = React.useState('1');
+  
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };

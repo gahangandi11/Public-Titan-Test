@@ -161,10 +161,6 @@ exports.adminReminder = onSchedule("36 20 * * 0",async(event)=>{
 
   const PendingUsers = [];
 
-
-
-  
-
   try{
     const usersnapShot = await admin.firestore().collection('Users').get();
     
@@ -196,8 +192,6 @@ exports.adminReminder = onSchedule("36 20 * * 0",async(event)=>{
       });
     }
 
-
-
   if(PendingUsers.length > 0){
     emailDoc={
       toUids:['ZAecpU0FFabs3rJN11ND7rxrhTR2','8RvlKpkyhvRZnIzjdz8bKK14Ro62','QKL0tbpl4VZ9BUbaClDrIFrX1Cw2'],
@@ -218,7 +212,58 @@ exports.adminReminder = onSchedule("36 20 * * 0",async(event)=>{
 
     console.log('Admin users list written to Firestore:', adminUsers);
   
+})
 
-  
+exports.UserRenewalStatusUpdateFn=onSchedule("07 15 * * 4",async(event)=>{
 
+  try{
+    const currentDate = new Date();
+     
+    const usersnapShot = await admin.firestore().collection('testUsers').get();
+
+    for(const doc of usersnapShot.docs)
+      {
+        const userData=doc.data();
+        const renewalDate = new Date(userData.renewalDate);
+        const isAdmin = userData.admin;
+        if(!isAdmin && currentDate>renewalDate)
+          {
+            await admin.firestore().collection('testUsers').doc(userData.uid).set({
+              requiresRenewal:true,
+            },{merge:true});
+          }
+      }
+  }
+  catch(error){
+    console.log("Error retriving Users:",error);
+  }
+
+})
+
+exports.tempFunction=onSchedule("30 10 * * 5", async(event)=>{
+  try{
+        
+    const usersnapShot = await admin.firestore().collection('Users').get();
+    for(const doc of usersnapShot.docs)
+      {
+        const userData=doc.data();
+        const accessLevel=userData.fullAccess;
+        if(accessLevel)
+          {
+             await admin.firestore().collection('Users').doc(userData.uid).update({
+              role:"FullAccess"
+             })
+          }
+          else{
+            await admin.firestore().collection('Users').doc(userData.uid).update({
+              role:"LimitedAccess"
+             })
+          }
+      }
+
+  }
+  catch(error)
+  {
+    console.log("error executing temp function:",error);
+  }
 })

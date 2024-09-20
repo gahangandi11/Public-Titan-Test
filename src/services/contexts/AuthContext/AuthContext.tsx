@@ -22,9 +22,8 @@ const AuthContext = createContext<{
   currentUser: any;
   userDoc: any;
   permissions: string [] | null;
-  loading: boolean;
   value: string;
-}>({ currentUser: null, userDoc: null, permissions: null,loading:true, value: "" });
+}>({ currentUser: null, userDoc: null, permissions: null, value: "" });
 
 export function emailLogin(email: string, password:string) {
   return signInWithEmailAndPassword(auth, email, password);
@@ -106,48 +105,37 @@ export function getReidrectedUrl(
     return getRedirectResult(auth);
 }
 
+
+
 const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userDoc, setUserDoc] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [permissions, setPermissions] = useState<string [] | null>(null);
-
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      if (userDoc) {
-        console.log('hello from authcontext');
-        const data = await getRolePermissions(userDoc.role);
-        setPermissions(data?.permissions || []);
-        console.log(data?.permissions);
-        setLoading(false);
-      }
-    };
-
-    fetchdata();
-  }, [userDoc]); // Adding userDoc as a dependency
-
+  const [permissions, setPermissions] = useState<string [] | null>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
 
   useEffect(() => {
-     auth.onAuthStateChanged((user) => {
-      // if(!user){
-      //   console.log('not user called.............')
-      //   setLoading(true);
-      // }
-      console.log('called');
+     const unsubscribe= auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
       if (user) {
-        console.log('who is user:',user);
         localStorage.setItem("authKey", user.uid);
-        getUserByID(user.uid).then((doc) => {
-          setUserDoc(doc);
-  
-        });
-      } else {
-        localStorage.removeItem("authKey");
+        const doc = await getUserByID(user.uid);
+        console.log('printing doc......',doc)
+        setUserDoc(doc);       
+        if(doc && doc?.role!='')
+          {
+            const data = await getRolePermissions(doc.role);
+            setPermissions(data?.permissions || []);
+          }
+          setLoading(false);
+      } 
+      else {
+        localStorage.removeItem("authKey"); 
         setLoading(false);
       }
     });
+    return () => {
+      unsubscribe(); // Clean up the listener when the component unmounts
+    };
   }, []);
 
   // const value = {
@@ -163,10 +151,13 @@ const AuthProvider: React.FC = ({ children }) => {
       currentUser: currentUser,
       userDoc: userDoc,
       permissions: permissions,
-      loading: loading,
       value: "",
     };
-  }, [ userDoc,permissions,loading])
+  }, [ userDoc,permissions, currentUser])
+
+  // if (loading) {
+  //   return <div>Loading...</div>; // You can replace this with a spinner or your custom loader
+  // }
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };

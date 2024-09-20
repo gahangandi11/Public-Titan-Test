@@ -1,7 +1,6 @@
 import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
 import {getFunctions} from 'firebase/functions'
-import { httpsCallable } from 'firebase/functions';
 
 import firebase from 'firebase/compat/app';
 
@@ -18,14 +17,15 @@ import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
 import { push, pushOutline } from 'ionicons/icons';
 
-
+import { functions } from '../firebaseConfig';
+import { httpsCallable } from 'firebase/functions';
 
 import { UserRole } from '../interfaces/UserRoles';
 
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-const functions = getFunctions(app);
+
 
 
 // export const sayHello = firebase.functions().httpsCallable('sayHello');
@@ -206,9 +206,20 @@ export async function getNewUsers() {
     const userQuery = query(userCollection, where("verified", "==", false));
     const userDocs = await getDocs(userQuery);
     const foundDocs: User[] = [];
+
     userDocs.forEach(doc => {
         foundDocs.push(doc.data() as User);
     });
+    
+    const getbrockdocs=await getDocs(collection(db,"Users"));
+    getbrockdocs.forEach(doc=>{
+        if(doc.data().email==="brockweekley@gmail.com")
+            {
+                console.log(doc.data().uid);
+            }
+    })
+
+
     return foundDocs;
 }
 
@@ -287,6 +298,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         admin: false,
         applied: false,
         verified: false,
+        role:"",
         email: currentUser.email,
         displayName: currentUser.displayName,
         subscriptions: [],
@@ -300,7 +312,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         phoneNumber: phoneNumber,
         companyName: companyName,
         fullAccess: false,
-        role:'',
+        
     };
     if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {
         
@@ -447,18 +459,22 @@ export async function getRoleCount(Roles: UserRole [] | null)
     const userCollection=collection(db,'Users');
     const snapshot=await getDocs(userCollection);
 
-    const roleCount: {[role:string]:number} ={"FullAccess":0,"LimitedAccess":0};
+    const roleCount: {[role:string]:number} ={};
+
+    const roleNamesSnapshot = await getDocs(collection(db,'Roles'));
+
+    const roleNames = roleNamesSnapshot.docs.map(doc=>doc.id);
+
+    console.log('role Names:', roleNames);
+
+    roleNames.forEach(roleName=>{
+        roleCount[roleName]=0;
+    })
 
     snapshot.docs.forEach(doc =>{
-        const userRole=doc.data().fullAccess;
+        const userRole=doc.data().role;
 
-        if(userRole)
-            {
-                roleCount["FullAccess"]+=1;
-            }
-            else{
-                roleCount["LimitedAccess"]+=1;
-            }
+        roleCount[userRole]+=1;
     })
 
     return roleCount;
@@ -471,3 +487,13 @@ export async function getRolePermissions(role:string)
 
     return roleDoc.data();
 }
+
+export const DeleteUserFromAuth = async (uid:any) =>{
+    const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
+    try{
+          await deleteUserFn;
+    }
+    catch(error){
+      console.error("Error calling function:", error);
+    }
+   }

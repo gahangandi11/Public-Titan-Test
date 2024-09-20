@@ -88,7 +88,6 @@ const CreateRoles = () => {
             prevSelected.includes(page) ? prevSelected.filter((selectedPage)=> selectedPage!==page) : [...prevSelected,page]
         
         );
-        // console.log('selected Pages_____:',selectedPages)
       }
 
    

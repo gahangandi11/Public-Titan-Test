@@ -23,7 +23,7 @@ const Notification:React.FC<NotificationProps>=({setShowNotification})=>{
         <div className="notification-overlay">
         <Alert variant="filled" severity="success" sx={{width:300}}>
             User approved successfully
-      </Alert>
+        </Alert>
       </div>
     )
 }

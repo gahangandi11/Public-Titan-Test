@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { IonItem, IonRow, IonSelect, IonSelectOption, IonButton, IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
@@ -13,6 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import { getRoles } from '../../services/firestoreService';
+import { UserRole } from '../../interfaces/UserRoles';
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -21,21 +23,56 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { set } from 'date-fns';
 
+import DeleteUserAlert from './DeleteUserAlert';
+
 interface UserListProps {
     newUsers: User[]; // Adjust the type according to your data structure
     access: string; // Adjust the type according to your data structure
     setAccess: (value: any) => void; // Specify the correct type for `value`
     changeUserStatus: (user: any) => void; // Specify the correct type for `user`
     removeUser: (user: any) => void; // Specify the correct type for `user`
+    setUserDeleteMessage : (value:any) => void;
   }
   interface DropdownSelections {
     [userId: string]: string; // Maps userId to the selected dropdown value
   }
 
 
-const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, changeUserStatus, removeUser }) => {
+const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, changeUserStatus, removeUser, setUserDeleteMessage }) => {
 
     const [selections, setSelections] = useState<DropdownSelections>({});
+    const [Roles,setRoles]=useState<UserRole [] | null>(null);
+
+    const [deleteUser, setDeleteUser]=useState<User | null> (null);
+    
+    console.log(newUsers);
+
+    const [open, setOpen] = useState<boolean>(false);
+
+    const handleClickOpen = () => {
+      setOpen(true);
+      console.log(open);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const callremoveUser =()=>{
+        removeUser(deleteUser);
+    }  
+
+
+    useEffect(()=>{
+       
+        const fetchdata = async () => {
+            const data = await getRoles();
+            setRoles(data);
+        };
+
+        fetchdata();
+
+     },[]);
 
     const handleDropdownChange = (userId: string, value: string) => {
         setSelections(prevSelections => ({
@@ -46,7 +83,7 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
       };
 
     return (
-
+        <>
         <TableContainer component={Paper}>
 
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -75,16 +112,21 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
                             <TableCell align="right">                                
                                 <FormControl variant="standard" sx={{width: 100}}>
                                     <InputLabel id="demo-simple-select-standard-label">Access</InputLabel>
-                                    <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={selections[user.uid] || ''}
-                                    label="Age"
-                                    onChange={(e) =>handleDropdownChange(user.uid, e.target.value)}
-                                    >
-                                        <MenuItem value={'full'}>Full</MenuItem>
-                                        <MenuItem value={'limited'}>Limited</MenuItem>
-                                    </Select>
+                                        <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={selections[user.uid] || ''}
+                                        label="Age"
+                                        onChange={(e) =>handleDropdownChange(user.uid, e.target.value)}
+                                        >
+                                            {
+                                                Roles && Roles.map((role,index)=>(
+                                                    <MenuItem key={index} value={role.role}>{role.role}</MenuItem>
+                                                ))
+                                            }
+                                            {/* <MenuItem value={'full'}>Full</MenuItem>
+                                            <MenuItem value={'limited'}>Limited</MenuItem> */}
+                                        </Select>
                                 </FormControl>
                           
                             </TableCell>
@@ -98,7 +140,7 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
                              </IonButton>     
                             </TableCell>
                             <TableCell align="right">
-                                <IonButton color="danger" onClick={() => removeUser(user)}>
+                                <IonButton color="danger" onClick={() => {setDeleteUser(user); handleClickOpen();}}>
                                     <IonIcon icon={closeCircleOutline} />
                                 </IonButton>
                             </TableCell>
@@ -108,6 +150,8 @@ const UserList: React.FC<UserListProps> = ({ newUsers, access, setAccess, change
             </Table>
         
         </TableContainer>
+        <DeleteUserAlert open={open} handleClose={handleClose} callremoveUser={callremoveUser} setUserDeleteMessage={setUserDeleteMessage}/>
+        </>
       );
 
 

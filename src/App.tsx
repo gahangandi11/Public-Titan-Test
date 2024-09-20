@@ -63,10 +63,12 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <AuthProvider>
+    
       <IonApp>
         <IonReactRouter>
+        <AuthProvider>
           <Menu />
+        </AuthProvider>
           <IonRouterOutlet id="main">
             <Route path="/login" exact={true}>
               <Login />
@@ -84,7 +86,7 @@ const App: React.FC = () => {
             <Route path="/renewaccount" exact={true}>
               <ReValidation />
             </Route>
-
+          <AuthProvider>
             <RouteGuard path="/" exact={true}>
               <Redirect to="/homepage" />
               {/* <Homepage /> */}
@@ -102,21 +104,17 @@ const App: React.FC = () => {
               <Dashboard />
             </RouteGuard>
 
-            <RoleRouteGuard path="/data" exact={true}>
+            <RouteGuard path="/data" exact={true}>
               <DataDownload />
-            </RoleRouteGuard>
+            </RouteGuard>
 
-            <RoleRouteGuard path="/myapps" exact={true}>
+            <RouteGuard path="/myapps" exact={true}>
               <Newapp />
-            </RoleRouteGuard>
+            </RouteGuard>
 
-            <RoleRouteGuard path="/tutorials" exact={true}>
+            <RouteGuard path="/tutorials" exact={true}>
               <Tutorials />
-            </RoleRouteGuard>
-
-
-
-
+            </RouteGuard>
 
             <RouteGuard path="/profile" exact={true}>
               <Profile />
@@ -128,15 +126,16 @@ const App: React.FC = () => {
 
             {links.map((link) => {
               return (
-                <RoleRouteGuard path={"/app-center/" + link.name} key={link.name}>
+                <RouteGuard path={"/app-center/" + link.name} key={link.name}>
                   <AppCenter title={link.name} />
-                </RoleRouteGuard>
+                </RouteGuard>
               );
             })}
+        </AuthProvider>
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
-    </AuthProvider>
+    
   );
 };
 

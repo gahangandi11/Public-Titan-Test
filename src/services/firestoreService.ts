@@ -1,7 +1,6 @@
 import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
 import {getFunctions} from 'firebase/functions'
-import { httpsCallable } from 'firebase/functions';
 
 import firebase from 'firebase/compat/app';
 
@@ -18,9 +17,15 @@ import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
 import { push, pushOutline } from 'ionicons/icons';
 
+import { functions } from '../firebaseConfig';
+import { httpsCallable } from 'firebase/functions';
+
+import { UserRole } from '../interfaces/UserRoles';
+
+
 const db = getFirestore(app);
 const storage = getStorage(app);
-const functions = getFunctions(app);
+
 
 
 // export const sayHello = firebase.functions().httpsCallable('sayHello');
@@ -198,12 +203,23 @@ export function getUserDocumentRef(id: string): DocumentReference<DocumentData> 
 
 export async function getNewUsers() {
     const userCollection = collection(db, "Users");
-    const userQuery = query(userCollection, where("verified", "==", false),where("applied", "==", false));
+    const userQuery = query(userCollection, where("verified", "==", false));
     const userDocs = await getDocs(userQuery);
     const foundDocs: User[] = [];
+
     userDocs.forEach(doc => {
         foundDocs.push(doc.data() as User);
     });
+    
+    const getbrockdocs=await getDocs(collection(db,"Users"));
+    getbrockdocs.forEach(doc=>{
+        if(doc.data().email==="brockweekley@gmail.com")
+            {
+                console.log(doc.data().uid);
+            }
+    })
+
+
     return foundDocs;
 }
 
@@ -237,6 +253,24 @@ export async function sendApprovalEmail(currentUser: User) {
 
 
 
+export async function sendRejectionEmail(currentUser: User, userDeleteMessage: string) {
+
+    const email = currentUser.email;
+    const emailDoc={
+        to : [email],
+        template: {
+            name: 'adminRejection',
+            data:{
+                rejectMessage: userDeleteMessage,
+            }
+        
+        }
+    }
+    await addDoc(collection(db, "email"), emailDoc);
+}
+
+
+
 export async function updateVerificationAndAdminFlag(userId: string, isVerfied: boolean, isAdmin: boolean) {
     const userRef = doc(db, "Users", userId);
     await updateDoc(userRef, {
@@ -264,6 +298,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         admin: false,
         applied: false,
         verified: false,
+        role:"",
         email: currentUser.email,
         displayName: currentUser.displayName,
         subscriptions: [],
@@ -277,6 +312,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         phoneNumber: phoneNumber,
         companyName: companyName,
         fullAccess: false,
+        
     };
     if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {
         
@@ -313,10 +349,10 @@ export async function getAttachementUrl(ref: StorageReference): Promise<string> 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-export async function setUserRole(user: User, fullAccess: boolean) {
+export async function setUserRole(user: User, access:string) {
     const userRef = doc(db, "Users", user.uid);
     await updateDoc(userRef, {
-        fullAccess: fullAccess,
+        role:access,
     });
 }
 
@@ -347,14 +383,14 @@ export async function setNewrenewalDate(user: User) {
 export async function deleteDocument(currentUser: any) {
     const docRef = doc(db, "Users", currentUser.uid);
 
-    // await deleteDoc(docRef);
-    //delete doc has to be implemented with admin auth and delete the user from the Auth as well.
+    await deleteDoc(docRef);
+    // delete doc has to be implemented with admin auth and delete the user from the Auth as well.
 
-    //just adding a temporary check so the admin feels user is deleted.
-    //but the user is not deleted from the database and still wont have access beacuse of the verified flag.
-    await updateDoc(docRef, {
-        applied: true,
-    });
+    // just adding a temporary check so the admin feels user is deleted.
+    // but the user is not deleted from the database and still wont have access beacuse of the verified flag is still false.
+    // await updateDoc(docRef, {
+    //     applied: true,
+    // });
 
 
 }
@@ -392,3 +428,72 @@ export async function updateRenewalStatus(userId: string, requiresRenewal: boole
 
     
 // }
+
+
+export async function createRole(name:string,permissions:string []){
+      
+    const data={
+        permissions:permissions,
+    }
+    await setDoc(doc(db, "Roles", name), data);
+}
+
+
+export async function getRoles(){
+
+    const rolesCollection = collection(db, 'Roles');
+    const snapshot = await getDocs(rolesCollection);
+
+    const roles = snapshot.docs.map(doc => ({
+        role: doc.id,
+        permissions: doc.data().permissions || [],
+    } as UserRole));
+
+    return roles;
+
+}
+
+
+export async function getRoleCount(Roles: UserRole [] | null)
+{
+    const userCollection=collection(db,'Users');
+    const snapshot=await getDocs(userCollection);
+
+    const roleCount: {[role:string]:number} ={};
+
+    const roleNamesSnapshot = await getDocs(collection(db,'Roles'));
+
+    const roleNames = roleNamesSnapshot.docs.map(doc=>doc.id);
+
+    console.log('role Names:', roleNames);
+
+    roleNames.forEach(roleName=>{
+        roleCount[roleName]=0;
+    })
+
+    snapshot.docs.forEach(doc =>{
+        const userRole=doc.data().role;
+
+        roleCount[userRole]+=1;
+    })
+
+    return roleCount;
+}
+
+export async function getRolePermissions(role:string)
+{
+    const roleDocRef = doc(db, 'Roles', role);
+    const roleDoc =await getDoc(roleDocRef);
+
+    return roleDoc.data();
+}
+
+export const DeleteUserFromAuth = async (uid:any) =>{
+    const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
+    try{
+          await deleteUserFn;
+    }
+    catch(error){
+      console.error("Error calling function:", error);
+    }
+   }

@@ -36,7 +36,7 @@ const Homepage: React.FC = () => {
     history.push(path); // Redirects to the given path
   }
 
-  // const { currentUser, userDoc } = useAuth();
+  const { permissions } = useAuth();
  return(
         <IonPage>
     <Header title={"Home"} />
@@ -46,37 +46,37 @@ const Homepage: React.FC = () => {
          <div className="display-cards">
 
          
-          <IonCard color="primary" onClick={() => handleCardClick('/home')}>
-           
-                <h1>Live Data</h1>
-                <Icon className="icon-style" color="white" icon="arcticons:maps" />
-           
-          </IonCard> 
-          
+          { permissions?.includes("Live Data") && <IonCard color="primary" onClick={() => handleCardClick('/home')}>
+            
+                  <h1>Live Data</h1>
+                  <Icon className="icon-style" color="white" icon="arcticons:maps" />
+            
+            </IonCard> }
+            
 
-          <IonCard color="primary" onClick={() => handleCardClick('/dashboard')}>
+            { permissions?.includes("Dashboard") && <IonCard color="primary" onClick={() => handleCardClick('/dashboard')}>
+            
+                <h1>Dashboard</h1>
+                <Icon className="icon-style" color="white" icon="mage:dashboard-fill" />
+            
+            </IonCard>}
           
-               <h1>Dashboard</h1>
-               <Icon className="icon-style" color="white" icon="mage:dashboard-fill" />
+            
           
-          </IonCard>
-         
-          
-         
-          <IonCard color="primary" onClick={() => handleCardClick('/data')}>
-           
-            <h1>Download</h1>
-            <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
-          </IonCard>
+            { permissions?.includes("Data Download") && <IonCard color="primary" onClick={() => handleCardClick('/data')}>
+            
+              <h1>Download</h1>
+              <Icon className="icon-style" color="white" icon="mingcute:download-fill" />
+            </IonCard>}
 
 
-    
-          <IonCard color="primary" onClick={() => handleCardClick('/myapps')}>
-          
-              <h1>App center</h1>
-              
-             <Icon className="icon-style" color="white" icon="material-symbols:apps" />
-          </IonCard>
+      
+            { permissions?.includes("App Center") && <IonCard color="primary" onClick={() => handleCardClick('/myapps')}>
+            
+                <h1>App center</h1>
+                
+              <Icon className="icon-style" color="white" icon="material-symbols:apps" />
+            </IonCard>}
           
           </div>
 

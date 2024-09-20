@@ -27,6 +27,8 @@ import {
   getUserByID,
 } from "../../services/firestoreService";
 
+
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +46,9 @@ const Login: React.FC = () => {
   const [signup, setSignup] = useState(false);
   const [present, dismiss] = useIonToast();
 
+
+
+
   
   const registrationRedirect = window.location.href;
 
@@ -56,7 +61,8 @@ const Login: React.FC = () => {
             if (userData.verified == true) {
               clear();
               // history.push("/home");
-              history.push("/homepage")
+             
+              history.push("/homepage")             
             } else {
               history.push("/verification");
             }
@@ -138,7 +144,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <AuthProvider>
+    
       <IonPage>
         <IonContent color="light">
           <div className="background" />
@@ -402,7 +408,7 @@ const Login: React.FC = () => {
           </div>
         </IonContent>
       </IonPage>
-    </AuthProvider>
+    
   );
 };
 

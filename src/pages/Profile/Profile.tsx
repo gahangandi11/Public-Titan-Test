@@ -1,33 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {
-  IonButton,
-  IonCard,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonPage,
-  IonRow,
-  IonText,
-  IonToggle,
-} from "@ionic/react";
-
-import { Button } from "@material-ui/core";
+import {IonCol,IonContent,IonGrid,IonPage,IonRow} from "@ionic/react";
 import "./Profile.css";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
-import { personCircleOutline, send } from "ionicons/icons";
-import {
-  ProfileQuickActionsProps,
-  ProfileQuickActionType,
-} from "../../interfaces/ProfileData";
+import {ProfileQuickActionType,} from "../../interfaces/ProfileData";
 import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail} from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail, sendRejectionEmail} from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
 import UserList from "./UserList";
 import Box from '@mui/material/Box';
@@ -35,66 +16,63 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-
 import Notification from "../../components/notifications/notification";
+import CreateRoles from "./CreateRoles";
+import { DeleteUserFromAuth } from "../../services/firestoreService";
 
 
 const Profile: React.FC = () => {
-  const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(
-    ProfileQuickActionType.PROFILE_DETAIL
-  );
-  const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =
-    useState(false);
 
-  const { currentUser, userDoc } = useAuth();
+  const {userDoc } = useAuth();
+
+  const [profileAction, setProfileAction] = useState<ProfileQuickActionType>(ProfileQuickActionType.PROFILE_DETAIL);
+  const [refreshSiblingComponents, refreshAllProfileSiblingComponents] =useState(false);
 
   const [newUsers, setNewUsers] = useState<User[]>([]);
-
   const [reverifyUsers, setreverifyUsers] = useState<User[]>([]);
+
   const [access, setAccess] = useState('');
+  const [value, setValue] = React.useState('1');
+
   const [showNotification, setShowNotification] = useState(false);
-  console.log('access', access);
-  function onRefreshProfileRequestReceived() {
-    refreshAllProfileSiblingComponents(!refreshSiblingComponents);
-  }
-
-  async function changeUserStatus(user: User) {
-    const isFullAccess = access === 'full';
-    setShowNotification(true);
-    verifyUser(user);
-    setUserRole(user, isFullAccess);
-    sendApprovalEmail(user);
-    setTimeout(function () {
-      refreshUserList();
-      // window.alert('User is approved');
-    }, 1000);
-   
-  }
-
-
-  function reverifyUserStatus(user: User) {
-    const renewalstatus = false;
-    reverifyUser(user, renewalstatus);
-    setNewrenewalDate(user);
-    setTimeout(function () {
-      refreshReVerifyUserList();
-    }, 1000);
-  }
-
-
-  function removeUser(user: User) {
-    deleteDocument(user);
-    setTimeout(function () {
-      refreshUserList();
-    }, 1000);
-
-   }
+  const [userDeleteMessae,setUserDeleteMessage] = useState<string>('');
 
   useEffect(() => {
     refreshUserList();
     refreshReVerifyUserList();
     console.log('component called');
   }, []);
+
+ 
+  function onRefreshProfileRequestReceived() {
+    refreshAllProfileSiblingComponents(!refreshSiblingComponents);
+  }
+
+  async function changeUserStatus(user: User) {
+    setShowNotification(true);
+    await verifyUser(user);
+    await setUserRole(user, access);
+    await sendApprovalEmail(user);
+    refreshUserList();
+   
+  }
+
+
+  async function reverifyUserStatus(user: User) {
+    const renewalstatus = false;
+    await reverifyUser(user, renewalstatus);
+    await setNewrenewalDate(user);
+    refreshReVerifyUserList();
+  }
+
+
+  async function removeUser(user: User) {
+    await sendRejectionEmail(user, userDeleteMessae);
+    await DeleteUserFromAuth(user.uid);
+    await deleteDocument(user);
+    refreshUserList();
+    }
+
 
   function refreshUserList() {
     getNewUsers().then((docs) => {
@@ -108,7 +86,7 @@ const Profile: React.FC = () => {
     });
   }
 
-  const [value, setValue] = React.useState('1');
+  
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -150,16 +128,19 @@ const Profile: React.FC = () => {
                               
                             </Box>
                             <TabPanel value="1">
-                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser}/>
+                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
                             </TabPanel>
                             <TabPanel value="2">
-                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser}/>
+                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
                             </TabPanel>
                           </TabContext>
                         </Box>
                   
                  
                 </div>
+              )}
+              {userDoc?.admin && profileAction == ProfileQuickActionType.CREATE_ROLES && (
+                  <CreateRoles/>
               )}
             </IonCol>
           

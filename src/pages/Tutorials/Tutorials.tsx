@@ -3,7 +3,7 @@ import * as React from 'react';
 import Header from '../../components/Header/Header';
 import TutorialCard from "../../components/TutorialCards/TutorialCard";
 
-
+import { useAuth } from '../../services/contexts/AuthContext/AuthContext';
 
 export interface TutorialData {
     title: string;
@@ -22,24 +22,15 @@ import {
     appsSharp,
     gridOutline,
     gridSharp,
-    notifications,
-    personCircleOutline,
-    personCircleSharp,
-    podiumOutline,
-    podiumSharp,
     statsChartOutline,
     statsChartSharp,
-    subwayOutline,
-    subwaySharp,
-    videocamOutline,
-    videocamSharp,
 } from 'ionicons/icons';
 const Tutorials: React.FC = () => {
-    // const{userDoc}=useAuth();
+    const{permissions}=useAuth();
 
     const cards: TutorialData[] = [
         {
-            title: 'Database',
+            title: 'Data Download',
             color: 'card-orange',
             iosIcon: statsChartOutline,
             mdIcon: statsChartSharp,
@@ -83,9 +74,7 @@ const Tutorials: React.FC = () => {
                 <IonGrid className="main-grid">
                     <IonRow>
                     {cards.map((card, index) => {
-                            return (
-                                <TutorialCard key={index} cardData={card} />
-                            );
+                            return  permissions?.includes(card.title) ? (<TutorialCard key={index} cardData={card} />) : null;                           
                         })}
                         </IonRow>
                 </IonGrid>

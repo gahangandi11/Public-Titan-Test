@@ -22,6 +22,7 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
     '/myapps': 'App Center',
     '/profile': 'Profile',
     '/support': 'Support',
+    '/tutorials':'Tutorials',
   }
   
   const getTitleForPath = (path: string) => {
@@ -35,13 +36,12 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
     let unsubscribe: (() => void) | undefined;
 
     async function fetchUserData() {
-      console.log('inside fetch.........')
+      
       if (userAuth && userDoc) {
-            console.log('inside userAuth...')
             if (!userDoc.admin && userDoc.requiresRenewal) {
-              console.log('inside renew account')
                 history.push("/renewaccount");
-            }            
+            }
+
             unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
               const data = doc.data();
               if (data) {

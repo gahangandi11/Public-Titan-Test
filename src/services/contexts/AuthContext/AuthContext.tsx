@@ -119,7 +119,6 @@ const AuthProvider: React.FC = ({ children }) => {
       if (user) {
         localStorage.setItem("authKey", user.uid);
         const doc = await getUserByID(user.uid);
-        console.log('printing doc......',doc)
         setUserDoc(doc);       
         if(doc && doc?.role!='')
           {

@@ -491,7 +491,7 @@ export async function getRolePermissions(role:string)
 export const DeleteUserFromAuth = async (uid:any) =>{
     const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
     try{
-          await deleteUserFn;
+          await deleteUserFn({uid});
     }
     catch(error){
       console.error("Error calling function:", error);

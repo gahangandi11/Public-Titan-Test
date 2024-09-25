@@ -20,6 +20,11 @@ import Notification from "../../components/notifications/notification";
 import CreateRoles from "./CreateRoles";
 import { DeleteUserFromAuth } from "../../services/firestoreService";
 
+interface NotificationProps {
+  message: string;
+  color: string;
+}
+
 
 const Profile: React.FC = () => {
 
@@ -35,12 +40,13 @@ const Profile: React.FC = () => {
   const [value, setValue] = React.useState('1');
 
   const [showNotification, setShowNotification] = useState(false);
+  const [NotificationProperties, setNotificationProperties] = useState<NotificationProps>({'message':'','color': ''});
   const [userDeleteMessae,setUserDeleteMessage] = useState<string>('');
+  const [operation_loading,setOperation_Loading]=useState<boolean>(false);
 
   useEffect(() => {
     refreshUserList();
     refreshReVerifyUserList();
-    console.log('component called');
   }, []);
 
  
@@ -49,12 +55,14 @@ const Profile: React.FC = () => {
   }
 
   async function changeUserStatus(user: User) {
-    setShowNotification(true);
+    setNotificationProperties({'message':'User Approved Successfully','color':'green'})
+    setOperation_Loading(true);
     await verifyUser(user);
     await setUserRole(user, access);
     await sendApprovalEmail(user);
-    refreshUserList();
-   
+    await refreshUserList();
+    setOperation_Loading(false);
+    setShowNotification(true);
   }
 
 
@@ -62,26 +70,33 @@ const Profile: React.FC = () => {
     const renewalstatus = false;
     await reverifyUser(user, renewalstatus);
     await setNewrenewalDate(user);
-    refreshReVerifyUserList();
+    await refreshReVerifyUserList();
+    setNotificationProperties({'message':'User Re-Verified Successfully','color':'green'})
+    setShowNotification(true);
   }
 
 
   async function removeUser(user: User) {
+    setNotificationProperties({'message':'User Deleted Successfully','color':'red'})
+    setOperation_Loading(true);
     await sendRejectionEmail(user, userDeleteMessae);
     await DeleteUserFromAuth(user.uid);
     await deleteDocument(user);
-    refreshUserList();
+    await refreshUserList();
+    await refreshReVerifyUserList();
+    setOperation_Loading(false);
+    setShowNotification(true);
     }
 
 
-  function refreshUserList() {
-    getNewUsers().then((docs) => {
+  async function refreshUserList() {
+    await getNewUsers().then((docs) => {
       setNewUsers(docs);
     });
   }
 
-  function refreshReVerifyUserList() {
-    getreverifyUsers().then((docs) => {
+  async function refreshReVerifyUserList() {
+    await getreverifyUsers().then((docs) => {
       setreverifyUsers(docs);
     });
   }
@@ -94,7 +109,7 @@ const Profile: React.FC = () => {
   return (
     <IonPage color="light">
       <Header title="Profile" hideProfileButton={true} />
-      {showNotification && <Notification setShowNotification={setShowNotification}/>}
+      {(showNotification || operation_loading) && (<Notification setShowNotification={setShowNotification} NotificationProperties={NotificationProperties} operation_loading={operation_loading}/>)}
       <IonContent>
         <IonGrid>
           <IonRow>
@@ -128,10 +143,10 @@ const Profile: React.FC = () => {
                               
                             </Box>
                             <TabPanel value="1">
-                              <UserList newUsers={newUsers} access={access} setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
+                              <UserList newUsers={newUsers}  setAccess={setAccess} changeUserStatus={changeUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage} value={value}/>
                             </TabPanel>
                             <TabPanel value="2">
-                              <UserList newUsers={reverifyUsers} access={access} setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage}/>
+                              <UserList newUsers={reverifyUsers}  setAccess={setAccess} changeUserStatus={reverifyUserStatus} removeUser={removeUser} setUserDeleteMessage={setUserDeleteMessage} value={value}/>
                             </TabPanel>
                           </TabContext>
                         </Box>

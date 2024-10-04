@@ -33,7 +33,7 @@ const Menu = () => {
                                         },
                                         {
                                             title: 'Live Data',
-                                            url: '/home',
+                                            url: '/livedata',
                                             iosIcon: iconService.getIcon('analytics', "ios"),
                                             mdIcon: iconService.getIcon('analytics', "android"),
                                         },
@@ -52,7 +52,7 @@ const Menu = () => {
                                         },
                                         {
                                             title: 'App Center',
-                                            url: '/myapps',
+                                            url: '/appcenter',
                                             iosIcon: iconService.getIcon('apps', "ios"),
                                             mdIcon: iconService.getIcon('apps', "android"),
 

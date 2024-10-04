@@ -1,7 +1,6 @@
 import {
     IonButton,
     IonCard,
-    IonCardContent,
     IonCheckbox,
     IonContent,
     IonIcon, IonItem, IonLabel,
@@ -99,7 +98,6 @@ const DataDownload: React.FC = () => {
     const [page, setPage] = useState(pages[0]);
     const [pageAlert, setPageAlert] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    console.log('page Name:',page);
     const [startSelectedDate, handleStartDateChange] = useState<Date | null>(oneWeekAgo);
     const [endSelectedDate, handleEndDateChange] = useState<Date | null>(new Date());
     const [unit, setUnit] = useState<number>(60);
@@ -136,7 +134,6 @@ const DataDownload: React.FC = () => {
     }
 
     function changePage(option: {name: string, value: string}) {
-        console.log('pageAlert in changePage:',pageAlert);
         setPageAlert(false);
         setPage(option);
         handleStartDateChange(oneWeekAgo);

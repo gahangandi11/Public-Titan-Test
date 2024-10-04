@@ -3,11 +3,11 @@ import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
 
-import Home from "./pages/Home/Home";
+import LiveData from "./pages/LiveData/LiveData";
 import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
 
-import Newapp from "./pages/AppCenter/newapp";
+import AppCenter from "./pages/AppCenter/AppCenter";
 import Tutorials from "./pages/Tutorials/Tutorials";
 
 
@@ -26,7 +26,7 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import * as React from "react";
-import AppCenter from "./pages/AppCenter/AppCenter";
+import AppPage from "./pages/AppPage/AppPage";
 import DataDownload from "./pages/DataDownload/DataDownload";
 import Login from "./pages/Login/Login";
 import RouteGuard from "./components/Guard/RouteGuard";
@@ -96,8 +96,8 @@ const App: React.FC = () => {
               <Homepage />
             </RouteGuard>
 
-            <RouteGuard path="/home" exact={true}>
-              <Home />
+            <RouteGuard path="/livedata" exact={true}>
+              <LiveData />
             </RouteGuard>
 
             <RouteGuard path="/dashboard" exact={true}>
@@ -108,8 +108,8 @@ const App: React.FC = () => {
               <DataDownload />
             </RouteGuard>
 
-            <RouteGuard path="/myapps" exact={true}>
-              <Newapp />
+            <RouteGuard path="/appcenter" exact={true}>
+              <AppCenter/>
             </RouteGuard>
 
             <RouteGuard path="/tutorials" exact={true}>
@@ -127,7 +127,7 @@ const App: React.FC = () => {
             {links.map((link) => {
               return (
                 <RouteGuard path={"/app-center/" + link.name} key={link.name}>
-                  <AppCenter title={link.name} />
+                  <AppPage title={link.name} />
                 </RouteGuard>
               );
             })}

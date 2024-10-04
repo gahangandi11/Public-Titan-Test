@@ -16,10 +16,10 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
 
   const UrlTitleMap = {
     '/homepage': 'HomePage',
-    '/home': 'Live Data',
+    '/livedata': 'Live Data',
     '/dashboard': 'Dashboard',
     '/data': 'Data Download',
-    '/myapps': 'App Center',
+    '/appcenter': 'App Center',
     '/profile': 'Profile',
     '/support': 'Support',
     '/tutorials':'Tutorials',

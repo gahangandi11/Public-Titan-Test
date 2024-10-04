@@ -1,33 +1,24 @@
 import React,{useState} from 'react';
-import { IonCard, IonCardTitle, IonIcon, IonAlert } from '@ionic/react';
+import { IonCard, IonCardTitle, IonIcon} from '@ionic/react';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { DataCardContent } from "../../interfaces/DataCardContent";
 import { CountyData } from "../../interfaces/CountyData";
-import "./FreewayDataCard.css"
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useHistory } from 'react-router-dom';
-
 import Tooltip from '@mui/material/Tooltip';
-
-
 import Button from '@mui/material/Button';
-
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-
-
 import tourService from "../../services/tourService";
 import Tour from "reactour";
 
+import "./AllCardsStyles.css"
+
 interface GraphDataCardprops {
-  content: DataCardContent;
-  crashList: CountyData[];
-  newdata:any;
+  content: any;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -63,18 +54,18 @@ const isTour = tourService.StartTour();
 
     return(
   <>
-    <IonCard className='freeway-main-container freeway-tour-main'>
-            <IonCardTitle className="freeway-data-card-title">
-              <div className='freeway-header-title'>{props.content.title}</div>
+    <IonCard className='card-main-container freeway-tour-main'>
+            <IonCardTitle className="data-card-title">
+              <div className='card-header-title'>{props.content.title}</div>
               <Tooltip title="More Information">
-              <div onClick={openModal} className="freeway-data-card-icon freeway-tour-icon">
-                <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
+              <div onClick={openModal} className="data-card-icon freeway-data-card-icon freeway-tour-icon">
+                <IonIcon className='remove-pointer' color="light" ios={props.content.ios} md={props.content.md}/>
               </div>
               </Tooltip>
             </IonCardTitle>
         
         <div className="freeway-gauge-container freeway-tour-gauge">
-            <Gauge width={200} height={150} value={Number(props.newdata.Active.value)} startAngle={-110} endAngle={110} valueMax={100} innerRadius="75%"
+            <Gauge width={200} height={150} value={Number(props.content.Active.value)} startAngle={-110} endAngle={110} valueMax={100} innerRadius="75%"
                 outerRadius="100%" sx={{[`& .${gaugeClasses.valueArc}`]: {
                   fill: '#ec4561',
                 },[`& .${gaugeClasses.valueText}`]: {fontSize: 60,transform: 'translate(0px, 0px)',},[`& .${gaugeClasses.referenceArc}`]: {fill: '#456e97',},} }
@@ -84,13 +75,13 @@ const isTour = tourService.StartTour();
                 />
         </div>
           
-        <IonCardTitle className='freeway-graph-title' style={{ color: 'white' }}>
+        <IonCardTitle className='card-graph-title' style={{ color: 'white' }}>
                   Data Rate
         </IonCardTitle>
         
        <div className='freeway-bar-chart freeway-tour-chart'>
           <BarChart
-            dataset={props.newdata.roadAadt}
+            dataset={props.content.roadAadt}
             yAxis={[{ scaleType: 'band', dataKey: 'name' }]}
             // xAxis={[{label:'rainfall'}]}
             width={270}
@@ -126,18 +117,9 @@ const isTour = tourService.StartTour();
             }}
       />
     </div>
-        <div className='freeway-last-updated'>{props.content.updated}</div>
+        <div className='card-last-updated'>{props.content.updated}</div>
     </IonCard>
 
-    {/* <IonAlert
-          isOpen={modalOpen}
-          header={props.content.title}
-          subHeader={"Source: " + props.content.source}
-          message={props.content.description}
-          buttons={[{text:"More Inforamtion", handler: handleOkay}]}
-          onDidDismiss={closeModal}
-          cssClass="bigger-alert"
-        ></IonAlert> */}
           <Dialog
       className='alert-class'
         open={modalOpen}
@@ -146,7 +128,6 @@ const isTour = tourService.StartTour();
         onClose={closeModal}
         aria-describedby="alert-dialog-slide-description"
       >
-        {/* <DialogTitle className='alert-title'>{props.content.title}</DialogTitle> */}
         <h3 className='alert-title'>{props.content.title}</h3>
         <DialogContent>
         <h6 className='alert-source'>

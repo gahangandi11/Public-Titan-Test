@@ -43,7 +43,6 @@ export async function getDashboardContent() {
     const dashboardSnapshot = await getDocs(dashboardDocs);
     const dashboardData = dashboardSnapshot.docs[0].data();
     const devData = dashboardSnapshot.docs[1].data();
-    console.log(dashboardSnapshot)
     return Object.assign(dashboardData, devData) as DashboardData;
 }
 
@@ -210,15 +209,6 @@ export async function getNewUsers() {
     userDocs.forEach(doc => {
         foundDocs.push(doc.data() as User);
     });
-    
-    const getbrockdocs=await getDocs(collection(db,"Users"));
-    getbrockdocs.forEach(doc=>{
-        if(doc.data().email==="brockweekley@gmail.com")
-            {
-                console.log(doc.data().uid);
-            }
-    })
-
 
     return foundDocs;
 }
@@ -465,7 +455,6 @@ export async function getRoleCount(Roles: UserRole [] | null)
 
     const roleNames = roleNamesSnapshot.docs.map(doc=>doc.id);
 
-    console.log('role Names:', roleNames);
 
     roleNames.forEach(roleName=>{
         roleCount[roleName]=0;

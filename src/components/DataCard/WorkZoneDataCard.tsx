@@ -1,57 +1,25 @@
-import React,{ useRef, useEffect,useState } from 'react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonItem, IonIcon, IonAlert, IonRouterLink,IonLabel } from '@ionic/react';
-import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
-import Stack from '@mui/material/Stack';
-import { DataCardContent } from "../../interfaces/DataCardContent";
-import { CountyData } from "../../interfaces/CountyData";
-// import ProgressBar from "@ramonak/react-progress-bar";
-import "./WorkZoneDataCard.css"
-import { green } from '@material-ui/core/colors';
-import { colorFill } from 'ionicons/icons';
-import { color } from '@mui/system';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import React, { useState } from 'react';
+import { IonCard, IonCardTitle, IonIcon } from '@ionic/react';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-
-import { styled } from '@mui/material/styles';
 import { useHistory } from 'react-router-dom';
 import { LineChart } from '@mui/x-charts/LineChart';
-import CircleIcon from '@mui/icons-material/Circle';
 import { BarChart } from '@mui/x-charts/BarChart';
-
-
-
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 
+import './AllCardsStyles.css'
+
 interface GraphDataCardprops {
-  content: DataCardContent;
-  crashList: CountyData[];
-  newdata:any;
+  content: any;
 }
 
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    // backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
-    backgroundColor:'#456e97',
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: '#ec4561'
-    // backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
-  },
-}));
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -63,10 +31,10 @@ const Transition = React.forwardRef(function Transition(
 });
 
 
-const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)=> {
+const WorkZoneDataCard: React.FC<GraphDataCardprops> = (props: GraphDataCardprops) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
-    if (props.newdata.Workzones.notes.source != "N/A") setModalOpen(true);
+    if (props.content.Workzones.notes.source != "N/A") setModalOpen(true);
   };
 
   const closeModal = () => {
@@ -76,178 +44,136 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
   const history = useHistory();
 
   const handleOkay = () => {
-    closeModal();  // Close the modal first
-    history.push('/app-center/TranscoreAnalytics');  // Navigate to the desired path
+    closeModal();  
+    history.push('/app-center/TranscoreAnalytics');  
   };
-  
-  const clearanceValues = props.newdata.dowWzCongestion.map((day:any )=> Math.floor(day.delay));
-  const dayNames = props.newdata.dowWzCongestion.map((day:any) => day.name.substring(0, 3));   
-  console.log(clearanceValues)
-  console.log(dayNames)
 
-    return(
-  <>
-    <IonCard  className='workzone-main-container'>
-            <IonCardTitle className="crash-data-card-title">
-              <div className='crashes-header-title'>WorkZones</div>
-              <Tooltip title="More Information">
-              <div onClick={openModal} className="crashes-data-card-icon">
-                <IonIcon className='colorin' color="light" ios={props.content.ios} md={props.content.md}/>
-              </div>
-              </Tooltip>
-            </IonCardTitle>
-          <div className='scroll-container'>
-            <div className='workone'>
+  const clearanceValues = props.content.dowWzCongestion.map((day: any) => Math.floor(day.delay));
+  const dayNames = props.content.dowWzCongestion.map((day: any) => day.name.substring(0, 3));
 
-                    <div className="workzone-line-chart">
-                            <LineChart
-                                sx={{
-                                    "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel":{
-                                    strokeWidth:"0.4",
-                                    fill:"white"
-                                    },
-                                    "& .MuiChartsAxis-left .MuiChartsAxis-tick":{
-                                    stroke:"white"
-                                    },
-                                    "& .MuiChartsAxis-bottom .MuiChartsAxis-tick":{
-                                    stroke:"white"
-                                    },
-                                    "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel":{
-                                    strokeWidth:"0.5",
-                                    fill:"white"
-                                },
-                                "& .MuiChartsAxis-bottom .MuiChartsAxis-line":{
-                                    stroke:"white",
-                                    strokeWidth:1.2
-                                },
-                                "& .MuiChartsAxis-left .MuiChartsAxis-line":{
-                                    stroke:"white",
-                                    strokeWidth:1.2
-                                },
-                                "& .MuiChartsAxis-left .MuiChartsAxis-label":{
-                                 
-                                  fill:'white'
-                              },
-                                }}
-                                xAxis={[{ scaleType:"point" , data:dayNames}]}
-                                yAxis={[{label: 'Congestion',fill:'white'}]}
-                                series={[
-                                {
-                                    data: clearanceValues,
-                                },
-                                ]}
-                                dataset={props.newdata.dowWzCongestion}
-                                width={300}
-                                height={210}
-                            />
-                
-                    </div>
-                    <div className='work-zone-info'>
-                        {/* <div className='work-zone-info-child'>
-                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Number of WorkZones: {props.newdata.Workzones}
-                        </div>
-                        <div className='work-zone-info-child'>
-                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Avg. Queue Lengths : {props.newdata['Queue Lengths']}
-                        </div>
-                        <div className='work-zone-info-child'>
-                            <CircleIcon style={{fill:'red',fontSize:'13'}}></CircleIcon> Congested Hours : {props.newdata['Congested Hours']}
-                        </div> */}
 
-                        <Table striped bordered hover>
-                              <tbody>
-                                  <tr>
-                                    <td>Number of WorkZones</td>
-                                    <td>{props.newdata.Workzones.value}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Avg. Queue Length (ft)</td>
-                                    <td>{props.newdata['Queue Lengths'].value}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Congested Hours</td>
-                                    <td>{props.newdata['Congested Hours'].value}</td>
-                                  </tr>                                
-                              </tbody>
-                          </Table>
-                    </div>
-          
+  return (
+    <>
+      <IonCard className='card-main-container'>
+        <IonCardTitle className="data-card-title">
+          <div className='card-header-title'>WorkZones</div>
+          <Tooltip title="More Information">
+            <div onClick={openModal} className="data-card-icon workzone-data-card-icon">
+              <IonIcon className='remove-pointer' color="light" ios={props.content.ios} md={props.content.md} />
             </div>
-        <IonCardTitle className='crashes-title' style={{ color: 'white' }}>
-                  Congestion By Road
+          </Tooltip>
         </IonCardTitle>
-      
-        
-            <div className='bar-chart'>
-                    <BarChart
-                        dataset={props.newdata.roadWzCongestion}
-                        yAxis={[{ scaleType: 'band', dataKey: 'name' }]}
-                        // xAxis={[{label:'rainfall'}]}
-                        width={200}
-                        height={290}
-                        series={[{ dataKey: 'delay',label:'Congestion'}]}
-                        layout="horizontal"
-                        sx={{
-            
-                        "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel":{
-                            strokeWidth:1.2,
-                            fill:"white",
-                        },
-                        "& .MuiChartsAxis-left .MuiChartsAxis-tick":{
-                            stroke:"white"
-                        },
-                        "& .MuiChartsAxis-bottom .MuiChartsAxis-tick":{
-                            stroke:"white"
-                        },
-                        "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel":{
-                            strokeWidth:"0.5",
-                            fill:"white"
-                        },
-                        "& .MuiChartsAxis-bottom .MuiChartsAxis-line":{
-                        stroke:"white",
-                        strokeWidth:1.2
-                        },
-                        "& .MuiChartsAxis-left .MuiChartsAxis-line":{
-                        stroke:"white",
-                        strokeWidth:1.2
-                        },
-                        "& .MuiChartsAxis-top .MuiChartsAxis-label":{
-                        fill:"white",
-                        }
-                        }}
-                    />
-             </div>
-             </div>
-        <div className='crash-last-updated'>{props.content.updated}</div>
-        
+        <div className='workone'>
+          <div className="workzone-line-chart">
+            <LineChart className='line-chart'
+              sx={{
+                "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+                  strokeWidth: "0.4",
+                  fill: "white"
+                },
+                "& .MuiChartsAxis-left .MuiChartsAxis-tick": {
+                  stroke: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+                  stroke: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+                  strokeWidth: "0.5",
+                  fill: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+                  stroke: "white",
+                  strokeWidth: 1.2
+                },
+                "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+                  stroke: "white",
+                  strokeWidth: 1.2
+                },
+                "& .MuiChartsAxis-left .MuiChartsAxis-label": {
 
-
-    </IonCard>
-    {/* <IonAlert
-          isOpen={modalOpen}
-          header={props.content.title}
-          subHeader={"Source: " + props.content.source}
-          message={props.content.description}
-          buttons={[{text:"More Information", handler: handleOkay}]}
-          onDidDismiss={closeModal}
-          cssClass="bigger-alert"
-        ></IonAlert> */}
-      
+                  fill: 'white',
+                  transform: "translate(-10px,0)",
+                },
+              }}
+              xAxis={[{ scaleType: "point", data: dayNames }]}
+              yAxis={[{ label: 'Congestion Hours', fill: 'white', labelStyle: { fontSize: 14, fontWeight: 'bold', } }]}
+              series={[{data: clearanceValues, label: 'Congestion by Day of Week'},]}
+              margin={{ left: 70 }}
+              dataset={props.content.dowWzCongestion}
+            />
+          </div>
+          <div className='work-zone-info'>
+            <Table striped bordered hover>
+              <tbody>
+                <tr>
+                  <td>Number of WorkZones</td>
+                  <td>{props.content.Workzones.value}</td>
+                </tr>
+                <tr>
+                  <td>Avg. Queue Length (ft)</td>
+                  <td>{props.content.QueueLengths.value}</td>
+                </tr>
+                <tr>
+                  <td>Congested Hours</td>
+                  <td>{props.content.CongestedHours.value}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>
+          <div className='bar-chart'>
+            <BarChart
+              dataset={props.content.roadWzCongestion}
+              yAxis={[{ scaleType: 'band', dataKey: 'name' }]}
+              series={[{ dataKey: 'delay', label: 'Congestion Hours by Road' }]}
+              margin={{ left: 200 }}
+              layout="horizontal"
+              sx={{
+                "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+                  strokeWidth: 1.2,
+                  fill: "white",
+                },
+                "& .MuiChartsAxis-left .MuiChartsAxis-tick": {
+                  stroke: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+                  stroke: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+                  strokeWidth: "0.5",
+                  fill: "white"
+                },
+                "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+                  stroke: "white",
+                  strokeWidth: 1.2
+                },
+                "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+                  stroke: "white",
+                  strokeWidth: 1.2
+                },
+                "& .MuiChartsAxis-top .MuiChartsAxis-label": {
+                  fill: "white",
+                }
+              }}
+            />
+          </div>
+        </div>
+        <div className='card-last-updated'>{props.content.updated}</div>
+      </IonCard>
       <Dialog
-      className='alert-class'
+        className='alert-class'
         open={modalOpen}
         TransitionComponent={Transition}
         keepMounted
         onClose={closeModal}
         aria-describedby="alert-dialog-slide-description"
       >
-        {/* <DialogTitle className='alert-title'>{props.content.title}</DialogTitle> */}
         <h3 className='alert-title'>Work Zones</h3>
         <DialogContent>
-        <h6 className='alert-source'>
-        {"Source: " + props.newdata.Workzones.notes.source}
-        </h6>
+          <h6 className='alert-source'>
+            {"Source: " + props.content.Workzones.notes.source}
+          </h6>
           <DialogContentText id="alert-dialog-slide-description">
-            {props.newdata.Workzones.notes.Description}
+            {props.content.Workzones.notes.Description}
           </DialogContentText>
         </DialogContent>
         <div className='alert-buttons'>
@@ -255,12 +181,12 @@ const WorkZoneDataCard: React.FC<GraphDataCardprops> =(props:GraphDataCardprops)
           <Button onClick={handleOkay}>More Information</Button>
         </div>
       </Dialog>
-    
-    
 
-  </>
-   
-    );
+
+
+    </>
+
+  );
 };
 export default WorkZoneDataCard;
 

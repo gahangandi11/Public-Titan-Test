@@ -1,0 +1,276 @@
+/*Common Styles for all Cards*/
+/*_____________________________________________________________________________________________*/
+
+.card-main-container{
+    --background: #015990;
+    /* background: #283618; */
+}
+
+.data-card-title{
+    display: flex;
+    background-color:#004068;
+    /* background-color: #dda15e; */
+    padding: 10px;
+}
+
+.card-header-title{
+    padding-top: 0.25em;
+    font-weight: bold;
+    color: aliceblue;
+}
+
+.card-graph-title{
+    display: flex;
+    justify-content: center;
+}
+
+.card-last-updated{
+    display: flex;
+    justify-content: center;
+    padding: 0.25em;
+    background-color: #004068;
+    color: aliceblue;
+}
+
+.data-card-icon {
+    width: 1.5em;
+    height: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin-left: auto;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    cursor: pointer; 
+}
+
+.alert-title{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.alert-buttons{
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    background-color: aliceblue;
+}
+
+.alert-source{
+    display: flex;
+    justify-content: center;
+}
+
+.remove-pointer{
+    pointer-events: none;
+}
+
+/*Crashes data card styles*/
+/*_____________________________________________________________________________________________*/
+
+.crashes-data-card-icon{
+    background-color: var(--ion-color-green);
+}
+
+.crashes-data-card-icon:hover {
+    background-color: rgb(3, 96, 14); 
+}
+
+.gauge-container{
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    padding: 2em;
+    height: 14em;
+}
+
+.gauge-container .css-bx1j65-MuiGauge-container text, 
+.gauge-container .css-1uso5f2 text
+{
+    fill: rgba(252, 251, 251, 0.87) !important;
+}
+
+
+.counties-list{
+    max-height: 15.6em;
+    margin-top: 1.1em;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    /* font-size: medium; */
+}
+
+
+.county-and-percentage{
+    display: flex;
+    color: aliceblue;
+    justify-content: space-between;
+}
+
+
+
+/*Clearance data card styles*/
+/*_____________________________________________________________________________________________*/
+
+
+
+.clearance-data-card-icon{
+    background-color: var(--ion-color-yellow);
+}
+
+.clearance-data-card-icon:hover{
+    background-color: rgb(149, 149, 13);
+}
+
+.clearance-gauge-container{
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 14em;
+   
+}
+
+.counties-and-time{
+    max-height: 15.6em;
+    margin-top: 1.1em;
+    overflow-y: auto;
+    color: aliceblue;
+}
+
+.county-and-arrow{
+    display: flex;
+    padding: 5px;
+}
+
+.circle-dot{
+    margin-right: 10px;
+}
+
+.arrow{
+    margin-left: auto;
+    margin-right: 40px;
+}
+
+
+
+/*Freeway data card styles*/
+/*_____________________________________________________________________________________________*/
+
+.freeway-data-card-icon{
+    background-color: var(--ion-color-red);
+}
+
+.freeway-data-card-icon:hover{
+    background-color: rgb(212, 3, 153);
+}
+
+.freeway-gauge-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+    height: 14em;
+}
+
+.freeway-gauge-container .css-kg4hl1-MuiGauge-container text,
+.freeway-gauge-container .css-17oit0k text
+{
+    fill: rgba(252, 251, 251, 0.87) !important;
+}
+
+.freeway-bar-chart{
+   display: flex;
+   justify-content: center;
+   max-height: 15.6em;
+   margin-top: 1.1em;
+   overflow-y: auto;
+    
+}
+
+.MuiChartsLegend-series text{
+    fill: antiquewhite !important;
+}
+
+
+/*Congestion data card styles*/
+/*__________________________________________________________________________________________________________________*/
+
+.congestion-data-card-icon {
+    background-color: var(--ion-color-blue);
+}
+
+.congestion-data-card-icon:hover{
+    background-color: rgb(31, 24, 220);
+}
+
+.congestion-gauge-container{
+    display: flex;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    height: 14em;
+    width: 100%;
+}
+
+.congestion-gauge-container .css-m88e9q-MuiGauge-container text,
+.congestion-gauge-container .css-iw48nb text
+{
+    fill: rgba(252, 251, 251, 0.87) !important;
+}
+
+.gauge-circle{
+    width: 65%;
+}
+
+.pti-tti{
+    margin-left: 0.5em;
+    margin-top: 3em;
+    color: antiquewhite;
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.pti{
+    display: flex;
+    gap:0.25em;
+}
+
+
+
+/*WorkZones data card styles*/
+/*________________________________________________________________________________________________________________________*/
+
+
+.workzone-data-card-icon {
+    background-color: var(--ion-color-green);
+}
+
+.crashes-data-card-icon:hover {
+    background-color: rgb(3, 96, 14); 
+}
+
+.workone {
+    display: flex; 
+    justify-content: space-around;
+    align-items: center;
+}
+
+.workzone-line-chart{
+    width: 30%;
+    height: 20em;
+}
+
+.bar-chart{
+    width: 40%;
+    height: 20em;
+}
+
+
+
+  

@@ -26,6 +26,9 @@
     }
 }
 
+.MuiInputBase-root{
+    color: antiquewhite !important;
+}
 
 
 /* .MuiInputBase-root{

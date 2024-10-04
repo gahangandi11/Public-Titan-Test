@@ -91,46 +91,38 @@
 .graph-data-card{
     display: flex;
     justify-content: space-between;
-    /* align-items: stretch; */
-    width: 100%;
-    height: auto; /* Adjust height as necessary */
-    margin-bottom: 1em; /* Adds space below each card */
-}
-
-.graph-data-card-item {
-    flex: 1 0 25%; /* Flex grow, flex shrink, flex basis */
-    padding: 5px; /* Adjust padding as needed */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
-}
-
-
-.graph-cards{
-    display: flex;
-    justify-content: space-between;
     width: 100%;
     height: auto; 
     margin-bottom: 1em; 
 }
 
-
-.graph1 {
-    flex: 1 0 20%; 
+.graph-data-card-item {
+    flex: 1 0 25%; 
+    /* width: 23%; */
     padding: 5px; 
     box-sizing: border-box; 
-    
+}
+
+
+.graph-cards{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    height: auto; 
+    margin-bottom: 1em; 
+    margin-top: 2em;
+}
+
+.graph1{
+    width: 40%;
 }
 
 .graph2{
-    flex: 1 0 20%; 
-    padding: 5px; 
-    box-sizing: border-box; 
+    width: 40%;
 }
 
-.middle-data-card-item{
-    flex: 1 0 30%; 
-    padding: 5px; 
-    box-sizing: border-box;
-   
 
+
+.workzones-card{
+    padding: 1em;
 }
-

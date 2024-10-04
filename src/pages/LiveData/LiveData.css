@@ -1,0 +1,199 @@
+.home--content {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.map--container {
+    min-width: 1500px;
+    flex-grow: 1;
+}
+
+.map--toggles {
+    width: 50em;
+    opacity: 1;
+}
+
+.map--toggles:hover {
+    opacity: 1;
+}
+
+
+.cctv-div-title{
+    color: var(--ion-color-dark);
+    font-size: x-large;
+}
+
+.camera-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-wrap: wrap-reverse;
+}
+
+.main-camera {
+    width: 100em;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 1983px) {
+    .camera-index {
+        width: 35em;
+        max-height: 80em;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+    }
+}
+
+@media only screen and (max-width: 1983px) {
+    .camera-index {
+        width: 100%;
+        max-height: 55em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        overflow-y: auto;
+    }
+}
+
+@media only screen and (max-width: 2220px) {
+    .map--toggles {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        opacity: .5;
+        width: 25em;
+    }
+    @media only screen and (min-height: 1080px) {
+        .map--toggles {
+            position: absolute;
+            right: 0;
+            top: 0;
+            opacity: .5;
+            width: 25em;
+            height: 35em;
+        }
+    }
+}
+
+.key {
+    width: 100%;
+    min-height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.key-box {
+    min-width: 3em;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: solid black 2px;
+}
+
+.red-key {
+    background-color: red;
+}
+
+.orangered-key {
+    background-color: orangered;
+}
+
+.gold-key {
+    background-color: gold;
+    color: black;
+}
+
+.greenyellow-key {
+    background-color: greenyellow;
+    color: black;
+}
+
+.palegreen-key {
+    background-color: palegreen;
+    color: black;
+}
+
+.mediumseagreen-key {
+    background-color: mediumseagreen;
+}
+
+.forestgreen-key {
+    background-color: forestgreen;
+}
+
+
+.map-div {
+    text-align: left !important;
+  }
+
+ 
+  .ion-list-bg{
+    --ion-background-color:#f4f5f8 !important; 
+  }
+
+  .header-font {
+    font-size: 1.5em !important;
+  }
+
+  .offset-title
+  {
+    marker-start: 5px !important;
+  }
+
+@media only screen and (min-width: 1023px) {
+    /* .box {
+      display: flex;
+      justify-content: space-around;
+    } */
+
+    .box {
+        position: relative; /* Ensures the .controls-box can be positioned absolutely relative to this container */
+    }
+  
+    .controls-box {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  
+    .map-div {
+      /* width: 65%; */
+      width: 100%;
+      position: relative;
+    }
+  
+    .controls-box {
+        position: absolute;
+        top: 0;
+        right: 0;
+        max-height: 45em;
+        width: 25em;
+        overflow-y: auto;
+        padding-top: 13px;
+        padding-right: 16px;
+        /* background-color: rgba(255, 255, 255, 0.9);
+        z-index: 10; 
+      max-height: 45em;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
+
+    }
+
+  
+
+    
+
+
+  }

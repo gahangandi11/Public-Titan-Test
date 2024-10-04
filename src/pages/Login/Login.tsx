@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   IonButton,
   IonCard,
@@ -15,14 +15,13 @@ import {
 import { useHistory } from "react-router";
 import "./Login.css";
 import TitanT from "../../assets/icon/favicon.png";
-import AuthProvider, {
+import {
   emailSignup,
   emailLogin,
   sendEmailVerfication,
   isEmailVerifiedByUser,
 } from "../../services/contexts/AuthContext/AuthContext";
 import {
-  checkIfUserWithSameEmailAlreadyExists,
   createUser,
   getUserByID,
 } from "../../services/firestoreService";
@@ -38,18 +37,24 @@ const Login: React.FC = () => {
   const [lastName, setlastName] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
   const [companyName, setcompanyName] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
 
 
-  
-  const [shortDescription, setShortDescription] = useState('');
+  const [emailValid, setEmailValid] = useState<boolean>(true);
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+  const [checkPasswordValid, setCheckPasswordValid] = useState<boolean>(true);
+  const [firstNameValid, setfirstNameValid] = useState<boolean>(true);
+  const [lastNameValid, setlastNameValid] = useState<boolean>(true);
+  const [phoneNumberValid, setphoneNumberValid] = useState<boolean>(true);
+  const [companyNameValid, setcompanyNameValid] = useState<boolean>(true);
+  const [shortDescriptionValid, setShortDescriptionValid] = useState<boolean>(true);
+
+
   const history = useHistory();
   const [signup, setSignup] = useState(false);
   const [present, dismiss] = useIonToast();
 
 
-
-
-  
   const registrationRedirect = window.location.href;
 
   async function login() {
@@ -61,8 +66,8 @@ const Login: React.FC = () => {
             if (userData.verified == true) {
               clear();
               // history.push("/home");
-             
-              history.push("/homepage")             
+
+              history.push("/homepage")
             } else {
               history.push("/verification");
             }
@@ -89,16 +94,108 @@ const Login: React.FC = () => {
   }
 
   async function onSignup() {
+
+    if (email.toLowerCase().endsWith("@gmail.com")) {
+      present({
+        buttons: [{ text: "dismiss", handler: () => dismiss() }],
+        message: "sign up with gmail is not allowed. Please use your work email",
+        duration: 7000,
+        color: "danger",
+      });
+      return;
+    }
+
+    let valid = true;
+
+    if (!email.trim()) {
+      setEmailValid(false);
+      valid = false;
+    }
+    else {
+      setEmailValid(true);
+    }
+
+    if (!password.trim()) {
+      setPasswordValid(false);
+      valid = false;
+    }
+    else {
+      setPasswordValid(true);
+    }
+
+    if (!checkPassword.trim()) {
+      setCheckPasswordValid(false);
+      valid = false;
+    }
+    else {
+      setCheckPasswordValid(true);
+    }
+
+
+    if (!firstName.trim()) {
+      setfirstNameValid(false);
+      valid = false;
+    }
+    else {
+      setfirstNameValid(true);
+    }
+
+
+    if (!lastName.trim()) {
+      setlastNameValid(false);
+      valid = false;
+    }
+    else {
+      setlastNameValid(true);
+    }
+
+
+    if (!phoneNumber.trim()) {
+      setphoneNumberValid(false);
+      valid = false;
+    }
+    else {
+      setphoneNumberValid(true);
+    }
+
+    if (!companyName.trim()) {
+      setcompanyNameValid(false);
+      valid = false;
+    }
+    else {
+      setcompanyNameValid(true);
+    }
+
+    if (!shortDescription.trim()) {
+      setShortDescriptionValid(false);
+      valid = false;
+    }
+    else {
+      setShortDescriptionValid(true);
+    }
+
+
+    if (!valid) {
+      present({
+        buttons: [{ text: "dismiss", handler: () => dismiss() }],
+        message: "Please fill out all required fields.",
+        duration: 5000,
+        color: "danger",
+      });
+      return;
+    }
+
+
     if (password === checkPassword) {
       try {
         const userCredential = await emailSignup(email, password);
         await emailLogin(email, password);
         await sendEmailVerfication(
           registrationRedirect +
-            "?verificationId=" +
-            userCredential.user.uid +
-            "&email=" +
-            userCredential.user.email
+          "?verificationId=" +
+          userCredential.user.uid +
+          "&email=" +
+          userCredential.user.email
         );
         setSignup(!signup);
         clear();
@@ -144,271 +241,271 @@ const Login: React.FC = () => {
   };
 
   return (
-    
-      <IonPage>
-        <IonContent color="light">
-          <div className="background" />
-          <div className="card--container">
-            <IonCard
-              className={`card--login ion-padding ion-margin ${signup ? 'card--signup' : ''}`}
-              color="primary">
-              <IonCardHeader className="titan-container">
-                <IonImg className="titan-t" src={TitanT} />
-                {!signup && <IonLabel color="light">Login</IonLabel>}
-                {signup && <IonLabel color="light">Sign Up</IonLabel>}
-              </IonCardHeader>
+
+    <IonPage>
+      <IonContent color="light">
+        <div className="background" />
+        <div className="card--container">
+          <IonCard
+            className={`card--login ion-padding ion-margin ${signup ? 'card--signup' : ''}`}
+            color="primary">
+            <IonCardHeader className="titan-container">
+              <IonImg className="titan-t" src={TitanT} />
+              {!signup && <IonLabel color="light">Login</IonLabel>}
+              {signup && <IonLabel color="light">Sign Up</IonLabel>}
+            </IonCardHeader>
 
 
-              {!signup && (
-                <>
+            {!signup && (
+              <>
                 <IonLabel color="light" position="floating">
-                     Email:{" "}
-                 </IonLabel>
-                  <IonInput
-                    className="login-input"
-                    value={email}
-                    onIonChange={(val) => {
-                      const inputEmail = val.detail.value;
-                      if (inputEmail) {
-                        setEmail(inputEmail);
-                      }
-                    }}
-                  />
+                  Email:{" "}
+                </IonLabel>
+                <IonInput
+                  className="login-input"
+                  value={email}
+                  onIonChange={(val) => {
+                    const inputEmail = val.detail.value;
+                    if (inputEmail) {
+                      setEmail(inputEmail);
+                    }
+                  }}
+                />
               </>
-              )
+            )
             }
 
 
             {!signup && (
               <>
-                  <IonLabel color="light" position="floating">
-                    Password:{" "}
-                  </IonLabel>
-                  <IonInput
-                    onKeyDown={onEnterKeyPressedOnPasswordField}
-                    className="login-input"
-                    type="password"
-                    value={password}
-                    onIonChange={(val) => {
-                      const inputPassword = val.detail.value;
-                      if (inputPassword) {
-                        setPassword(inputPassword);
-                      }
-                    }}
-                  />
+                <IonLabel color="light" position="floating">
+                  Password:{" "}
+                </IonLabel>
+                <IonInput
+                  onKeyDown={onEnterKeyPressedOnPasswordField}
+                  className="login-input"
+                  type="password"
+                  value={password}
+                  onIonChange={(val) => {
+                    const inputPassword = val.detail.value;
+                    if (inputPassword) {
+                      setPassword(inputPassword);
+                    }
+                  }}
+                />
               </>
             )
-          }
+            }
 
 
-              {
-                signup && (
+            {
+              signup && (
                 <>
-                <div className="signup-fields">
-                      
-                  <div className="email-password"> 
-                    <div>  
+                  <div className="signup-fields">
+
+                    <div className="email-password">
+                      <div>
                         <IonLabel color="light" position="floating">
-                              Email:{" "}
+                          Email:{" "}
                         </IonLabel>
                         <IonInput
-                              className="signup-input"
-                              value={email}
-                              onIonChange={(val) => {
-                                const inputEmail = val.detail.value;
-                                if (inputEmail) {
-                                  setEmail(inputEmail);
-                                }
-                              }}
+                          className={`signup-input ${!emailValid ? "invalid" : ""}`}
+                          value={email}
+                          onIonChange={(val) => {
+                            const inputEmail = val.detail.value;
+                            if (inputEmail) {
+                              setEmail(inputEmail);
+                            }
+                          }}
                         />
-                    </div>
+                      </div>
 
-                    <div>
-                      <IonLabel color="light" position="floating">
-                            Password:{" "}
-                      </IonLabel>
-                      <IonInput
-                            onKeyDown={onEnterKeyPressedOnPasswordField}
-                            className="signup-input"
-                            type="password"
-                            value={password}
-                            onIonChange={(val) => {
-                              const inputPassword = val.detail.value;
-                              if (inputPassword) {
-                                setPassword(inputPassword);
-                              }
-                            }}
-                      />
-                    </div>
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          Password:{" "}
+                        </IonLabel>
+                        <IonInput
+                          onKeyDown={onEnterKeyPressedOnPasswordField}
+                          className={`signup-input ${!passwordValid ? "invalid" : ""}`}
+                          type="password"
+                          value={password}
+                          onIonChange={(val) => {
+                            const inputPassword = val.detail.value;
+                            if (inputPassword) {
+                              setPassword(inputPassword);
+                            }
+                          }}
+                        />
+                      </div>
 
-                    <div>
-                      <IonLabel color="light" position="floating">
+                      <div>
+                        <IonLabel color="light" position="floating">
                           Confirm Password:{" "}
-                      </IonLabel>
-                      <IonInput
-                            className="signup-input"
-                            type="password"
-                            value={checkPassword}
-                            onIonChange={(val) => {
-                              const inputCheck = val.detail.value;
-                              if (inputCheck) {
-                                setCheckPassword(inputCheck);
-                              }
-                            }}
-                      />
+                        </IonLabel>
+                        <IonInput
+                          className={`signup-input ${!checkPasswordValid ? "invalid" : ""}`}
+                          type="password"
+                          value={checkPassword}
+                          onIonChange={(val) => {
+                            const inputCheck = val.detail.value;
+                            if (inputCheck) {
+                              setCheckPassword(inputCheck);
+                            }
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          Company Name:
+                        </IonLabel>
+                        <IonInput
+                          className={`signup-input ${!companyNameValid ? "invalid" : ""}`}
+                          type="text"
+                          value={companyName}
+                          onIonChange={(val) => {
+                            const companyName = val.detail.value;
+                            if (companyName) {
+                              setcompanyName(companyName);
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
 
-                    <div>
-                      <IonLabel color="light" position="floating">
-                            Company Name:
-                      </IonLabel>
-                      <IonInput
-                              className="signup-input"
-                              type="text"
-                              value={companyName}
-                              onIonChange={(val) => {
-                                const companyName = val.detail.value;
-                                if (companyName) {
-                                  setcompanyName(companyName);
-                                }
-                              }}
-                      />
-                    </div>
-                  </div> 
+                    <div className="name-phone">
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          First Name:
+                        </IonLabel>
+                        <IonInput
+                          className={`signup-input ${!firstNameValid ? "invalid" : ""}`}
+                          type="text"
+                          value={firstName}
+                          onIonChange={(val) => {
+                            const firstName = val.detail.value;
+                            if (firstName) {
+                              setfirstName(firstName);
+                            }
+                          }}
+                        />
+                      </div>
 
-                  <div className="name-phone">
-                    <div>
-                      <IonLabel color="light" position="floating">
-                              First Name:
-                      </IonLabel>
-                      <IonInput
-                              className="signup-input"
-                              type="text"
-                              value={firstName}
-                              onIonChange={(val) => {
-                                const firstName = val.detail.value;
-                                if (firstName) {
-                                  setfirstName(firstName);
-                                }
-                              }}
-                      />
-                    </div>
-
-                    <div>
-                      <IonLabel color="light" position="floating">
-                            Middle Name:
-                      </IonLabel>
-                      <IonInput
-                              className="signup-input"
-                              type="text"
-                              value={middleName}
-                              onIonChange={(val) => {
-                                const middleName = val.detail.value;
-                                if (middleName) {
-                                  setmiddleName(middleName);
-                                }
-                              }}
-                      />
-                    </div>
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          Middle Name:
+                        </IonLabel>
+                        <IonInput
+                          className="signup-input"
+                          type="text"
+                          value={middleName}
+                          onIonChange={(val) => {
+                            const middleName = val.detail.value;
+                            if (middleName) {
+                              setmiddleName(middleName);
+                            }
+                          }}
+                        />
+                      </div>
 
 
-                    <div>
-                      <IonLabel color="light" position="floating">
-                              Last Name:
-                      </IonLabel>
-                      <IonInput
-                              className="signup-input"
-                              type="text"
-                              value={lastName}
-                              onIonChange={(val) => {
-                                const lastName = val.detail.value;
-                                if (lastName) {
-                                  setlastName(lastName);
-                                }
-                              }}
-                      />
-                    </div>
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          Last Name:
+                        </IonLabel>
+                        <IonInput
+                          className={`signup-input ${!lastNameValid ? "invalid" : ""}`}
+                          type="text"
+                          value={lastName}
+                          onIonChange={(val) => {
+                            const lastName = val.detail.value;
+                            if (lastName) {
+                              setlastName(lastName);
+                            }
+                          }}
+                        />
+                      </div>
 
-                    <div>
-                      <IonLabel color="light" position="floating">
-                            Phone Number:
-                      </IonLabel>
-                      <IonInput
-                              className="signup-input"
-                              type="text"
-                              value={phoneNumber}
-                              onIonChange={(val) => {
-                                const phoneNumber = val.detail.value;
-                                if (phoneNumber) {
-                                  setphoneNumber(phoneNumber);
-                                }
-                              }}
-                      />
+                      <div>
+                        <IonLabel color="light" position="floating">
+                          Phone Number:
+                        </IonLabel>
+                        <IonInput
+                          className={`signup-input ${!phoneNumberValid ? "invalid" : ""}`}
+                          type="text"
+                          value={phoneNumber}
+                          onIonChange={(val) => {
+                            const phoneNumber = val.detail.value;
+                            if (phoneNumber) {
+                              setphoneNumber(phoneNumber);
+                            }
+                          }}
+                        />
+                      </div>
+
+
                     </div>
 
-                    
                   </div>
 
-                </div>
+                  <div>
+                    <IonLabel color="light" position="floating">
+                      Why do you want to access Titan? (Please explain shortly):
+                    </IonLabel>
+                    <IonInput
+                      className={`login-input ${!shortDescriptionValid ? "invalid" : ""}`}
+                      type="text"
+                      value={shortDescription}
+                      onIonChange={(val) => {
+                        const inputShortDescription = val.detail.value;
+                        if (inputShortDescription) {
+                          setShortDescription(inputShortDescription);
+                        }
+                      }}
+                    />
+                  </div>
+                </>
+              )
+            }
 
-              <div>
-                  <IonLabel color="light" position="floating">
-                    Why do you want to access Titan? (Please explain shortly):
-                  </IonLabel>
-                  <IonInput
-                    className="login-input"
-                    type="text"
-                    value={shortDescription}
-                    onIonChange={(val) => {
-                      const inputShortDescription = val.detail.value;
-                      if (inputShortDescription) {
-                        setShortDescription(inputShortDescription);
-                      }
-                    }}
-                  />
+
+
+
+            {!signup && (
+              <div className="links">
+                <IonRouterLink className="link" routerLink="/forgotPassword">
+                  <IonLabel>Forgot your password?</IonLabel>
+                  <br />
+                </IonRouterLink>
               </div>
-              </>
-                )
-              }
-
-
-          
-
+            )}
+            <IonFooter className="buttons-footer">
               {!signup && (
-                <div className="links">
-                  <IonRouterLink className="link" routerLink="/forgotPassword">
-                    <IonLabel>Forgot your password?</IonLabel>
-                    <br />
-                  </IonRouterLink>
-                </div>
-              )}
-              <IonFooter className="buttons-footer">
-                {!signup && (
-                  <IonButton color="secondary" onClick={login}>
-                    Login
-                  </IonButton>
-                )}
-                {signup && (
-                  <IonButton color="secondary" onClick={onSignup}>
-                    Sign Up
-                  </IonButton>
-                )}
-                <IonButton
-                  color="secondary"
-                  onClick={() => {
-                    setSignup(!signup);
-                    clear();
-                  }}
-                >
-                  {!signup && <span>Sign Up</span>}
-                  {signup && <span>Back to Login</span>}
+                <IonButton color="secondary" onClick={login}>
+                  Login
                 </IonButton>
-              </IonFooter>
-            </IonCard>
-          </div>
-        </IonContent>
-      </IonPage>
-    
+              )}
+              {signup && (
+                <IonButton color="secondary" onClick={onSignup}>
+                  Sign Up
+                </IonButton>
+              )}
+              <IonButton
+                color="secondary"
+                onClick={() => {
+                  setSignup(!signup);
+                  clear();
+                }}
+              >
+                {!signup && <span>Sign Up</span>}
+                {signup && <span>Back to Login</span>}
+              </IonButton>
+            </IonFooter>
+          </IonCard>
+        </div>
+      </IonContent>
+    </IonPage>
+
   );
 };
 

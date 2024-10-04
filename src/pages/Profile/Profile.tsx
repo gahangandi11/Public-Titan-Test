@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {IonCol,IonContent,IonGrid,IonPage,IonRow} from "@ionic/react";
-import "./Profile.css";
-import Header from "../../components/Header/Header";
 import { useAuth } from "../../services/contexts/AuthContext/AuthContext";
 import {ProfileQuickActionType,} from "../../interfaces/ProfileData";
 import ProfileActions from "./ProfileActions";
 import ProfileInfo from "./ProfileDetail";
 import ProfileHeader from "./ProfileHeader";
 import ProfileChangeEmailOrPassword from "./ProfileChangeEmailOrPassword";
-import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, setUserRole, sendApprovalEmail, sendRejectionEmail} from "../../services/firestoreService";
+import { getNewUsers, verifyUser, reverifyUser, setNewrenewalDate, deleteDocument, getreverifyUsers, 
+  setUserRole, sendApprovalEmail, sendRejectionEmail} from "../../services/firestoreService";
 import { User } from "../../interfaces/User";
-import UserList from "./UserList";
+import UserList from "../../components/UserList/UserList";
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Notification from "../../components/notifications/notification";
-import CreateRoles from "./CreateRoles";
+import CreateRoles from "../../components/CreateRoles/CreateRoles";
 import { DeleteUserFromAuth } from "../../services/firestoreService";
+import Header from "../../components/Header/Header";
+import "./Profile.css";
 
 interface NotificationProps {
   message: string;
@@ -158,10 +159,7 @@ const Profile: React.FC = () => {
                   <CreateRoles/>
               )}
             </IonCol>
-          
-            {/* <IonCol size="auto">
-              <ProfileActions onActionTapped={setProfileAction} />
-            </IonCol> */}
+      
           </IonRow>
         </IonGrid>
       </IonContent>
@@ -171,25 +169,3 @@ const Profile: React.FC = () => {
 
 export default Profile;
 
-
-
-
-
-
-
-            {/* { userDoc?.admin && <IonCol>
-              <IonText>Users awaiting verification: </IonText><br /><br />
-              {newUsers.map((user, index) => {
-                return(
-                    <div className="user-status" key={index}>
-                      <IonText>
-                        {user.email}
-                      </IonText>
-
-                      <IonToggle checked={user.verified} onIonChange={() => changeUserStatus(user)} />
-
-                      <br /><br />
-                    </div>
-                );
-              })}
-            </IonCol>} */}

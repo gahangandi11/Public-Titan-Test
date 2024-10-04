@@ -89,7 +89,6 @@ const EmailVerification: React.FC = () => {
     let unsubscribe: (() => void) | undefined;
     async function fetchUserData() {
       if (userAuth) {
-        console.log("Getting user document");
         setEmailVerified(isEmailVerifiedByUser());
         const doc = await getDoc(getUserDocumentRef(userAuth.uid));
         if (doc.exists()) {
@@ -99,7 +98,6 @@ const EmailVerification: React.FC = () => {
         }
       }
       if (userAuth) {
-        console.log("Listening to user docs");
         unsubscribe = onSnapshot(getUserDocumentRef(userAuth!.uid), (doc) => {
           const data = doc.data();
           if (data) {

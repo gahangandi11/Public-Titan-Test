@@ -13,7 +13,7 @@
 }
 
 .card--signup {
-  height: 45em;
+  height: 47em;
 
 }
 
@@ -235,3 +235,7 @@
  
 }
 
+
+.invalid{
+  border: 3px solid red;
+}

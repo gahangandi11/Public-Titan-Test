@@ -13,7 +13,8 @@ admin.initializeApp();
 
 
 
-
+//function called when adim deletes user
+//this function removes the user from firebase authentication using admin sdk
 
 exports.deleteUserFn = functions.https.onCall(async (data, context)=>{
   const {uid} = data;
@@ -30,6 +31,9 @@ exports.deleteUserFn = functions.https.onCall(async (data, context)=>{
 });
 
 
+
+//this function runs every moday at 10:35 am and checks if there are any new users
+//and send an reminder email to adim if there are new users waiting for approval
 
 exports.adminReminder = onSchedule("35 10 * * 1",async(event)=>{
   console.log('function executed'); 
@@ -87,6 +91,11 @@ exports.adminReminder = onSchedule("35 10 * * 1",async(event)=>{
     console.log('Admin users list written to Firestore:', adminUsers);
   
 })
+
+
+//this function runs on first of every month and checks is there are any users that are past renewal date 
+//and remove thier access to the application. The admin needs to reverify them and set the access.
+
 
 exports.UserRenewalStatusUpdateFn=onSchedule("30 9 1 * *",async(event)=>{
 

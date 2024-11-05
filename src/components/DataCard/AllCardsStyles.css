@@ -103,7 +103,7 @@
     gap: 0.75em;
     padding-left: 0.75em;
     padding-right: 0.75em;
-    /* font-size: medium; */
+    font-size: medium;
 }
 
 
@@ -141,6 +141,7 @@
     margin-top: 1.1em;
     overflow-y: auto;
     color: aliceblue;
+    font-size: medium;
 }
 
 .county-and-arrow{
@@ -189,7 +190,14 @@
    max-height: 15.6em;
    margin-top: 1.1em;
    overflow-y: auto;
+   font-size: medium;
+   width: 100%;
     
+}
+
+.barr{
+    width: 70%;
+    height: 60%;
 }
 
 .MuiChartsLegend-series text{
@@ -224,6 +232,7 @@
 
 .gauge-circle{
     width: 65%;
+    display: flex;
 }
 
 .pti-tti{
@@ -234,11 +243,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
+    font-weight: bold;
 }
 
 .pti{
     display: flex;
-    gap:0.25em;
+    gap:0.5em;
+    align-items: center;
 }
 
 

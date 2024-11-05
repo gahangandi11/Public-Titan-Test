@@ -95,15 +95,17 @@ const Login: React.FC = () => {
 
   async function onSignup() {
 
-    if (email.toLowerCase().endsWith("@gmail.com")) {
-      present({
-        buttons: [{ text: "dismiss", handler: () => dismiss() }],
-        message: "sign up with gmail is not allowed. Please use your work email",
-        duration: 7000,
-        color: "danger",
-      });
-      return;
-    }
+    //when developers working locally, you can comment out the below if condition to create accounts 
+    //using gmail for development purposes.
+    // if (email.toLowerCase().endsWith("@gmail.com")) {
+    //   present({
+    //     buttons: [{ text: "dismiss", handler: () => dismiss() }],
+    //     message: "sign up with gmail is not allowed. Please use your work email",
+    //     duration: 7000,
+    //     color: "danger",
+    //   });
+    //   return;
+    // }
 
     let valid = true;
 

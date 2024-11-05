@@ -24,7 +24,7 @@ interface GraphDataCardprops {
 
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
+  height: 12,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: { backgroundColor: '#456e97' },
   [`& .${linearProgressClasses.bar}`]: { borderRadius: 5, backgroundColor: '#ec4561' },

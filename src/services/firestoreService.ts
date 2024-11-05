@@ -308,6 +308,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         
         defaultData.verified = true;
         defaultData.fullAccess = true;
+        defaultData.role="FullAccess";
 
       }
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);

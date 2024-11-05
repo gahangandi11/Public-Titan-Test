@@ -125,7 +125,7 @@ const ClearanceDataCard: React.FC<GraphDataCardprops> = (props: GraphDataCardpro
                   <div key={day.name}>{day.name} : {Math.floor(day.clearance)}</div>
                   {day.clearance > props.content.clearance_time ?
                     <ArrowUpwardIcon className='arrow' style={{ color: 'red', fontSize: 20 }}></ArrowUpwardIcon>
-                    : <ArrowDownwardIcon className='arrow' style={{ color: 'green', fontSize: 20 }}></ArrowDownwardIcon>
+                    : <ArrowDownwardIcon className='arrow' style={{ color: '#11ee09', fontSize: 20 }}></ArrowDownwardIcon>
                   }
                 </div>
               )

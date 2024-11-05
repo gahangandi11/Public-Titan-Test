@@ -23,7 +23,7 @@ import tourService from "../../services/tourService";
 import Tour from "reactour";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
+  height: 12,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: { backgroundColor: '#456e97' },
   [`& .${linearProgressClasses.bar}`]: { borderRadius: 5, backgroundColor: '#ec4561' },
@@ -84,10 +84,10 @@ const GraphDataCard: React.FC<GraphDataCardprops> = (props: GraphDataCardprops) 
           </div>
           <div className='pti-tti'>
             <div className='pti'>
-              <div><CircleIcon style={{ fill: 'red', fontSize: '13' }}></CircleIcon></div> <div style={{ fontSize: 16 }}>PTI : {props.content.pti.value}</div>
+              <div><CircleIcon style={{ fill: 'red', fontSize: '16' }}></CircleIcon></div> <div style={{ fontSize: 20 }}>PTI : {props.content.pti.value}</div>
             </div>
             <div className='pti'>
-              <div><CircleIcon style={{ fill: 'red', fontSize: '13' }}></CircleIcon></div> <div style={{ fontSize: 16 }}>TTI : {props.content.tti.value}</div>
+              <div><CircleIcon style={{ fill: 'red', fontSize: '16' }}></CircleIcon></div> <div style={{ fontSize: 20 }}>TTI : {props.content.tti.value}</div>
             </div>
           </div>
         </div>

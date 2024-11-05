@@ -80,18 +80,19 @@ const isTour = tourService.StartTour();
         </IonCardTitle>
         
        <div className='freeway-bar-chart freeway-tour-chart'>
-          <BarChart
+          <BarChart className='barr'
             dataset={props.content.roadAadt}
             yAxis={[{ scaleType: 'band', dataKey: 'name' }]}
             // xAxis={[{label:'rainfall'}]}
-            width={270}
-            height={290}
-            series={[{ dataKey: 'lane_Volume',label:'Freeway Counts By Highway'}]}
+            // width={270}
+            // height={290}
+            series={[{ dataKey: 'lane_Volume',label:'Freeway Counts By Highway', color:'#fca311'}]}
+            margin={{left:80}}
             layout="horizontal"
             sx={{
               "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel":{
                 strokeWidth:"0.4",
-                fill:"white"
+                fill:"white",
               },
               "& .MuiChartsAxis-left .MuiChartsAxis-tick":{
                 stroke:"white"

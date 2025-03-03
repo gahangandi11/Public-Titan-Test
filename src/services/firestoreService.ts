@@ -46,6 +46,13 @@ export async function getDashboardContent() {
     return Object.assign(dashboardData, devData) as DashboardData;
 }
 
+export async function getDashboardContentCurrent() {
+    const dashboardDocs = collection(db, 'Dashboard');
+    const dashboardSnapshot = await getDocs(dashboardDocs);
+    const dashboardData = dashboardSnapshot.docs[0].data();
+    return Object.assign(dashboardData) as DashboardData;
+}
+
 
 export async function getDashboardCurrent() {
     const colRef=collection(db,'Dashboard');

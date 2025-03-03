@@ -22,7 +22,7 @@ import {
 import { DataCardContent } from "../../interfaces/DataCardContent";
 import { useEffect, useState } from "react";
 import { DashboardData } from "../../interfaces/DashboardData";
-import { getDashboardContent, getDashboardCurrent } from "../../services/firestoreService";
+import { getDashboardContent, getDashboardCurrent, getDashboardContentCurrent } from "../../services/firestoreService";
 import { GraphData } from "../../interfaces/GraphData";
 import Graph from "../../components/Graph/Graph";
 import { CountyData } from "../../interfaces/CountyData";
@@ -45,8 +45,10 @@ const Dashboard: React.FC = () => {
 
 
   useEffect(() => {
-    getDashboardContent().then((data: DashboardData) => {
+    getDashboardContentCurrent().then((data: DashboardData) => {
       const dashboardData: any = data ? data : new DashboardData();
+
+      console.log(dashboardData);
       const updated = new Date(
         dashboardData.lastUpdated.value * 1000
       ).toLocaleString();
@@ -133,7 +135,7 @@ const Dashboard: React.FC = () => {
           subtitle: "Past Week",
           content: "Updated " + updated,
           color: "yellow",
-        },
+        },dashboardData
       ]);
       setCrashes(
         dashboardData.countyCrashes.sort((a: any, b: any) => b.crashes - a.crashes)

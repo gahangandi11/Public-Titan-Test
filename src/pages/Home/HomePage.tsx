@@ -53,7 +53,7 @@ const Homepage: React.FC = () => {
           <div className="disclaimer">
             <IonCard >
               <div className="disclaimer-content">
-                <h3>Discalimer</h3>
+                <h3>Disclaimer</h3>
                 <span style={{ fontStyle: "italic" }}>
                   The University of Missouri developed this interactive web-based platform for transportation data integration and analytics,
                   known as TITAN, on behalf of the Missouri Highways and Transportation Commission (MHTC) to transform the way we use data to

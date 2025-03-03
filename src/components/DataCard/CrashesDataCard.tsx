@@ -74,7 +74,7 @@ const GraphDataCard: React.FC<GraphDataCardprops> = (props: GraphDataCardprops) 
         </IonCardTitle>
 
         <div className="gauge-container crashes-tour-gauge">
-          <Gauge width={200} height={150} value={Number(props.content.data)} startAngle={-110} endAngle={110} valueMax={200} innerRadius="75%" outerRadius="100%"
+          <Gauge width={200} height={150} value={Number(props.content.data)} startAngle={-110} endAngle={110} valueMax={Number(props.content.data)+100} innerRadius="75%" outerRadius="100%"
             sx={{
               [`& .${gaugeClasses.valueArc}`]: { fill: '#ec4561', },
               [`& .${gaugeClasses.valueText}`]: { fontSize: 60, transform: 'translate(0px, 0px)', fill: 'red' },

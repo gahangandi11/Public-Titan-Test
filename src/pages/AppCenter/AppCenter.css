@@ -1,22 +1,23 @@
 
 
 
-.card-grid{
+.app-card-grid{
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(4,1fr);
-  grid-template-rows: 25%;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: 100%;
 }
 
 
-.my-card{
-    height: 10em;
-    width: 15em;
+.app-my-card{
+    height: 20em;
+    width: 25em;
     display:flex ;
     justify-content:center ;  
     align-items: center ;
     flex-direction: column ;
     border-radius: 20px;
+    gap: 1em;
     text-align: center;
     background-color: rgba(76, 78, 76, 0.8);
     margin:auto;
@@ -25,7 +26,7 @@
     position: relative;
 }
 
-.my-card:hover{
+.app-my-card:hover{
   cursor: pointer;
   transform: scale(1.2); 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
@@ -35,8 +36,8 @@
 
 
 
-.custom-icon-size {
-    font-size: 60px; 
+.app-custom-icon-size {
+    font-size: 80px; 
     
 }
 

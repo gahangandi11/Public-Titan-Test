@@ -62,7 +62,7 @@ const AppCenter: React.FC = () => {
                     })}
 
                     <div className="app-my-card" onClick={() => history.push('/appcenter/otherapps')}>
-                        <h2>Other Apps</h2>
+                        <h2>WIP</h2>
                         <IonIcon className={`app-custom-icon-size motor`} ios={iconService.getIcon('git', "ios")} md={iconService.getIcon('git', "android")} />
                     </div>
                 </div>

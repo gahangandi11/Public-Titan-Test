@@ -73,9 +73,7 @@ const AppPage: React.FC<AppCenterProps> = (props: AppCenterProps) => {
         ]}
       />
       <IonContent className="ion-content-div">
-        {
-          props.title === "WinterSeverity" && 
-          (
+        
             <div className="hide-iframe-buttons" >
             <Tooltip title="click here for detailed explanation of terms">
              <div className="icon-and-text" onClick={() => openModal()}>
@@ -86,8 +84,7 @@ const AppPage: React.FC<AppCenterProps> = (props: AppCenterProps) => {
              </div>
              </Tooltip>
            </div>
-          )
-        }
+          
         {!errorResponse && <iframe className="iframe" src={pageLink} />}
       </IonContent>
 

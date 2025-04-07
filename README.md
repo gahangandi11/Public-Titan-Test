@@ -100,7 +100,14 @@ The Profile Page displays all the included information about the user. On load, 
 
 ### [Home](/src/pages/Home)
 
-The home page contains the application map, which allows for display of the traffic layer, weather, CCTV cameras, incidents, and jams. It is responsive across all devices.
+The home page contains the buttons to navigate to other parts of the application like Live Data, Dashboard, Download and App Center.
+### [Live Data](/src/pages/LiveData)
+
+The Live Data page contains the application map, which allows for display of the traffic layer, weather, CCTV cameras, incidents, and jams. It is responsive across all devices.
+
+### [Tutorials](/src/pages/Tutorials)
+
+The Tutorials page contains tutorial cards for each page and the user can click on card corresponding to a page to follow the interactive tutorials related to that page.
 
 ## Components
 
@@ -167,6 +174,16 @@ On load, all maps start zoomed in on the user’s location, if allowed, or on th
 
 The are two different menus within the Menus components, the login menu which directs to the login and registration, and the general app menu, which provides routing to all of the pages. The routes on this menu are protected by the auth guard. Adding items to the menu is as simple as adding a JSON object with the desired attributes to the desired segment array. 
 
+
+## Firebase functions
+
+
+The application uses firebase function to send weekly email reminders to admins. The adminReminder function is scheduled to run every monday at 10:35 am and checks for any users waiting for admin approval and sends emails to all admins with the list of users waiting for approval. The trigger extension on firebase is used to trigger emails, the trigger extension is configure to use sendgrid smtp relay to send emails. 
+
+## Multi-Level user Authentication
+
+The application supports multi level user authentication, where the admin can assign access levels to users when approving new users. The application currently has two roles which are LimitedAccess and FullAccess, each role only gives access to the pages assigned to the role. you can find the pages assigned to each role in the collection called Roles on the firestore database. The user with specific role only has access to the pages assigned to that role. The logic for this is written in RouteGaurd component, which checks if the user has permission to go to current route, if the user does not have permission to go to the current route the routegaurd component redirects the user to the homepage.
+
 ## Services
 
 ### [Big Query Service](src/services/bigQueryService.ts)
@@ -180,6 +197,10 @@ The Firebase Service serves as the connection to the Firestore db and any future
 ### [Icon Service](src/services/iconService.ts)
 
 The Icon Service is a simple mapper for icons throughout the application to be used in TypeScript responsively.
+
+### [Tour Service](src/services/tourService.ts)
+
+The Tour service supports the tutorials page , which helps the user to learn about features in the application in an interactive way.
 
 ### [Firebase Configuration](src/firebaseConfig.ts)
 

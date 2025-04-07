@@ -23,6 +23,7 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
     '/profile': 'Profile',
     '/support': 'Support',
     '/tutorials':'Tutorials',
+    '/appcenter/otherapps': 'Other Apps',
   }
   
   const getTitleForPath = (path: string) => {

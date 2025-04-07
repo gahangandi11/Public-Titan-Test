@@ -8,6 +8,7 @@ import Homepage from "./pages/Home/HomePage";
 import Menu from "./components/Menu/Menu";
 
 import AppCenter from "./pages/AppCenter/AppCenter";
+import OtherApps from "./pages/OtherApps/OtherApps";
 import Tutorials from "./pages/Tutorials/Tutorials";
 
 
@@ -110,6 +111,10 @@ const App: React.FC = () => {
 
             <RouteGuard path="/appcenter" exact={true}>
               <AppCenter/>
+            </RouteGuard>
+
+            <RouteGuard path="/appcenter/otherapps" exact={true}>
+              <OtherApps/>
             </RouteGuard>
 
             <RouteGuard path="/tutorials" exact={true}>

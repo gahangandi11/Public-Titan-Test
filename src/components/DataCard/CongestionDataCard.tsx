@@ -75,7 +75,7 @@ const GraphDataCard: React.FC<GraphDataCardprops> = (props: GraphDataCardprops) 
 
         <div className="congestion-gauge-container  congestion-tour-gauge">
           <div className='gauge-circle'>
-            <Gauge width={200} height={150} value={Number(props.content.congested_miles.value)} startAngle={-110} endAngle={110} valueMax={300} innerRadius="75%" outerRadius="100%"
+            <Gauge width={200} height={150} value={Number(props.content.congested_miles.value)} startAngle={-110} endAngle={110} valueMax={Number(props.content.congested_miles.value)+150} innerRadius="75%" outerRadius="100%"
               sx={{
                 [`& .${gaugeClasses.valueArc}`]: { fill: '#ec4561', },
                 [`& .${gaugeClasses.valueText}`]: { fontSize: 50, transform: 'translate(0px, 0px)', fill: 'red' },

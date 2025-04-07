@@ -15,3 +15,51 @@
 .connect {
     top: 7em;
 }
+
+.ion-content-div{
+    position: relative; /* Needed for absolute positioning of .test-div */
+}
+
+
+.hide-iframe-buttons{
+    height: 250px;
+    width: 54px;
+    background-color: rgb(45, 45, 45);
+    background-color: rgb(33,37,41);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-and-text{
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-and-text:hover{
+    cursor: pointer;
+    background-color: rgb(78, 77, 77);
+}
+
+.more-info-icon{
+    position: relative;
+    color: white;
+    height: 1.5em;
+    width: 1.5em;
+    pointer-events: none;
+}
+
+.icon-text{
+    font-size: 0.7em;
+    margin-top: 0.2em;
+}

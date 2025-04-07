@@ -1,0 +1,73 @@
+
+
+
+.card-grid{
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-rows: 25%;
+  }
+  
+  
+  .my-card{
+      height: 10em;
+      width: 15em;
+      display:flex ;
+      justify-content:center ;  
+      align-items: center ;
+      flex-direction: column ;
+      border-radius: 20px;
+      text-align: center;
+      background-color: rgba(76, 78, 76, 0.8);
+      margin:auto;
+      color: white;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add smooth transition */
+      position: relative;
+  }
+  
+  .my-card:hover{
+    cursor: pointer;
+    transform: scale(1.2); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  }
+  
+  
+  
+  
+  
+  .custom-icon-size {
+      font-size: 60px; 
+      
+  }
+  
+  .safety{
+    color: green;
+  }
+  
+  .livedata{
+    color: aqua;
+  }
+  
+  .traffic{
+    color: brown;
+  }
+  
+  .motor{
+     color: chocolate;
+  }
+  
+  .operations{
+    color:hotpink
+  }
+  
+  
+  
+  .bg-video{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }

@@ -3,10 +3,11 @@ import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageRefe
 import {getFunctions} from 'firebase/functions'
 
 import firebase from 'firebase/compat/app';
-
+import iconService from './iconService';
 
 import { DashboardData } from '../interfaces/DashboardData';
 import { LinkData } from '../interfaces/LinkData';
+import { AppPage } from '../interfaces/AppPage';
 import { User } from '../interfaces/User';
 import { app } from '../firebaseConfig';
 import { WeatherEvent } from '../interfaces/WeatherEvent';
@@ -46,6 +47,13 @@ export async function getDashboardContent() {
     return Object.assign(dashboardData, devData) as DashboardData;
 }
 
+export async function getDashboardContentCurrent() {
+    const dashboardDocs = collection(db, 'Dashboard');
+    const dashboardSnapshot = await getDocs(dashboardDocs);
+    const dashboardData = dashboardSnapshot.docs[0].data();
+    return Object.assign(dashboardData) as DashboardData;
+}
+
 
 export async function getDashboardCurrent() {
     const colRef=collection(db,'Dashboard');
@@ -65,6 +73,102 @@ export async function getLinks() {
         links.push(link);
     });
     return links;
+}
+
+export async function getUpdatedLinks(links: LinkData[]) {
+    const apps: AppPage[] = [];
+    links.sort((a, b) => {
+        return a.order - b.order;
+    });
+
+    links.forEach(link => {
+        let category = '';
+        let displayPage = '';
+
+        switch (link.name) {
+            case 'Safety':
+                category = 'safety';
+                break;
+
+            case 'TranscoreAnalytics':
+                category = 'safety';
+                break;
+
+            case 'CrashRisk':
+                category = 'safety';
+                break;
+
+            case 'CrashesSHP':
+                category = 'safety';
+                break;
+
+            case 'IncidentClearance':
+                category = 'safety';
+                break;
+            case 'Bridge Assets':
+                category = 'safety';
+                break;
+
+            case 'Probe':
+                category = 'livedata';
+                break;
+            case 'TrafficCounts':
+                category = 'livedata';
+                break;
+
+            case 'WazeAnalytics':
+                category = 'traffic';
+                break;
+            case 'TrafficJams':
+                category = 'traffic';
+                break;
+
+            case 'MotorCycles':
+                category = 'motor';
+                break;
+            case 'INTEGRATED':
+                category = 'motor';
+                break;
+
+            case 'Congestion':
+                category = 'operations';
+                break;
+
+            case 'WinterSeverity':
+                category = 'operations';
+                break;
+            case 'DailyCongestion':
+                category = 'operations';
+                break;
+            case 'DetectorHealth':
+                category = 'operations';
+                break;
+            case 'WorkZones':
+                category = 'operations';
+                break;
+            default:
+                category = 'other';
+                break;
+        }
+
+        if (link.name === 'WinterSeverity' || link.name === 'Bridge Assets') {
+            displayPage = 'appcenter';
+        }
+        else {
+            displayPage = 'otherapps';
+        }
+
+        apps.push({
+            title: link.name,
+            url: "/app-center/" + link.name,
+            iosIcon: iconService.getIcon(link.icon, "ios"),
+            mdIcon: iconService.getIcon(link.icon, "android"),
+            category: category,
+            displayPage: displayPage
+        });
+    });
+
+    return apps;
 }
 
 export async function getLink(title: string) {

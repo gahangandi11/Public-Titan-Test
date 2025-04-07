@@ -48,6 +48,10 @@ import {
     thunderstormSharp, arrowForwardSharp,
     appsOutline,
     appsSharp,
+    snowOutline,
+    snowSharp,
+    swapHorizontalOutline,
+    swapHorizontalSharp,
 } from 'ionicons/icons';
 
 const iconService = {
@@ -102,6 +106,10 @@ const iconService = {
                 return ios ? arrowForwardOutline : arrowForwardSharp;
             case 'apps':
                     return ios ? appsOutline : appsSharp;
+            case 'snow':
+                return ios ? snowOutline : snowSharp;
+            case 'swap':
+                    return ios ? swapHorizontalOutline : swapHorizontalSharp;
             case 'warning':
                 return warning;
             case 'weather':

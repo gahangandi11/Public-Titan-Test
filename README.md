@@ -41,6 +41,19 @@ npm i
 npm run start
 ```
 
+If you face any errors while running above commands it is most probably because of the node versions, since the project was developed couple of years ago some of packages may not be supported by latest version of the node, so to avoid any error please install [nvm](https://github.com/nvm-sh/nvm) Node version manager and install node v16.0.0 using the below commands
+
+```
+nvm install v16.0.0
+nvm use 16.0.0
+```
+when deploying the project using firebase you might want to change to node v18.0.0, as firebase-tools does not work with node v16.0.0
+
+```
+nvm install v18.0.0
+nvm use 18.0.0
+```
+
 When this is finished, you will have installed the node modules required for the project and you should see the
 React project open in a new browser window.
 

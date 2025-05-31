@@ -1,6 +1,8 @@
-import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, } from 'firebase/firestore';
+import { getFirestore, doc, collection, getDoc, setDoc, getDocs, query, where, updateDoc, addDoc, DocumentReference, DocumentData, deleteDoc, 
+    serverTimestamp, increment
+} from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL, uploadBytes, UploadResult, StorageReference } from 'firebase/storage';
-import {getFunctions} from 'firebase/functions'
+import { getFunctions } from 'firebase/functions'
 
 import firebase from 'firebase/compat/app';
 import iconService from './iconService';
@@ -12,6 +14,8 @@ import { User } from '../interfaces/User';
 import { app } from '../firebaseConfig';
 import { WeatherEvent } from '../interfaces/WeatherEvent';
 import { WazeIncident } from '../interfaces/WazeIncident';
+import { Issue } from '../interfaces/Issue';
+import { Comment } from '../interfaces/Comment';
 import { WazeJam } from '../interfaces/WazeJam';
 import { GeoJSON } from 'geojson';
 import { Camera } from '../interfaces/Camera';
@@ -56,8 +60,8 @@ export async function getDashboardContentCurrent() {
 
 
 export async function getDashboardCurrent() {
-    const colRef=collection(db,'Dashboard');
-    const dashboardcurrent=await getDocs(colRef);
+    const colRef = collection(db, 'Dashboard');
+    const dashboardcurrent = await getDocs(colRef);
     return dashboardcurrent;
 }
 
@@ -205,8 +209,8 @@ export async function watchWeatherData() {
             docData.snowIntensity,
             docData.freezingRainIntensity,
             docData.sleetIntensity,
-    
-            );
+
+        );
         weather.push(weatherEvent);
     });
     return weather;
@@ -334,11 +338,11 @@ export async function verifyUser(user: User) {
 
 export async function sendApprovalEmail(currentUser: User) {
     const uid = currentUser.uid;
-    const emailDoc={
-        toUids : [uid],
+    const emailDoc = {
+        toUids: [uid],
         template: {
             name: 'adminApproval',
-        
+
         }
     }
     await addDoc(collection(db, "email"), emailDoc);
@@ -350,14 +354,14 @@ export async function sendApprovalEmail(currentUser: User) {
 export async function sendRejectionEmail(currentUser: User, userDeleteMessage: string) {
 
     const email = currentUser.email;
-    const emailDoc={
-        to : [email],
+    const emailDoc = {
+        to: [email],
         template: {
             name: 'adminRejection',
-            data:{
+            data: {
                 rejectMessage: userDeleteMessage,
             }
-        
+
         }
     }
     await addDoc(collection(db, "email"), emailDoc);
@@ -372,7 +376,7 @@ export async function updateVerificationAndAdminFlag(userId: string, isVerfied: 
     });
 }
 
-export async function createUser(currentUser: any, firstName:string, middleName: string, lastName: string, phoneNumber: string, companyName: string, shortDescription: string) {
+export async function createUser(currentUser: any, firstName: string, middleName: string, lastName: string, phoneNumber: string, companyName: string, shortDescription: string) {
     const date = new Date();
     const formattedDate = date.toLocaleString('en-US', {
         year: 'numeric',
@@ -392,7 +396,7 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         admin: false,
         applied: false,
         verified: false,
-        role:"",
+        role: "",
         email: currentUser.email,
         displayName: currentUser.displayName,
         subscriptions: [],
@@ -406,15 +410,15 @@ export async function createUser(currentUser: any, firstName:string, middleName:
         phoneNumber: phoneNumber,
         companyName: companyName,
         fullAccess: false,
-        
+
     };
     if (/@modot.mo.gov\s*$/.test(currentUser.email!)) {
-        
+
         defaultData.verified = true;
         defaultData.fullAccess = true;
-        defaultData.role="FullAccess";
+        defaultData.role = "FullAccess";
 
-      }
+    }
     await setDoc(doc(db, "Users", currentUser.uid), defaultData);
 }
 
@@ -444,10 +448,10 @@ export async function getAttachementUrl(ref: StorageReference): Promise<string> 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-export async function setUserRole(user: User, access:string) {
+export async function setUserRole(user: User, access: string) {
     const userRef = doc(db, "Users", user.uid);
     await updateDoc(userRef, {
-        role:access,
+        role: access,
     });
 }
 
@@ -463,13 +467,13 @@ export async function reverifyUser(user: User, renewalstatus: boolean) {
 export async function setNewrenewalDate(user: User) {
     const userRef = doc(db, "Users", user.uid);
     const oneYearFromNow = new Date();
-    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1); 
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
     const formattedDate = oneYearFromNow.toLocaleDateString('en-US', {
         month: '2-digit',
         day: '2-digit',
         year: 'numeric',
-      });
+    });
     await updateDoc(userRef, {
         renewalDate: formattedDate,
     });
@@ -517,24 +521,24 @@ export async function updateRenewalStatus(userId: string, requiresRenewal: boole
 //                     await updateDoc(doc(db, "Users", docSnapshot.id), {
 //                         fullAccess: true
 //                     });
-          
-        
+
+
 //     });
 
-    
+
 // }
 
 
-export async function createRole(name:string,permissions:string []){
-      
-    const data={
-        permissions:permissions,
+export async function createRole(name: string, permissions: string[]) {
+
+    const data = {
+        permissions: permissions,
     }
     await setDoc(doc(db, "Roles", name), data);
 }
 
 
-export async function getRoles(){
+export async function getRoles() {
 
     const rolesCollection = collection(db, 'Roles');
     const snapshot = await getDocs(rolesCollection);
@@ -549,45 +553,172 @@ export async function getRoles(){
 }
 
 
-export async function getRoleCount(Roles: UserRole [] | null)
-{
-    const userCollection=collection(db,'Users');
-    const snapshot=await getDocs(userCollection);
+export async function getRoleCount(Roles: UserRole[] | null) {
+    const userCollection = collection(db, 'Users');
+    const snapshot = await getDocs(userCollection);
 
-    const roleCount: {[role:string]:number} ={};
+    const roleCount: { [role: string]: number } = {};
 
-    const roleNamesSnapshot = await getDocs(collection(db,'Roles'));
+    const roleNamesSnapshot = await getDocs(collection(db, 'Roles'));
 
-    const roleNames = roleNamesSnapshot.docs.map(doc=>doc.id);
+    const roleNames = roleNamesSnapshot.docs.map(doc => doc.id);
 
 
-    roleNames.forEach(roleName=>{
-        roleCount[roleName]=0;
+    roleNames.forEach(roleName => {
+        roleCount[roleName] = 0;
     })
 
-    snapshot.docs.forEach(doc =>{
-        const userRole=doc.data().role;
+    snapshot.docs.forEach(doc => {
+        const userRole = doc.data().role;
 
-        roleCount[userRole]+=1;
+        roleCount[userRole] += 1;
     })
 
     return roleCount;
 }
 
-export async function getRolePermissions(role:string)
-{
+export async function getRolePermissions(role: string) {
     const roleDocRef = doc(db, 'Roles', role);
-    const roleDoc =await getDoc(roleDocRef);
+    const roleDoc = await getDoc(roleDocRef);
 
     return roleDoc.data();
 }
 
-export const DeleteUserFromAuth = async (uid:any) =>{
+export const DeleteUserFromAuth = async (uid: any) => {
     const deleteUserFn = httpsCallable(functions, 'deleteUserFn');
-    try{
-          await deleteUserFn({uid});
+    try {
+        await deleteUserFn({ uid });
     }
-    catch(error){
-      console.error("Error calling function:", error);
+    catch (error) {
+        console.error("Error calling function:", error);
     }
-   }
+}
+
+
+export const CreateIssue = async (issueData: Omit<Issue, 'id' | 'createdAt' | 'updatedAt' | 'commentsCount' >)
+    : Promise<DocumentReference<DocumentData>> => {
+
+    
+    const issuesCollectionRef = collection(db, 'Issues');
+
+    const newIssue : Issue = {
+        ...issueData,
+        id: '',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        commentsCount: 0
+    };
+
+    try {
+
+        const docRef = await addDoc(issuesCollectionRef, newIssue);
+        await updateDoc(docRef, {
+            id: docRef.id
+        });
+        return docRef;
+    }
+    catch (error) {
+        console.error("Error creating issue:", error);
+        throw new Error("Failed to create issue. Please try again later.");
+    }
+}
+
+export const GetIssues = async (): Promise<Issue[]> => {
+    const issuesCollectionRef = collection(db, 'Issues');
+    const issuesSnapshot = await getDocs(issuesCollectionRef);
+    const issues: Issue[] = [];
+
+    issuesSnapshot.forEach(doc => {
+        const issueData = doc.data() as Issue;
+        issues.push(issueData);
+    });
+
+    return issues;
+}
+
+export const GetIssueById = async (issueId: string): Promise<Issue > => {
+    if (!issueId) {
+        throw new Error("Issue ID is required to fetch an issue.");
+    }
+
+    const issueDocRef = doc(db, 'Issues', issueId);
+    const issueSnapshot = await getDoc(issueDocRef);
+
+    try {
+
+        const issueData = issueSnapshot.data() as Issue;
+        return issueData;
+    }
+    catch (error) {
+        console.error("Error fetching issue:", error);
+        throw new Error(`Failed to fetch issue with ID ${issueId}. Please try again later.`);
+    }
+}
+
+
+export const AddCommentSubCollectionToIssue = async (issueId: string, comment: Omit<Comment,'id' | 'createdAt'>): Promise<DocumentReference<DocumentData>> => {
+    if (!issueId || !comment ) {
+        throw new Error("Issue ID, comment, and user ID are required to add a comment.");
+    }
+
+    const commentsCollectionRef = collection(db, 'Issues', issueId, 'Comments');
+
+    const issueDocRef = doc(db, 'Issues', issueId);
+   
+    const newComment: Comment = {
+        ...comment,
+        id: '',
+        createdAt: serverTimestamp(),
+    };
+
+    try {
+        const docRef =await addDoc(commentsCollectionRef, newComment);
+        await updateDoc(docRef, {
+            id: docRef.id
+        });
+        await updateDoc(issueDocRef, {
+            commentsCount: increment(1),
+            updatedAt: serverTimestamp()
+        });
+        return docRef;
+    } catch (error) {
+        console.error("Error adding comment:", error);
+        throw new Error("Failed to add comment. Please try again later.");
+    }
+}
+
+
+export const GetCommentsByIssueId = async (issueId: string): Promise<Comment[]> => {
+    if (!issueId) {
+        throw new Error("Issue ID is required to fetch comments.");
+    }
+
+    const commentsCollectionRef = collection(db, 'Issues', issueId, 'Comments');
+    const commentsSnapshot = await getDocs(commentsCollectionRef);
+    const comments: Comment[] = [];
+
+    commentsSnapshot.forEach(doc => {
+        const commentData = doc.data() as Comment;
+        comments.push(commentData);
+    });
+
+    return comments;
+}
+
+
+export const closeIssue = async (issueId: string): Promise<void> => {
+    if (!issueId) {
+        throw new Error("Issue ID is required to close an issue.");
+    }
+
+    const issueDocRef = doc(db, 'Issues', issueId);
+    try {
+        await updateDoc(issueDocRef, {
+            status: 'Closed',
+            updatedAt: serverTimestamp()
+        });
+    } catch (error) {
+        console.error("Error closing issue:", error);
+        throw new Error(`Failed to close issue with ID ${issueId}. Please try again later.`);
+    }
+}

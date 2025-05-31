@@ -85,7 +85,8 @@
     "@capacitor/cli": "3.2.5",
     "@iconify/react": "^5.0.1",
     "@types/reactour": "^1.18.5",
-    "firebase-tools": "^13.18.0"
+    "firebase-tools": "^13.18.0",
+    "react-error-overlay": "^6.0.9"
   },
   "description": "An Ionic project"
 }

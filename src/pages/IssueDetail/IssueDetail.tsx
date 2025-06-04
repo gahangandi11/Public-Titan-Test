@@ -6,9 +6,12 @@ import Header from '../../components/Header/Header';
 import { AddCommentSubCollectionToIssue, GetCommentsByIssueId, closeIssue } from '../../services/firestoreService';
 import { getCurrentUser } from '../../services/contexts/AuthContext/AuthContext';
 
-import { Container, Box, Typography, Button, Chip, Stack, Card, CardContent, Divider, TextField, List, ListItem, ListItemText, ListItemAvatar, 
-    Avatar} from '@mui/material';
-import { ArrowBack as ArrowBackIcon, AssignmentInd as AssignmentIndIcon, Label as LabelIcon, Event as EventIcon, Comment as CommentIcon, 
+import {
+    Container, Box, Typography, Button, Chip, Stack, Card, CardContent, Divider, TextField, List, ListItem, ListItemText, ListItemAvatar,
+    Avatar
+} from '@mui/material';
+import {
+    ArrowBack as ArrowBackIcon, AssignmentInd as AssignmentIndIcon, Label as LabelIcon, Event as EventIcon, Comment as CommentIcon, Image as ImageIcon
 } from '@mui/icons-material';
 import { Comment } from '../../interfaces/Comment';
 import { IonPage, IonContent } from '@ionic/react';
@@ -91,8 +94,8 @@ const IssueDetail: React.FC = () => {
                                         sx={{ mr: 2, flexShrink: 1, minWidth: 0, textOverflow: 'ellipsis', whiteSpace: 'nowrap', }}>
                                         {issue?.title}
                                     </Typography>
-                                    <Chip label={issue?.status}  size="small" 
-                                    sx={{ flexShrink: 0, backgroundColor: `${issue?.status === 'Open'?'#25a84a':'#ab7df8'}`, color:'white'}}/>
+                                    <Chip label={issue?.status} size="small"
+                                        sx={{ flexShrink: 0, backgroundColor: `${issue?.status === 'Open' ? '#25a84a' : '#ab7df8'}`, color: 'white' }} />
                                 </Box>
 
                                 {/* Right Section: Labels */}
@@ -104,9 +107,9 @@ const IssueDetail: React.FC = () => {
                                         {issue.labels.map((label, index) => {
                                             return (
                                                 <Chip key={index} label={label} size="small" variant="filled"
-                                                     sx={{
-                                                        bgcolor: (label === 'bug' ? '#B60205' : label === 'enhancement' ? '#A2EEB0' : label === 'help wanted' ? '#008672' : label === 'question' ? '#D876E3' : label === 'invalid' ? '#7057FF' : '#CFD3D7'), 
-                                                        color: (label === 'bug' || label === 'help wanted' || label === 'question' || label === 'invalid') ? '#FFFFFF' : '#333333', 
+                                                    sx={{
+                                                        bgcolor: (label === 'bug' ? '#B60205' : label === 'enhancement' ? '#A2EEB0' : label === 'help wanted' ? '#008672' : label === 'question' ? '#D876E3' : label === 'invalid' ? '#7057FF' : '#CFD3D7'),
+                                                        color: (label === 'bug' || label === 'help wanted' || label === 'question' || label === 'invalid') ? '#FFFFFF' : '#333333',
                                                         fontWeight: 'bold', padding: '3px 6px',
                                                     }}
                                                 />
@@ -115,14 +118,49 @@ const IssueDetail: React.FC = () => {
                                     </Stack>
                                 )}
                             </Box>
-                            <Divider sx={{ my: 2 }} /> 
+                            <Divider sx={{ my: 2 }} />
                             <Typography variant="body1" paragraph sx={{ whiteSpace: 'pre-wrap' }}>
                                 {issue?.description}
                             </Typography>
                             <Divider sx={{ my: 2 }} /> {/* Separator */}
+
+                            {/* Attached Images Section */}
+                            {issue?.ImageUrls && issue.ImageUrls.length > 0 && (
+                                <>
+                                    <Divider sx={{ my: 2 }} />
+                                    <Box sx={{ mt: 2, mb: 2 }}>
+                                        <Typography variant="h6" component="div" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <ImageIcon sx={{ mr: 1, color: 'action.active' }} />
+                                            Attached Images
+                                        </Typography>
+                                        <Stack spacing={2} sx={{ mt: 1 }}>
+                                            {issue.ImageUrls.map((url, index) => (
+                                                <Box
+                                                    key={index}
+                                                    component="img"
+                                                    src={url}
+                                                    alt={`Attached image ${index + 1}`}
+                                                    sx={{
+                                                        maxWidth: '100%', // Responsive width
+                                                        maxHeight: '400px', // Max height for very tall images
+                                                        height: 'auto', // Maintain aspect ratio
+                                                        borderRadius: 1, // Rounded corners
+                                                        border: '1px solid',
+                                                        borderColor: 'divider',
+                                                        objectFit: 'contain', // Ensure whole image is visible
+                                                        display: 'block', // Remove extra space below image
+                                                    }}
+                                                />
+                                            ))}
+                                        </Stack>
+                                    </Box>
+                                </>
+                            )}
+
+
                             <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
                                 {issue?.createdBy && (
-                                    <Chip icon={<AssignmentIndIcon />} label={`Created by: ${issue.createdBy}`} variant="outlined" color="default" size="small"/>
+                                    <Chip icon={<AssignmentIndIcon />} label={`Created by: ${issue.createdBy}`} variant="outlined" color="default" size="small" />
                                 )}
                                 {issue?.createdAt && (
                                     <Chip icon={<EventIcon />}
@@ -139,7 +177,7 @@ const IssueDetail: React.FC = () => {
                                         size="small"
                                     />
                                 )}
-                                {issue?.commentsCount !== undefined && ( 
+                                {issue?.commentsCount !== undefined && (
                                     <Chip
                                         icon={<CommentIcon />}
                                         label={`${issue.commentsCount} comments`}
@@ -153,13 +191,13 @@ const IssueDetail: React.FC = () => {
                     <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
                         Comments ({comments.length})
                     </Typography>
-                    <List sx={{ bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1, mb: 4 }}> 
+                    <List sx={{ bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1, mb: 4 }}>
                         {comments.length === 0 ? (
                             <ListItem>
                                 <ListItemText secondary="No comments yet. Be the first to comment!" />
                             </ListItem>
                         ) : (
-                            [...comments] .sort((a, b) => {
+                            [...comments].sort((a, b) => {
                                 const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toDate().getTime() : 0;
                                 const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toDate().getTime() : 0;
                                 return dateB - dateA; // For descending order (recent first)
@@ -196,32 +234,32 @@ const IssueDetail: React.FC = () => {
                     {
                         issue?.status === 'Closed' ? (
                             <Box sx={{ mt: 4, p: 3, bgcolor: 'grey.100', borderRadius: 2, textAlign: 'center', border: '1px solid', borderColor: 'divider' }}>
-                            <CommentIcon sx={{ fontSize: 40, color: '#ab7df8', mb: 1 }} />
-                            <Typography variant="h5" gutterBottom color={'#ab7df8'}>
-                                Issue Closed
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary">
-                                This issue has been closed and comments can no longer be added.
-                            </Typography>
-                        </Box>
-                        ) :(
+                                <CommentIcon sx={{ fontSize: 40, color: '#ab7df8', mb: 1 }} />
+                                <Typography variant="h5" gutterBottom color={'#ab7df8'}>
+                                    Issue Closed
+                                </Typography>
+                                <Typography variant="body1" color="text.secondary">
+                                    This issue has been closed and comments can no longer be added.
+                                </Typography>
+                            </Box>
+                        ) : (
                             <Box sx={{ mt: 4, p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
-                        <TextField label="Leave a comment..." multiline rows={4} fullWidth variant="outlined" value={commentInput} onChange={(e) => setCommentInput(e.target.value)}
-                            sx={{ '& .MuiInputBase-input': { color: '#333333' }, '& .MuiInputLabel-root': { color: '#666666' }}}
-                        />
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
-                            <Button variant="outlined" color="error" onClick={()=>oncloseIssue()}> 
-                                Close Issue
-                            </Button>
-                            <Button variant="contained" color="primary" onClick={() => { AddComment()}}>
-                                Add Comment
-                            </Button>
-                        </Box>
-                    </Box>
+                                <TextField label="Leave a comment..." multiline rows={4} fullWidth variant="outlined" value={commentInput} onChange={(e) => setCommentInput(e.target.value)}
+                                    sx={{ '& .MuiInputBase-input': { color: '#333333' }, '& .MuiInputLabel-root': { color: '#666666' } }}
+                                />
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
+                                    <Button variant="outlined" color="error" onClick={() => oncloseIssue()}>
+                                        Close Issue
+                                    </Button>
+                                    <Button variant="contained" color="primary" onClick={() => { AddComment() }}>
+                                        Add Comment
+                                    </Button>
+                                </Box>
+                            </Box>
 
                         )
                     }
-                    
+
                 </Container>
             </IonContent>
         </IonPage>

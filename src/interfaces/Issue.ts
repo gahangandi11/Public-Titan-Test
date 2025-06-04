@@ -10,4 +10,5 @@ export interface Issue {
     createdAt: Timestamp | FieldValue; 
     updatedAt: Timestamp | FieldValue; 
     commentsCount: number; 
+    ImageUrls?: string[];
   }

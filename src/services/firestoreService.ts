@@ -20,7 +20,7 @@ import { WazeJam } from '../interfaces/WazeJam';
 import { GeoJSON } from 'geojson';
 import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
-import { push, pushOutline } from 'ionicons/icons';
+import { image, push, pushOutline } from 'ionicons/icons';
 
 import { functions } from '../firebaseConfig';
 import { httpsCallable } from 'firebase/functions';
@@ -595,7 +595,7 @@ export const DeleteUserFromAuth = async (uid: any) => {
 }
 
 
-export const CreateIssue = async (issueData: Omit<Issue, 'id' | 'createdAt' | 'updatedAt' | 'commentsCount' >)
+export const CreateIssue = async (issueData: Omit<Issue, 'id' | 'createdAt' | 'updatedAt' | 'commentsCount' >, imageFile: File[])
     : Promise<DocumentReference<DocumentData>> => {
 
     
@@ -612,8 +612,20 @@ export const CreateIssue = async (issueData: Omit<Issue, 'id' | 'createdAt' | 'u
     try {
 
         const docRef = await addDoc(issuesCollectionRef, newIssue);
+
+        const issueId = docRef.id;
+        const downloadURLs = [];
+
+        for (const file of imageFile) {
+            const storageRef = ref(storage, `issues/${issueId}/images/${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(snapshot.ref);
+            downloadURLs.push(url);
+        }
+
         await updateDoc(docRef, {
-            id: docRef.id
+            id: issueId,
+            ImageUrls: downloadURLs,
         });
         return docRef;
     }
@@ -720,5 +732,21 @@ export const closeIssue = async (issueId: string): Promise<void> => {
     } catch (error) {
         console.error("Error closing issue:", error);
         throw new Error(`Failed to close issue with ID ${issueId}. Please try again later.`);
+    }
+}
+
+export const UploadImage= async (issueId: string, imageFile: File): Promise<string> => {
+    if (!issueId || !imageFile) {
+        throw new Error("Issue ID and image file are required to upload an image.");
+    }
+
+    const storageRef = ref(storage, `issues/${issueId}/images/${imageFile.name}`);
+    try {
+        const snapshot = await uploadBytes(storageRef, imageFile);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        throw new Error("Failed to upload image. Please try again later.");
     }
 }

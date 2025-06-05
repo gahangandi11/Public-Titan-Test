@@ -1,13 +1,14 @@
 import React from 'react'
 import { useState } from 'react'
 import Header from '../../components/Header/Header'
-import { Container, Box, TextField, Button, Typography, Grid, Stack, Chip, FormHelperText, IconButton } from '@mui/material';
-import { CreateIssue, UploadImage } from '../../services/firestoreService';
+import { Container, Box, TextField, Button, Typography, Grid, Stack, Chip, FormHelperText, IconButton, CircularProgress } from '@mui/material';
+import { CreateIssue } from '../../services/firestoreService';
 import { getCurrentUser } from '../../services/contexts/AuthContext/AuthContext';
 import { Issue } from '../../interfaces/Issue';
 import { useHistory } from 'react-router';
 import { PhotoCamera, Clear as ClearIcon } from '@mui/icons-material';
 import { IonPage, IonContent } from '@ionic/react';
+import { set } from 'date-fns';
 
 interface PredefinedLabel {
     name: string;
@@ -69,10 +70,12 @@ const NewIssue: React.FC = () => {
             createdBy: user.email,
             labels: selectedLabels,
         };
+        setIsSubmitting(true);
         await CreateIssue(newIssue, imageFiles);
         setTitle('');
         setDescription('');
         setSelectedLabels([]);
+        setIsSubmitting(false);
         history.push('/issues');
     };
 
@@ -107,7 +110,7 @@ const NewIssue: React.FC = () => {
                 newPreviewUrls.forEach(url => URL.revokeObjectURL(url));
             }
         }
-         // Clear the input value to allow selecting the same file(s) again if cleared
+        // Clear the input value to allow selecting the same file(s) again if cleared
         if (event.target) {
             event.target.value = "";
         }
@@ -175,67 +178,67 @@ const NewIssue: React.FC = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                        <Typography variant="subtitle1" gutterBottom sx={{ mb: 1 }}>
-                            Attach Images (Optional)
-                        </Typography>
-                        <Stack direction="column" spacing={2} alignItems="flex-start">
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                startIcon={<PhotoCamera />}
-                                disabled={isSubmitting}
-                            >
-                                Select Images
-                                <input
-                                    type="file"
-                                    hidden
-                                    multiple // Allow multiple file selection
-                                    accept="image/*"
-                                    onChange={handleImageChange}
+                            <Typography variant="subtitle1" gutterBottom sx={{ mb: 1 }}>
+                                Attach Images (Optional)
+                            </Typography>
+                            <Stack direction="column" spacing={2} alignItems="flex-start">
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    startIcon={<PhotoCamera />}
                                     disabled={isSubmitting}
-                                />
-                            </Button>
-                            {imageUploadError && (
-                                <FormHelperText error>
-                                    {imageUploadError}
-                                </FormHelperText>
-                            )}
-                            {imagePreviewUrls.length > 0 && (
-                                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mt: 1 }}>
-                                    {imagePreviewUrls.map((url, index) => (
-                                        <Box key={index} sx={{ position: 'relative', border: '1px solid #ddd', borderRadius: 1, p: 0.5, width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <img src={url} alt={`Preview ${index + 1}`} style={{ maxHeight: '100%', maxWidth: '100%', display: 'block', borderRadius: '4px' }} />
-                                            {!isSubmitting && (
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => handleClearImage(index)}
-                                                    sx={{
-                                                        position: 'absolute',
-                                                        top: 2,
-                                                        right: 2,
-                                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                                        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
-                                                        padding: '2px'
-                                                    }}
-                                                    title={`Remove image ${index + 1}`}
-                                                >
-                                                    <ClearIcon fontSize="inherit" />
-                                                </IconButton>
-                                            )}
-                                        </Box>
-                                    ))}
-                                </Stack>
-                            )}
-                        </Stack>
-                    </Grid>
+                                >
+                                    Select Images
+                                    <input
+                                        type="file"
+                                        hidden
+                                        multiple // Allow multiple file selection
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        disabled={isSubmitting}
+                                    />
+                                </Button>
+                                {imageUploadError && (
+                                    <FormHelperText error>
+                                        {imageUploadError}
+                                    </FormHelperText>
+                                )}
+                                {imagePreviewUrls.length > 0 && (
+                                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mt: 1 }}>
+                                        {imagePreviewUrls.map((url, index) => (
+                                            <Box key={index} sx={{ position: 'relative', border: '1px solid #ddd', borderRadius: 1, p: 0.5, width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <img src={url} alt={`Preview ${index + 1}`} style={{ maxHeight: '100%', maxWidth: '100%', display: 'block', borderRadius: '4px' }} />
+                                                {!isSubmitting && (
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleClearImage(index)}
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: 2,
+                                                            right: 2,
+                                                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                                            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
+                                                            padding: '2px'
+                                                        }}
+                                                        title={`Remove image ${index + 1}`}
+                                                    >
+                                                        <ClearIcon fontSize="inherit" />
+                                                    </IconButton>
+                                                )}
+                                            </Box>
+                                        ))}
+                                    </Stack>
+                                )}
+                            </Stack>
+                        </Grid>
 
 
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
-                            <Button variant='outlined' onClick={() => history.push('/issues')}>
+                            <Button variant='outlined' onClick={() => history.push('/issues')} disabled={isSubmitting}>
                                 Cancel
                             </Button>
-                            <Button variant='contained' color='primary' type='submit' >
-                                Submit
+                            <Button variant='contained' color='primary' type='submit' disabled={isSubmitting} startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}>
+                                {isSubmitting ? 'Submitting...' : 'Submit Issue'}
                             </Button>
                         </Box>
 

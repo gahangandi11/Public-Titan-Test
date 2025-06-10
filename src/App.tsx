@@ -30,7 +30,7 @@ import AppPage from "./pages/AppPage/AppPage";
 import DataDownload from "./pages/DataDownload/DataDownload";
 import Login from "./pages/Login/Login";
 import RouteGuard from "./components/Guard/RouteGuard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getAuthToken, getLinks } from "./services/firestoreService";
 import { LinkData } from "./interfaces/LinkData";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -47,6 +47,8 @@ import ReValidation from "./pages/Login/AccountReValidation";
 import Issues from "./pages/Issues/Issues";
 import NewIssue from "./pages/New Issue/NewIssue";
 import IssueDetail from "./pages/IssueDetail/IssueDetail";
+import SMSSignUp from "./pages/Login/SMSSignUp";
+import Signup from "./pages/Login/Signup";
 
 const DynamicAppPage: React.FC = () => {
   const { title } = useParams<{ title: string }>();
@@ -57,6 +59,7 @@ const DynamicAppPage: React.FC = () => {
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
+  // const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     
@@ -103,6 +106,14 @@ const App: React.FC = () => {
             <Route path="/verification" exact={true}>
               <EmailVerification />
             </Route>
+
+            <Route path="/signup" exact={true}>
+              <Signup/>
+            </Route>
+
+            {/* <Route path="/smssignup" exact={true}>
+              <SMSSignUp />
+            </Route> */}
 
             <Route path="/renewaccount" exact={true}>
               <ReValidation />

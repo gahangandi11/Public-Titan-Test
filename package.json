@@ -41,6 +41,8 @@
     "react-dom": "^17.0.1",
     "react-dropdown-select": "^4.8.0",
     "react-map-gl": "^6.1.18",
+    "react-otp-input": "^3.1.1",
+    "react-phone-input-2": "^2.15.1",
     "react-player": "^2.9.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",

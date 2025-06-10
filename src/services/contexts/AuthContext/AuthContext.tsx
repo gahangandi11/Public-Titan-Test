@@ -10,7 +10,11 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendEmailVerification,
-  UserCredential,
+  UserCredential,multiFactor, PhoneAuthProvider, PhoneMultiFactorGenerator,
+  MultiFactorResolver,
+  getMultiFactorResolver,
+  ApplicationVerifier,
+  MultiFactorError
 } from "firebase/auth";
 import { getUserByID, } from "../../firestoreService";
 import { sendPasswordResetEmail,getRedirectResult } from "firebase/auth";
@@ -123,6 +127,93 @@ export function getReidrectedUrl(
 ):Promise<UserCredential|null> {
     return getRedirectResult(auth);
 }
+
+
+export async function verifyUserMFA (error: MultiFactorError, 
+  recaptchaVerifier: ApplicationVerifier, 
+  selectedIndex: number) : Promise<false | {verificationId: string, resolver: MultiFactorResolver} | void> {
+  const resolver = getMultiFactorResolver(auth, error);
+  if(resolver.hints[selectedIndex].factorId === PhoneMultiFactorGenerator.FACTOR_ID) {
+    const phoneInfoOptions = {
+      multiFactorHint: resolver.hints[selectedIndex],
+      session: resolver.session
+    };
+    const phoneAuthProvider = new PhoneAuthProvider(auth);
+    try{
+      const verificationId = await phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+      return {verificationId, resolver}
+    }catch(e)
+    {
+      console.error("Error verifying user MFA:", e);
+      return false;
+    }
+  }
+}
+
+export async function verifyUserEnrolled(verificationMFA :{verificationId: string, resolver: MultiFactorResolver}, 
+  verificationCode: string): Promise<boolean> {
+
+   const {verificationId, resolver} = verificationMFA;
+
+   const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+
+   const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(credential);
+
+   try{
+     await resolver.resolveSignIn(multiFactorAssertion);
+     return true;
+   }catch(e)
+   {
+     return false;
+   }
+
+}
+
+export async function verifyPhoneNumber(phoneNumber:string, 
+  recaptchaVerifier:ApplicationVerifier):Promise<false | string> {
+
+  const user= auth.currentUser;
+
+  if (!user) throw new Error("No user logged in");
+  
+  const session = await multiFactor(user).getSession();
+  const phoneInfoOptions = {
+    phoneNumber,
+    session
+  };
+
+  const phoneAuthProvider = new PhoneAuthProvider(auth);
+  try{
+    return await phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+  }catch(e)
+  {
+    console.error("Error verifying phone number:", e);
+    return false;
+  }
+}
+
+
+export async function enrollUser(verificationCodeId: string, verificationCode: string): Promise<boolean> {
+
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("No user logged in");
+    return false;
+  }
+  
+  const phoneAuthCredential = PhoneAuthProvider.credential(verificationCodeId, verificationCode);
+  const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(phoneAuthCredential);
+  
+  try {
+    await multiFactor(user).enroll(multiFactorAssertion, "Phone Number");
+    return true;
+  } catch (error) {
+    console.error("Error enrolling user:", error);
+    return false;
+  }
+
+}
+
 
 
 

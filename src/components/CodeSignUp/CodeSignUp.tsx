@@ -2,7 +2,7 @@ import React from 'react'
 import SMSLogin from '../CodeSignIn/SMSLogin';
 import { enrollUser } from '../../services/contexts/AuthContext/AuthContext';
 import { useHistory } from 'react-router';
-import useToast from '../useToast/useToast';
+import useToast from '../../hooks/useToast/useToast';
 
 
 type CodeSignUpProps = {

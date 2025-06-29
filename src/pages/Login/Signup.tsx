@@ -1,22 +1,12 @@
 import React, { useState } from "react";
-import {
-    IonButton,
-    IonCard,
-    IonCardHeader,
-    IonContent,
-    IonFooter,
-    IonImg,
-    IonInput,
-    IonLabel,
-    IonPage,
-    useIonToast,
-} from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonContent, IonFooter, IonImg, IonInput, IonLabel, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import "./Login.css";
 import TitanT from "../../assets/icon/favicon.png";
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions';
 import { app } from "../../firebaseConfig"
 import Phone from "../../components/PhoneInput/Phone";
+import useToast from "../../hooks/useToast/useToast";
 
 
 const Signup: React.FC = () => {
@@ -40,7 +30,7 @@ const Signup: React.FC = () => {
     const [companyNameValid, setcompanyNameValid] = useState<boolean>(true);
     const [shortDescriptionValid, setShortDescriptionValid] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [present, dismiss] = useIonToast();
+    const { showError, showSuccess } = useToast();
 
     const history = useHistory();
 
@@ -128,12 +118,7 @@ const Signup: React.FC = () => {
     
     
         if (!valid) {
-          present({
-            buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: "Please fill out all required fields.",
-            duration: 5000,
-            color: "danger",
-          });
+          showError("Please fill out all required fields.");
           return;
         }
     
@@ -141,7 +126,10 @@ const Signup: React.FC = () => {
           try {
     
             const functions = getFunctions(app);
-            connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+
+            if (process.env.NODE_ENV === 'development') {
+                connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+              }
     
     
             const userSignUpFn = httpsCallable(functions, 'userSignUpFn');
@@ -160,12 +148,7 @@ const Signup: React.FC = () => {
             setIsLoading(false);
     
             const successMessage = (result.data as { message: string }).message;
-            present({
-              buttons: [{ text: "Okay", handler: () => dismiss() }],
-              message: successMessage || "Sign up successful! Please check your email for verification.",
-              duration: 6000,
-              color: "success", // Use success color
-            });
+            showSuccess(successMessage || "Sign up successful! Please check your email for verification.");
             history.push("/login");
           }
           catch (error) {
@@ -178,30 +161,15 @@ const Signup: React.FC = () => {
               errorMessage = (error as { message: string }).message;
             }
     
-            present({
-              buttons: [{ text: "dismiss", handler: () => dismiss() }],
-              message: errorMessage,
-              duration: 5000,
-              color: "danger",
-            });
+            showError(errorMessage);
           }
         }
         else {
-          present({
-            buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: "Passwords do not match.",
-            duration: 5000,
-            color: "danger",
-          });
+          showError("Passwords do not match.");
           return;
         }
-    
-    
       }
     
-
-    
-
     return (
 
         <IonPage>

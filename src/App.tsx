@@ -1,4 +1,4 @@
-import { Redirect, Route , useParams} from "react-router-dom";
+import { Redirect, Route , useParams, useHistory} from "react-router-dom";
 import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
@@ -30,7 +30,7 @@ import AppPage from "./pages/AppPage/AppPage";
 import DataDownload from "./pages/DataDownload/DataDownload";
 import Login from "./pages/Login/Login";
 import RouteGuard from "./components/Guard/RouteGuard";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { getAuthToken, getLinks } from "./services/firestoreService";
 import { LinkData } from "./interfaces/LinkData";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -50,6 +50,9 @@ import IssueDetail from "./pages/IssueDetail/IssueDetail";
 import SMSSignUp from "./pages/Login/SMSSignUp";
 import Signup from "./pages/Login/Signup";
 
+import { logout } from "./services/contexts/AuthContext/AuthContext";
+import { log } from "console";
+
 const DynamicAppPage: React.FC = () => {
   const { title } = useParams<{ title: string }>();
   return <AppPage title={title} />;
@@ -59,7 +62,10 @@ const DynamicAppPage: React.FC = () => {
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
-  // const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+
+
+
+
 
   useEffect(() => {
     

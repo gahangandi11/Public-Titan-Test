@@ -3,7 +3,7 @@ import { ApplicationVerifier, RecaptchaVerifier } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 
 
-const useRecaptcha = (componentId:string) => {
+const useRecaptcha = (componentId:string) :ApplicationVerifier | undefined => {
 
     const [recaptcha, setRecaptcha] = useState<ApplicationVerifier>();
 

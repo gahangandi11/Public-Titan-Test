@@ -7,6 +7,7 @@ import { getFunctions } from 'firebase/functions'
 import firebase from 'firebase/compat/app';
 import iconService from './iconService';
 
+
 import { DashboardData } from '../interfaces/DashboardData';
 import { LinkData } from '../interfaces/LinkData';
 import { AppPage } from '../interfaces/AppPage';
@@ -26,6 +27,8 @@ import { functions } from '../firebaseConfig';
 import { httpsCallable } from 'firebase/functions';
 
 import { UserRole } from '../interfaces/UserRoles';
+import { on } from 'events';
+import { connectFunctionsEmulator } from 'firebase/functions';
 
 
 const db = getFirestore(app);
@@ -362,6 +365,33 @@ export async function sendRejectionEmail(currentUser: User, userDeleteMessage: s
                 rejectMessage: userDeleteMessage,
             }
 
+        }
+    }
+    await addDoc(collection(db, "email"), emailDoc);
+}
+
+export async function getDeveloperList(): Promise<string[]> {
+    const userCollection = collection(db, "developers");
+    const userDocs = await getDocs(userCollection);
+    const developers: string[] = [];
+    userDocs.forEach(doc => {
+        developers.push(doc.id);
+    });
+    return developers;
+}
+
+
+export async function sendIssueEmailUpdates( userEmailList: string[], message: string): Promise<void> {
+    const developers = await getDeveloperList();
+    // Combine user emails with developers to keep them updated about issues
+    const allUserEmails: string[] = Array.from(new Set(userEmailList.concat(developers)));
+    const emailDoc = {
+        to: allUserEmails,
+        template: {
+            name: 'IssueUpdate',
+            data: {
+                message: message,
+            }
         }
     }
     await addDoc(collection(db, "email"), emailDoc);
@@ -735,6 +765,24 @@ export const closeIssue = async (issueId: string): Promise<void> => {
     }
 }
 
+export const updateIssueStatus = async (issueId: string, status: 'Open' | 'Closed' | 'Pending'): Promise<void> => {
+    if (!issueId) {
+        throw new Error("Issue ID is required to close an issue.");
+    }
+
+    const issueDocRef = doc(db, 'Issues', issueId);
+    try {
+        await updateDoc(issueDocRef, {
+            status: status,
+            updatedAt: serverTimestamp()
+        });
+    } catch (error) {
+        console.error("Error updating issue:", error);
+        throw new Error(`Failed to close issue with ID ${issueId}. Please try again later.`);
+    }
+
+}
+
 export const UploadImage= async (issueId: string, imageFile: File): Promise<string> => {
     if (!issueId || !imageFile) {
         throw new Error("Issue ID and image file are required to upload an image.");
@@ -748,5 +796,53 @@ export const UploadImage= async (issueId: string, imageFile: File): Promise<stri
     } catch (error) {
         console.error("Error uploading image:", error);
         throw new Error("Failed to upload image. Please try again later.");
+    }
+}
+
+export const updateUserLastInActive = async (userId: string): Promise<void> => {
+    if (!userId) {
+        throw new Error("User ID is required to update last active time.");
+    }
+
+    const userDocRef = doc(db, 'Users', userId);
+    try {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        await updateDoc(userDocRef, {
+            lastInactive: oneHourAgo,
+        });
+    } catch (error) {
+        console.error("Error updating user's last active time:", error);
+        throw new Error(`Failed to update last active time for user with ID ${userId}. Please try again later.`);
+    }
+}
+
+
+export const ResendEmailVerification = async (email:string) : Promise<void> => {
+    if (process.env.NODE_ENV === 'development') {
+        connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+      }
+    const ResendEmailFn = httpsCallable(functions, 'sendEmailReverification');
+    try {
+        await ResendEmailFn({ email });
+    }
+    catch (error) {
+        console.error("Error calling function:", error);
+    }
+}
+
+
+export const UpdateLastMfaVerified = async (userId: string): Promise<void> => {
+    if (!userId) {
+        throw new Error("User ID is required to update last MFA verified time.");
+    }
+
+    const userDocRef = doc(db, 'Users', userId);
+    try {
+        await updateDoc(userDocRef, {
+            lastMfaVerified: serverTimestamp(),
+        });
+    } catch (error) {
+        console.error("Error updating user's last MFA verified time:", error);
+        throw new Error(`Failed to update last MFA verified time for user with ID ${userId}. Please try again later.`);
     }
 }

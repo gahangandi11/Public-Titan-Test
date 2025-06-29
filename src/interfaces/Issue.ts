@@ -4,7 +4,7 @@ export interface Issue {
     id: string; 
     title: string;
     description: string;
-    status: 'Open' | 'Closed';
+    status: 'Open' | 'Closed' | 'Pending';
     labels: string[]; 
     createdBy: string; 
     createdAt: Timestamp | FieldValue; 

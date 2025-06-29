@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { Issue } from '../../interfaces/Issue';
 import { GetIssueById } from '../../services/firestoreService';
 import Header from '../../components/Header/Header';
-import { AddCommentSubCollectionToIssue, GetCommentsByIssueId, closeIssue } from '../../services/firestoreService';
+import { AddCommentSubCollectionToIssue, GetCommentsByIssueId, updateIssueStatus, sendIssueEmailUpdates } from '../../services/firestoreService';
 import { getCurrentUser } from '../../services/contexts/AuthContext/AuthContext';
 
 import {
@@ -49,13 +49,14 @@ const IssueDetail: React.FC = () => {
     };
 
     const AddComment = async () => {
-        if (!issueId || !commentInput.trim() || !user?.email) return;
+        if (!issueId || !commentInput.trim() || !user?.email || !issue) return;
         const comment = {
             text: commentInput,
             authorId: user.email,
         };
         try {
             await AddCommentSubCollectionToIssue(issueId, comment);
+            await sendIssueEmailUpdates([issue.createdBy], commentInput);
             const updatedComments: Comment[] = await GetCommentsByIssueId(issueId);
             setComments(updatedComments);
             setCommentInput('');
@@ -66,16 +67,16 @@ const IssueDetail: React.FC = () => {
         }
     }
 
-    const oncloseIssue = async () => {
-        if (!issueId || !user?.email) return;
+    const onUpdateIssue = async (status: Issue["status"]) => {
+        if (!issueId || !user?.email || !issue) return;
         try {
-            await closeIssue(issueId);
+            // await sendIssueEmailUpdates([issue.createdBy], commentInput);
+            await updateIssueStatus(issueId, status);
             const updatedIssue = await GetIssueById(issueId);
             setIssue(updatedIssue);
         } catch (error) {
             console.error("Error closing issue:", error);
         }
-
     }
 
     return (
@@ -95,7 +96,7 @@ const IssueDetail: React.FC = () => {
                                         {issue?.title}
                                     </Typography>
                                     <Chip label={issue?.status} size="small"
-                                        sx={{ flexShrink: 0, backgroundColor: `${issue?.status === 'Open' ? '#25a84a' : '#ab7df8'}`, color: 'white' }} />
+                                        sx={{ flexShrink: 0, backgroundColor: issue?.status === 'Open' ? '#25a84a' : issue?.status === 'Pending' ? '#f5a623' : '#ab7df8', color: 'white' }} />
                                 </Box>
 
                                 {/* Right Section: Labels */}
@@ -248,9 +249,14 @@ const IssueDetail: React.FC = () => {
                                     sx={{ '& .MuiInputBase-input': { color: '#333333' }, '& .MuiInputLabel-root': { color: '#666666' } }}
                                 />
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
-                                    <Button variant="outlined" color="error" onClick={() => oncloseIssue()}>
+                                    <Button variant="outlined" color="error" onClick={() => {AddComment(); onUpdateIssue('Closed')}}>
                                         Close Issue
                                     </Button>
+                                    {issue?.status !== 'Pending' && (
+                                        <Button variant="outlined" color="warning" onClick={()=>{AddComment(); onUpdateIssue('Pending')}}>
+                                            Mark as Pending
+                                        </Button>
+                                    )}
                                     <Button variant="contained" color="primary" onClick={() => { AddComment() }}>
                                         Add Comment
                                     </Button>

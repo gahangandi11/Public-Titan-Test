@@ -19,7 +19,7 @@ import { IonPage, IonContent } from '@ionic/react';
 const Issues: React.FC = () => {
 
     const [issues, setIssues] = useState<Issue[]>([]);
-    const [filterStatus, setFilterStatus] = useState<'All' | 'Open' | 'Closed'>('All');
+    const [filterStatus, setFilterStatus] = useState<'All' | 'Open' | 'Closed' | 'Pending'>('All');
 
     useEffect(() => {
         // Fetch issues when the component mounts
@@ -40,7 +40,19 @@ const Issues: React.FC = () => {
         history.push('/issues-new'); // Redirect to the new issue page
     };
 
-    const getFilterButtonStyle = (status: 'All' | 'Open' | 'Closed') => ({
+    // const getFilterButtonStyle = (status: 'All' | 'Open' | 'Closed') => ({
+    //     display: 'flex', alignItems: 'center', gap: 0.5, px: 1.5, py: 0.5, borderRadius: 2, cursor: 'pointer', userSelect: 'none',
+    //     // Style for selected filter
+    //     fontWeight: filterStatus === status ? 'bold' : 'normal',
+    //     color: filterStatus === status ? 'text.primary' : 'text.secondary',
+    //     bgcolor: filterStatus === status ? 'action.selected' : 'transparent',
+    //     transition: 'background-color 0.2s ease-in-out',
+    //     '&:hover': {
+    //         bgcolor: filterStatus === status ? 'action.selected' : 'action.hover',
+    //     }
+    // });
+
+    const getFilterButtonStyle = (status: 'All' | 'Open' | 'Closed' | 'Pending') => ({
         display: 'flex', alignItems: 'center', gap: 0.5, px: 1.5, py: 0.5, borderRadius: 2, cursor: 'pointer', userSelect: 'none',
         // Style for selected filter
         fontWeight: filterStatus === status ? 'bold' : 'normal',
@@ -74,8 +86,9 @@ const Issues: React.FC = () => {
         return filtered;
     }, [issues, filterStatus]);
 
-    const openCount = issues.filter(issue => issue.status === 'Open').length;
-    const closedCount = issues.filter(issue => issue.status === 'Closed').length;
+    const openCount = useMemo(() => issues.filter(issue => issue.status === 'Open').length, [issues]);
+    const closedCount = useMemo(() => issues.filter(issue => issue.status === 'Closed').length, [issues]);
+    const pendingCount = useMemo(() => issues.filter(issue => issue.status === 'Pending').length, [issues]);
     const allCount = issues.length;
 
     return (
@@ -110,6 +123,13 @@ const Issues: React.FC = () => {
                                 <Chip label={openCount} size="small" color="success" sx={{ ml: 0.5 }} />
                             </Box>
                             <Box
+                                sx={getFilterButtonStyle('Pending')}
+                                onClick={() => setFilterStatus('Pending')}
+                            >
+                                <Typography variant="body2">Pending</Typography>
+                                <Chip label={pendingCount} size="small" sx={{ ml: 0.5, backgroundColor: '#f5a623', color: 'white' }} />
+                            </Box>
+                            <Box
                                 sx={getFilterButtonStyle('Closed')}
                                 onClick={() => setFilterStatus('Closed')}
                             >
@@ -139,7 +159,7 @@ const Issues: React.FC = () => {
                                                     >
                                                         {issue.title}
                                                     </Typography>
-                                                    <Chip label={issue.status}  size="small" sx={{backgroundColor: `${issue?.status === 'Open'?'#25a84a':'#ab7df8'}`, color:'white'}}/>
+                                                    <Chip label={issue.status}  size="small" sx={{backgroundColor: issue?.status === 'Open' ? '#25a84a' : issue?.status === 'Pending' ? '#f5a623' : '#ab7df8', color:'white'}}/>
                                                 </Box>
                                                 {/* Labels Section */}
                                                 <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, flexShrink: 0 }}>

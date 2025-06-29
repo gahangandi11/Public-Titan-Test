@@ -6,22 +6,26 @@ import TitanT from "../../assets/icon/favicon.png";
 import { emailLogin, verifyUserMFA } from "../../services/contexts/AuthContext/AuthContext";
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions';
 import { app } from "../../firebaseConfig"
-import useToast from "../../components/useToast/useToast";
 import useRecaptcha from "../../components/Recaptcha/useRecaptcha";
 import { MultiFactorResolver } from "firebase/auth";
 import CodeSignIn from "../../components/CodeSignIn/CodeSignIn";
 import SMSSignUp from "./SMSSignUp";
+import useToast from "../../hooks/useToast/useToast";
+import { ResendEmailVerification } from "../../services/firestoreService";
+import { is } from "date-fns/locale";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { showError, showSuccess } = useToast();
+  const { showError, showWarning, showSuccess } = useToast();
   const [mfasignup, setMfaSignup] = useState(false);
 
   const history = useHistory();
 
   const [present, dismiss] = useIonToast();
+
+
 
   const recaptcha = useRecaptcha('recaptcha-verifier');
 
@@ -33,49 +37,58 @@ const Login: React.FC = () => {
     try {
       setIsLoading(true);
       const functions = getFunctions(app);
-      connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 
+      if (process.env.NODE_ENV === 'development') {
+        connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+      }
 
       const getUserStatus = httpsCallable(functions, 'getUserStatus');
+
+
+
+
 
       const statusResult = await getUserStatus({ email });
       const statusData = statusResult.data as { userExists: boolean, emailVerified: boolean, isAdminVerified: boolean, isMFAEnabled: boolean };
 
 
       if (!statusData.userExists) {
-        present({
-          buttons: [{ text: "Okay", handler: () => dismiss() }],
-          message: "No account found with this email.",
-          duration: 5000,
-          color: "danger"
-        });
+        showError("No account found with this email.");
         setIsLoading(false);
         return;
       }
 
       if (!statusData.emailVerified) {
+        // showWarning("Your email address has not been verified. Please check your inbox.", "top");
         present({
-          buttons: [{ text: "Okay", handler: () => dismiss() }],
+          buttons: [{
+            text: "Resend", handler: async () => {
+
+              try {
+                await ResendEmailVerification(email);
+                showSuccess("Verification email re-sent successfully.");
+              }
+              catch (error: any) {
+                showError(`Failed to resend verification email`);
+              }
+
+            }
+          }],
           message: "Your email address has not been verified. Please check your inbox.",
-          duration: 5000,
+          duration: 6000,
           color: "warning",
-          position: "top"
+          position: "top",
         });
         setIsLoading(false);
         return;
       }
 
       if (!statusData.isAdminVerified) {
-        present({
-          buttons: [{ text: "Okay", handler: () => dismiss() }],
-          message: "Your account is awaiting approval from an administrator.Please allow 24-48 hours for approval.",
-          duration: 5000,
-          color: "warning",
-          position: "top"
-        });
+        showWarning("Your account is awaiting approval from an administrator.Please allow 24-48 hours for approval.", "top");
         setIsLoading(false);
         return;
       }
+
       await emailLogin(email, password);
       if (!statusData.isMFAEnabled) {
         setIsLoading(false);
@@ -83,13 +96,25 @@ const Login: React.FC = () => {
         return;
       }
 
-    } catch (error:any) {
-      // This will catch errors from both getUserStatus and emailLogin
-      
-        if (error.code === 'auth/multi-factor-auth-required' && recaptcha) {
-  
+    } catch (error: any) {
+      // This will catch errors from both getUserStatus and emailLogin     
+
+      if (error.code === 'auth/multi-factor-auth-required' && recaptcha) {
+
+        // const functions = getFunctions(app);
+
+        // if (process.env.NODE_ENV === 'development') {
+        //   connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+        // }
+
+        // const isLastMfaVerifiedMoreThanThirtyDays = httpsCallable(functions, 'isLastMfaVerifiedMoreThanThirtyDays');
+        // const isLastMfaVerifiedMoreThanThirtyDaysResult = await isLastMfaVerifiedMoreThanThirtyDays({ email });
+
+        // console.log("isLastMfaVerifiedMoreThanThirtyDaysResult", isLastMfaVerifiedMoreThanThirtyDaysResult);
+
+        // if (isLastMfaVerifiedMoreThanThirtyDaysResult.data) {
+
           try {
-            
             const data = await verifyUserMFA(error, recaptcha, 0);
             if (!data) {
               showError("Something went wrong. Please refresh the page and try again.");
@@ -102,26 +127,25 @@ const Login: React.FC = () => {
               setResolver(resolver);
             }
           } catch (smsError) {
-  
             if (typeof smsError === 'object' && smsError !== null && 'message' in smsError) {
               showError(`Failed to send verification code: ${(smsError as { message: string }).message}`);
             } else {
               showError("Failed to send verification code.");
             }
-  
           }
-        } else {
-          console.error("Login process failed:", error);
-          present({
-            buttons: [{ text: "dismiss", handler: () => dismiss() }],
-            message: error.message || "An unexpected error occurred. Please try again.",
-            duration: 5000,
-            color: "danger",
-          });
-        }
-   
+
+        // }
+        // else {
+        //   console.log("Last MFA verification was less than 30 days ago, redirecting to homepage");
+        //   history.push('/homepage');
+        // }
 
 
+      }
+      else {
+        console.error("Login process failed:", error);
+        showError(error.message || "An unexpected error occurred. Please try again.")
+      }
     } finally {
       setIsLoading(false);
     }
@@ -178,9 +202,6 @@ const Login: React.FC = () => {
                     </IonRouterLink>
                   </div>
                   <IonFooter className="buttons-footer">
-                    <IonButton color="secondary" onClick={login} >
-                      {isLoading ? "Logging in..." : "Login"}
-                    </IonButton>
                     <IonButton
                       color="secondary"
                       onClick={() => {
@@ -189,6 +210,11 @@ const Login: React.FC = () => {
                     >
                       <span>Sign Up</span>
                     </IonButton>
+
+                    <IonButton color="secondary" onClick={login} >
+                      {isLoading ? "Logging in..." : "Login"}
+                    </IonButton>
+
                   </IonFooter>
                 </>
               )
@@ -202,6 +228,7 @@ const Login: React.FC = () => {
               verificationId && resolver && (
                 <CodeSignIn verificationId={verificationId}
                   resolver={resolver}
+                  email={email}
                   setVerificationId={setVerificationId}
                   setResolver={setResolver} />
               )

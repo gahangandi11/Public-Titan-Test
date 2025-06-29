@@ -1,5 +1,3 @@
-
-
 const functions = require("firebase-functions");
 
 const {getAuth} = require("firebase-admin/auth");
@@ -8,8 +6,9 @@ var admin = require("firebase-admin");
 
 const {initializeApp} = require("firebase-admin/app");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
-const {th} = require("date-fns/locale");
-
+const { onRequest } = require("firebase-functions/v2/https");
+// const {th} = require("date-fns/locale");
+const { Firestore } = require("firebase-admin/firestore");
 admin.initializeApp();
 
 
@@ -38,6 +37,7 @@ exports.deleteUserFn = functions.https.onCall(async (data, context) => {
 
 exports.adminReminder = onSchedule("35 10 * * 1", async (event) => {
   console.log('function executed');
+  
 
   const adminUsers = [];
 
@@ -317,3 +317,253 @@ exports.getUserStatus = functions.https.onCall(async (data, context) => {
   }
 });
 
+
+// this will run 5 AM every day and revoke sessions for users who have been inactive for more than 6 hours
+exports.revokeInactiveSessions = onSchedule("0 5 * * *",async (request, response) => {
+  console.log("Starting job to revoke inactive user sessions...");
+
+  // Calculate the cutoff time: 6 hours ago from now.
+  const twelveHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
+  
+  const errors = [];
+  let totalRevokedCount = 0;
+  
+  try {
+    // Step 1: Fetch all user documents from the 'Users' collection.
+    const usersSnapshot = await admin.firestore().collection('Users').get();
+    const allUserDocs = usersSnapshot.docs;
+    const processedUserCount = allUserDocs.length;
+    
+
+    // Step 2: Identify potentially inactive users based on Firestore data and the new logic.
+    const potentialUidsToRevoke = [];
+    for (const userDoc of allUserDocs) {
+      const userData = userDoc.data();
+      const lastActiveTimestamp = userData.lastInactive; // Firestore Timestamp or undefined
+      const lastRevokedTimestamp = userData.lastRevoked; // Firestore Timestamp or undefined
+
+      // Condition to check if a user is a candidate for revocation.
+      let shouldRevoke = false;
+
+      if (!lastActiveTimestamp) {
+        // If lastActive doesn't exist, they are inactive.
+        // We only revoke them if they haven't been revoked before.
+        if (!lastRevokedTimestamp) {
+          shouldRevoke = true;
+        }
+      } else {
+        // lastActive exists, compare it to the cutoff time and the lastRevoked time.
+        const lastActiveDate = lastActiveTimestamp.toDate();
+        if (lastActiveDate < twelveHoursAgo) {
+          // User has been inactive for more than 12 hours.
+          // Now, check if we've already revoked them since their last activity.
+          if (!lastRevokedTimestamp || lastActiveDate > lastRevokedTimestamp.toDate()) {
+            // Revoke if lastRevoked doesn't exist OR if their last activity
+            // was more recent than the last time we revoked them.
+            shouldRevoke = true;
+          }
+        }
+      }
+
+      if (shouldRevoke) {
+        potentialUidsToRevoke.push({ uid: userDoc.id });
+      }
+    }
+    
+    if (potentialUidsToRevoke.length === 0) {
+        const message = `Job finished. Processed ${processedUserCount} users. No new inactive users to revoke.`;
+        console.log(message);
+        return response.status(200).send(message);
+    }
+
+    // Step 3: Process the potentially inactive users in chunks of 100.
+    const chunkSize = 100;
+    for (let i = 0; i < potentialUidsToRevoke.length; i += chunkSize) {
+      const chunk = potentialUidsToRevoke.slice(i, i + chunkSize);
+      console.log(`Processing a chunk of ${chunk.length} users...`);
+
+      const getUsersResult = await admin.auth().getUsers(chunk);
+      
+      const uidsToRevokeInChunk = new Set();
+      getUsersResult.users.forEach(userRecord => {
+          if (userRecord.metadata.lastSignInTime) {
+              uidsToRevokeInChunk.add(userRecord.uid);
+          }
+      });
+
+      if (uidsToRevokeInChunk.size > 0) {
+        const uniqueUids = Array.from(uidsToRevokeInChunk);
+        totalRevokedCount += uniqueUids.length;
+        console.log(`Attempting to revoke sessions and update doc for ${uniqueUids.length} users in this chunk.`);
+        
+        const allPromises = uniqueUids.map(uid => {
+          return admin.auth().revokeRefreshTokens(uid)
+            .then(() => {
+              const userDocRef = admin.firestore().collection('Users').doc(uid);
+              return userDocRef.update({ lastRevoked: Firestore.FieldValue.serverTimestamp() });
+            })
+            .catch(err => {
+              errors.push(`Failed process for ${uid}: ${err.message}`);
+            });
+        });
+        await Promise.all(allPromises);
+      }
+    }
+
+    const responseMessage = `Job finished. Processed ${processedUserCount} users. Attempted revocation for ${totalRevokedCount} users. Encountered ${errors.length} errors.`;
+    console.log(responseMessage);
+    if (errors.length > 0) {
+      console.error("Errors during process:", errors);
+    }
+    response.status(200).send(responseMessage);
+
+  } catch (error) {
+    const errorMessage = `A critical error occurred: ${error.message}`;
+    console.error(errorMessage, error);
+    response.status(500).send(errorMessage);
+  }
+});
+
+
+
+exports.sendEmailReverification = functions.https.onCall(async (data, context) => {
+  const { email } = data;
+
+  if (!email || typeof email !== 'string') {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The function must be called with a valid email string.'
+    );
+  }
+
+  try {
+    // Step 1: Check if the user exists in Firebase Authentication.
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    // Step 2: Generate a new email verification link.
+    const actionCodeSettings = {
+      url: 'https://missouri-titan.com/login',
+      handleCodeInApp: false
+    };
+
+    const verificationLink = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+
+    // Step 3: Create the email document and add it to Firestore.
+    const verificationEmail = {
+      to: [email],
+      template: {
+        name: 'verifyEmail',
+        data: {
+          verificationLink: verificationLink,
+        },
+      },
+    };
+
+    await admin.firestore().collection('email').add(verificationEmail);
+
+    return { message: 'Re-verification email sent successfully.' };
+  } catch (error) {
+    console.error('Error sending re-verification email:', error);
+    throw new functions.https.HttpsError('internal', 'An error occurred while sending the re-verification email.', error);
+  }
+}
+);
+
+
+exports.addNewFieldToAllUsers = functions.https.onRequest(async (req,res) => {
+ 
+  try {
+    const usersSnapshot = await admin.firestore().collection('Users').get();
+
+    const updatePromises = usersSnapshot.docs.map(async (doc) => {
+      const userData = doc.data();
+      if (!userData.hasOwnProperty('lastMfaVerified')) {
+        const userDocRef = admin.firestore().collection('Users').doc(doc.id);
+        return userDocRef.update({ lastMfaVerified: null });
+      }
+    });
+
+    await Promise.all(updatePromises);
+    return res.status(200).json({ message: 'Field added to all users successfully.' });
+  } catch (error) {
+    console.error('Error adding field to users:', error);
+    return res.status(500).json({ error: 'An error occurred while adding the field.' });
+  
+  }
+});
+
+
+exports.UpdateLastMfaVerified = functions.https.onCall(async (data, context) => {
+  const { email } = data;
+
+  if (!email || typeof email !== 'string') {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The function must be called with a valid email string.'
+    );
+  }
+  try {
+    // Step 1: Check if the user exists in Firebase Authentication.
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    // Step 2: Get the user's Firestore document.
+    const userDocRef = admin.firestore().collection('Users').doc(userRecord.uid);
+    const userDoc = await userDocRef.get();
+
+    if (!userDoc.exists) {
+      throw new functions.https.HttpsError('not-found', 'User document does not exist.');
+    }
+
+    // Step 3: Update the lastMfaVerified field to the current timestamp.
+    await userDocRef.update({
+      lastMfaVerified: Firestore.FieldValue.serverTimestamp()
+    });
+
+    return { message: 'lastMfaVerified field updated successfully.' };
+  } catch (error) {
+    console.error('Error updating lastMfaVerified:', error);
+    throw new functions.https.HttpsError('internal', 'An error occurred while updating the lastMfaVerified field.', error);
+  }
+}
+);
+
+
+exports.isLastMfaVerifiedMoreThanThirtyDays = functions.https.onCall(async (data, context) => {
+  const { email } = data;
+
+  if (!email || typeof email !== 'string') {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The function must be called with a valid email string.'
+    );
+  }
+
+  try {
+    // Step 1: Check if the user exists in Firebase Authentication.
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    // Step 2: Get the user's Firestore document.
+    const userDocRef = admin.firestore().collection('Users').doc(userRecord.uid);
+    const userDoc = await userDocRef.get();
+
+    if (!userDoc.exists) {
+      throw new functions.https.HttpsError('not-found', 'User document does not exist.');
+    }
+
+    // Step 3: Check the lastMfaVerified field.
+    const lastMfaVerified = userDoc.data().lastMfaVerified;
+
+    // Return true if lastMfaVerified is null
+    if (!lastMfaVerified) {
+      return  true ;
+    }
+
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    
+    return  lastMfaVerified.toDate() < thirtyDaysAgo ;
+
+  } catch (error) {
+    console.error('Error checking lastMfaVerified:', error);
+    throw new functions.https.HttpsError('internal', 'An error occurred while checking the lastMfaVerified field.', error);
+  }
+});

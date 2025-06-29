@@ -18,8 +18,8 @@ import {
 } from "firebase/auth";
 import { getUserByID, } from "../../firestoreService";
 import { sendPasswordResetEmail,getRedirectResult } from "firebase/auth";
-
 import { getRolePermissions } from "../../firestoreService";
+import useUpdateLastInActive from "../../../hooks/useUpdateLastActive/useUpdateLastActive";
 
 const auth = getAuth();
 const AuthContext = createContext<{
@@ -216,12 +216,14 @@ export async function enrollUser(verificationCodeId: string, verificationCode: s
 
 
 
-
 const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userDoc, setUserDoc] = useState<any>(null);
   const [permissions, setPermissions] = useState<string [] | null>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
+
+  
+  useUpdateLastInActive(1000 * 60 * 1); 
 
   useEffect(() => {
      const unsubscribe= auth.onAuthStateChanged(async (user) => {
@@ -247,13 +249,6 @@ const AuthProvider: React.FC = ({ children }) => {
     };
   }, []);
 
-  // const value = {
-  //   currentUser: currentUser,
-  //   userDoc: userDoc,
-  //   permissions: permissions,
-  //   loading: loading,
-  //   value: "",
-  // };
 
   const value = useMemo(() => {
     return {
@@ -264,9 +259,6 @@ const AuthProvider: React.FC = ({ children }) => {
     };
   }, [ userDoc,permissions, currentUser])
 
-  // if (loading) {
-  //   return <div>Loading...</div>; // You can replace this with a spinner or your custom loader
-  // }
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };

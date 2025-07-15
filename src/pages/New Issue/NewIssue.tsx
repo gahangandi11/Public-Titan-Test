@@ -8,7 +8,7 @@ import { Issue } from '../../interfaces/Issue';
 import { useHistory } from 'react-router';
 import { PhotoCamera, Clear as ClearIcon } from '@mui/icons-material';
 import { IonPage, IonContent } from '@ionic/react';
-import { set } from 'date-fns';
+import { sendIssueEmailUpdates } from '../../services/firestoreService';
 
 interface PredefinedLabel {
     name: string;
@@ -72,6 +72,7 @@ const NewIssue: React.FC = () => {
         };
         setIsSubmitting(true);
         await CreateIssue(newIssue, imageFiles);
+        await sendIssueEmailUpdates(newIssue.createdBy, newIssue.title,'','IssueCreated');
         setTitle('');
         setDescription('');
         setSelectedLabels([]);

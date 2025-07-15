@@ -470,100 +470,29 @@ exports.sendEmailReverification = functions.https.onCall(async (data, context) =
 );
 
 
-exports.addNewFieldToAllUsers = functions.https.onRequest(async (req,res) => {
+// exports.addNewFieldToAllUsers = functions.https.onRequest(async (req,res) => {
  
-  try {
-    const usersSnapshot = await admin.firestore().collection('Users').get();
+//   try {
+//     const usersSnapshot = await admin.firestore().collection('Users').get();
 
-    const updatePromises = usersSnapshot.docs.map(async (doc) => {
-      const userData = doc.data();
-      if (!userData.hasOwnProperty('lastMfaVerified')) {
-        const userDocRef = admin.firestore().collection('Users').doc(doc.id);
-        return userDocRef.update({ lastMfaVerified: null });
-      }
-    });
+//     const updatePromises = usersSnapshot.docs.map(async (doc) => {
+//       const userData = doc.data();
+//       if (!userData.hasOwnProperty('lastMfaVerified')) {
+//         const userDocRef = admin.firestore().collection('Users').doc(doc.id);
+//         return userDocRef.update({ lastMfaVerified: null });
+//       }
+//     });
 
-    await Promise.all(updatePromises);
-    return res.status(200).json({ message: 'Field added to all users successfully.' });
-  } catch (error) {
-    console.error('Error adding field to users:', error);
-    return res.status(500).json({ error: 'An error occurred while adding the field.' });
+//     await Promise.all(updatePromises);
+//     return res.status(200).json({ message: 'Field added to all users successfully.' });
+//   } catch (error) {
+//     console.error('Error adding field to users:', error);
+//     return res.status(500).json({ error: 'An error occurred while adding the field.' });
   
-  }
-});
+//   }
+// });
 
 
-exports.UpdateLastMfaVerified = functions.https.onCall(async (data, context) => {
-  const { email } = data;
-
-  if (!email || typeof email !== 'string') {
-    throw new functions.https.HttpsError(
-      'invalid-argument',
-      'The function must be called with a valid email string.'
-    );
-  }
-  try {
-    // Step 1: Check if the user exists in Firebase Authentication.
-    const userRecord = await admin.auth().getUserByEmail(email);
-
-    // Step 2: Get the user's Firestore document.
-    const userDocRef = admin.firestore().collection('Users').doc(userRecord.uid);
-    const userDoc = await userDocRef.get();
-
-    if (!userDoc.exists) {
-      throw new functions.https.HttpsError('not-found', 'User document does not exist.');
-    }
-
-    // Step 3: Update the lastMfaVerified field to the current timestamp.
-    await userDocRef.update({
-      lastMfaVerified: Firestore.FieldValue.serverTimestamp()
-    });
-
-    return { message: 'lastMfaVerified field updated successfully.' };
-  } catch (error) {
-    console.error('Error updating lastMfaVerified:', error);
-    throw new functions.https.HttpsError('internal', 'An error occurred while updating the lastMfaVerified field.', error);
-  }
-}
-);
 
 
-exports.isLastMfaVerifiedMoreThanThirtyDays = functions.https.onCall(async (data, context) => {
-  const { email } = data;
 
-  if (!email || typeof email !== 'string') {
-    throw new functions.https.HttpsError(
-      'invalid-argument',
-      'The function must be called with a valid email string.'
-    );
-  }
-
-  try {
-    // Step 1: Check if the user exists in Firebase Authentication.
-    const userRecord = await admin.auth().getUserByEmail(email);
-
-    // Step 2: Get the user's Firestore document.
-    const userDocRef = admin.firestore().collection('Users').doc(userRecord.uid);
-    const userDoc = await userDocRef.get();
-
-    if (!userDoc.exists) {
-      throw new functions.https.HttpsError('not-found', 'User document does not exist.');
-    }
-
-    // Step 3: Check the lastMfaVerified field.
-    const lastMfaVerified = userDoc.data().lastMfaVerified;
-
-    // Return true if lastMfaVerified is null
-    if (!lastMfaVerified) {
-      return  true ;
-    }
-
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
-    return  lastMfaVerified.toDate() < thirtyDaysAgo ;
-
-  } catch (error) {
-    console.error('Error checking lastMfaVerified:', error);
-    throw new functions.https.HttpsError('internal', 'An error occurred while checking the lastMfaVerified field.', error);
-  }
-});

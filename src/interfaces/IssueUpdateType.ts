@@ -1,0 +1,1 @@
+export type IssueUpdateType = 'IssueCreated' | 'IssueClosed' | 'IssueCommented' | 'IssueStatusChanged';

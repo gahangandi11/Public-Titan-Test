@@ -2,7 +2,6 @@ import React from 'react'
 import { MultiFactorResolver } from 'firebase/auth';
 import SMSLogin from './SMSLogin';
 import { verifyUserEnrolled , getCurrentUser } from '../../services/contexts/AuthContext/AuthContext';
-import { UpdateLastMfaVerified } from '../../services/firestoreService';
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions';
 import { useHistory } from 'react-router';
 import useToast from '../../hooks/useToast/useToast';
@@ -29,8 +28,6 @@ const CodeSignIn : React.FC<CodeSignInProps> = ({verificationId, resolver,email,
       connectFunctionsEmulator(functions, "127.0.0.1", 5001);
     }
 
-    const UpdateLastMfaVerified = httpsCallable(functions, 'UpdateLastMfaVerified');
-
 
     async function getCode(code: string) {
         const response = await verifyUserEnrolled({verificationId,resolver},code);
@@ -38,8 +35,6 @@ const CodeSignIn : React.FC<CodeSignInProps> = ({verificationId, resolver,email,
             setVerificationId("");
             setResolver(undefined);
             showSuccess("OPT verified successfully");
-            // keep this updated to send opt again only after 30 days
-            await UpdateLastMfaVerified({email});
 
             history.push('/homepage');
         }

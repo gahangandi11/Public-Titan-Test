@@ -12,7 +12,7 @@ import CodeSignIn from "../../components/CodeSignIn/CodeSignIn";
 import SMSSignUp from "./SMSSignUp";
 import useToast from "../../hooks/useToast/useToast";
 import { ResendEmailVerification } from "../../services/firestoreService";
-import { is } from "date-fns/locale";
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -101,19 +101,6 @@ const Login: React.FC = () => {
 
       if (error.code === 'auth/multi-factor-auth-required' && recaptcha) {
 
-        // const functions = getFunctions(app);
-
-        // if (process.env.NODE_ENV === 'development') {
-        //   connectFunctionsEmulator(functions, "127.0.0.1", 5001);
-        // }
-
-        // const isLastMfaVerifiedMoreThanThirtyDays = httpsCallable(functions, 'isLastMfaVerifiedMoreThanThirtyDays');
-        // const isLastMfaVerifiedMoreThanThirtyDaysResult = await isLastMfaVerifiedMoreThanThirtyDays({ email });
-
-        // console.log("isLastMfaVerifiedMoreThanThirtyDaysResult", isLastMfaVerifiedMoreThanThirtyDaysResult);
-
-        // if (isLastMfaVerifiedMoreThanThirtyDaysResult.data) {
-
           try {
             const data = await verifyUserMFA(error, recaptcha, 0);
             if (!data) {
@@ -133,14 +120,6 @@ const Login: React.FC = () => {
               showError("Failed to send verification code.");
             }
           }
-
-        // }
-        // else {
-        //   console.log("Last MFA verification was less than 30 days ago, redirecting to homepage");
-        //   history.push('/homepage');
-        // }
-
-
       }
       else {
         console.error("Login process failed:", error);

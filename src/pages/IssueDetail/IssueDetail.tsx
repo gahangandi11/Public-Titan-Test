@@ -56,7 +56,7 @@ const IssueDetail: React.FC = () => {
         };
         try {
             await AddCommentSubCollectionToIssue(issueId, comment);
-            await sendIssueEmailUpdates([issue.createdBy], commentInput);
+            await sendIssueEmailUpdates(issue.createdBy, issue.title,commentInput, 'IssueCommented');
             const updatedComments: Comment[] = await GetCommentsByIssueId(issueId);
             setComments(updatedComments);
             setCommentInput('');
@@ -70,7 +70,7 @@ const IssueDetail: React.FC = () => {
     const onUpdateIssue = async (status: Issue["status"]) => {
         if (!issueId || !user?.email || !issue) return;
         try {
-            // await sendIssueEmailUpdates([issue.createdBy], commentInput);
+            await sendIssueEmailUpdates(issue.createdBy, issue.title,commentInput,'IssueStatusChanged');
             await updateIssueStatus(issueId, status);
             const updatedIssue = await GetIssueById(issueId);
             setIssue(updatedIssue);

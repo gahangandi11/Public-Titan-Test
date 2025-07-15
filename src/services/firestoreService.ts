@@ -18,6 +18,7 @@ import { WazeIncident } from '../interfaces/WazeIncident';
 import { Issue } from '../interfaces/Issue';
 import { Comment } from '../interfaces/Comment';
 import { WazeJam } from '../interfaces/WazeJam';
+import { IssueUpdateType } from '../interfaces/IssueUpdateType';
 import { GeoJSON } from 'geojson';
 import { Camera } from '../interfaces/Camera';
 import { TranscoreIncident } from '../interfaces/TranscoreIncident';
@@ -381,16 +382,31 @@ export async function getDeveloperList(): Promise<string[]> {
 }
 
 
-export async function sendIssueEmailUpdates( userEmailList: string[], message: string): Promise<void> {
+export async function sendIssueEmailUpdates( userEmail: string, issueTitle:string,message: string, UpdateType: IssueUpdateType): Promise<void> {
     const developers = await getDeveloperList();
-    // Combine user emails with developers to keep them updated about issues
-    const allUserEmails: string[] = Array.from(new Set(userEmailList.concat(developers)));
+
+
+    if(UpdateType === 'IssueStatusChanged') {
+        if(message!== '') {
+            message = `The status of the issue has been updated with the following comment - ${message}.`;
+        }
+        else{
+            message = `The status of the issue has been updated.`;
+        }
+    }
+
+    if(UpdateType === 'IssueCreated') {
+        message = `A new issue has been created.`;
+    }
+
     const emailDoc = {
-        to: allUserEmails,
+        to: userEmail,
+        cc: developers,
         template: {
             name: 'IssueUpdate',
             data: {
                 message: message,
+                issueTitle: issueTitle,
             }
         }
     }
@@ -831,18 +847,3 @@ export const ResendEmailVerification = async (email:string) : Promise<void> => {
 }
 
 
-export const UpdateLastMfaVerified = async (userId: string): Promise<void> => {
-    if (!userId) {
-        throw new Error("User ID is required to update last MFA verified time.");
-    }
-
-    const userDocRef = doc(db, 'Users', userId);
-    try {
-        await updateDoc(userDocRef, {
-            lastMfaVerified: serverTimestamp(),
-        });
-    } catch (error) {
-        console.error("Error updating user's last MFA verified time:", error);
-        throw new Error(`Failed to update last MFA verified time for user with ID ${userId}. Please try again later.`);
-    }
-}

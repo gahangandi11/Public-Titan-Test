@@ -5,7 +5,6 @@ import {
   IonFooter,
   IonCard,
   IonCardContent,
-  IonCardHeader,
   IonContent,
   IonLabel,
   IonPage,
@@ -13,26 +12,20 @@ import {
   IonButton,
   IonIcon,
 } from "@ionic/react";
-// import { getFireUser } from '../../firebaseConfig';
-// import './Registration.css';
+
 import {
   arrowBackOutline,
   arrowBackSharp,
   arrowForwardOutline,
   arrowForwardSharp,
-  checkmarkCircleOutline,
-  checkmarkCircleSharp,
 } from "ionicons/icons";
 import { useHistory } from "react-router";
+
 // import firebaseService from '../../services/firebaseService';
 import { User } from "../../interfaces/User";
-import AuthProvider, {
-  watchUser,
-  emailSignup,
-  emailLogin,
+import  {
   sendEmailVerfication,
   isEmailVerifiedByUser,
-  getReidrectedUrl,
   getCurrentUser,
 } from "../../services/contexts/AuthContext/AuthContext";
 import { getUserDocumentRef } from "../../services/firestoreService";

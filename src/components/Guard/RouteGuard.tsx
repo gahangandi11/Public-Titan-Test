@@ -23,12 +23,17 @@ const RouteGuard: React.FC<any> = ({ children, ...rest }) => {
     '/profile': 'Profile',
     '/support': 'Support',
     '/tutorials':'Tutorials',
+    '/issues': 'Issues',
     '/appcenter/otherapps': 'Other Apps',
+    '/issues-new': 'New Issue',
   }
   
   const getTitleForPath = (path: string) => {
     if (path.startsWith('/app-center/')) {
       return 'App Center';  // Dynamic match for any path starting with '/myapps/'
+    }
+    if (path.startsWith('/issues/')) {
+      return 'Issues';  // Return the last segment of the path
     }
     return UrlTitleMap[path as keyof typeof UrlTitleMap] || '';  // Return the mapped title or an empty string if not found
   };

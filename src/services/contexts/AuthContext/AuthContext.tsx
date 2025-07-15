@@ -10,12 +10,16 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendEmailVerification,
-  UserCredential,
+  UserCredential,multiFactor, PhoneAuthProvider, PhoneMultiFactorGenerator,
+  MultiFactorResolver,
+  getMultiFactorResolver,
+  ApplicationVerifier,
+  MultiFactorError
 } from "firebase/auth";
 import { getUserByID, } from "../../firestoreService";
 import { sendPasswordResetEmail,getRedirectResult } from "firebase/auth";
-
 import { getRolePermissions } from "../../firestoreService";
+import useUpdateLastInActive from "../../../hooks/useUpdateLastActive/useUpdateLastActive";
 
 const auth = getAuth();
 const AuthContext = createContext<{
@@ -25,7 +29,7 @@ const AuthContext = createContext<{
   value: string;
 }>({ currentUser: null, userDoc: null, permissions: null, value: "" });
 
-export function emailLogin(email: string, password:string) {
+export async function emailLogin(email: string, password:string) :Promise<UserCredential>{
   return signInWithEmailAndPassword(auth, email, password);
 }
 
@@ -40,24 +44,27 @@ export function isEmailVerifiedByUser(): boolean {
   return auth.currentUser?.emailVerified;
 }
 
-export function emailSignup(email: string, password: string) {
+export async function emailSignup(email: string, password: string) : Promise<UserCredential> {
   return createUserWithEmailAndPassword(auth, email, password);
 }
 
-export function sendEmailVerfication(redirectURl:string) {
+export async function sendEmailVerfication(redirectURl:string) : Promise<void> {
     
-  return sendEmailVerification(auth.currentUser!,{
+  if (!auth.currentUser) {
+    throw new Error('No authenticated user found');
+  }
+  return sendEmailVerification(auth.currentUser, {
     url: redirectURl,
     handleCodeInApp: false
   });
 }
 
-export function resetPassword(email: string): Promise<void> {
+export async function resetPassword(email: string): Promise<void> {
   const redirect = window.location.href.replace("/forgotPassword", "/login");
   return sendPasswordResetEmail(auth, email, { url: redirect });
 }
 
-export function logout() {
+export async function logout() : Promise<void> {
   return auth.signOut();
 }
 
@@ -66,43 +73,145 @@ export function checkIfVerificationIsRequired():boolean
     return false;
 }
 
-export function useAuth() {
+export function useAuth()  {
   return useContext(AuthContext);
 }
 
-export function watchUser() {
+export function watchUser()  {
   return auth;
 }
 
-export function updateUserPassword(
+export async function updateUserPassword(
   user: User,
   currentPassword: string,
   newPassword: string
-) {
-  const credential = EmailAuthProvider.credential(user.email!, currentPassword);
-  return reauthenticateWithCredential(user, credential).then(
-    (userCredential) => {
-      return updatePassword(user, newPassword);
-    }
-  );
+) : Promise<void> {
+  
+  if (!user.email) {
+    throw new Error('User email is required for password update');
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPassword);
+  } catch (error) {
+    console.error('Error updating password:', error);
+    throw error;
+  }
 }
 
-export function updateUserEmail(
+export async function updateUserEmail(
   user: User,
   newEmail: string,
   currentPassword: string
-) {
-  const credential = EmailAuthProvider.credential(user.email!, currentPassword);
-  return reauthenticateWithCredential(user, credential).then(
-    (userCredential) => {
-      return updateEmail(user, newEmail);
-    }
-  );
+) : Promise<void> {
+  
+  if (!user.email) {
+    throw new Error('User email is required for email update');
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+    await updateEmail(user, newEmail);
+  } catch (error) {
+    console.error('Error updating email:', error);
+    throw error;
+  }
 }
+
+
 export function getReidrectedUrl(
   
 ):Promise<UserCredential|null> {
     return getRedirectResult(auth);
+}
+
+
+export async function verifyUserMFA (error: MultiFactorError, 
+  recaptchaVerifier: ApplicationVerifier, 
+  selectedIndex: number) : Promise<false | {verificationId: string, resolver: MultiFactorResolver} | void> {
+  const resolver = getMultiFactorResolver(auth, error);
+  if(resolver.hints[selectedIndex].factorId === PhoneMultiFactorGenerator.FACTOR_ID) {
+    const phoneInfoOptions = {
+      multiFactorHint: resolver.hints[selectedIndex],
+      session: resolver.session
+    };
+    const phoneAuthProvider = new PhoneAuthProvider(auth);
+    try{
+      const verificationId = await phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+      return {verificationId, resolver}
+    }catch(e)
+    {
+      console.error("Error verifying user MFA:", e);
+      return false;
+    }
+  }
+}
+
+export async function verifyUserEnrolled(verificationMFA :{verificationId: string, resolver: MultiFactorResolver}, 
+  verificationCode: string): Promise<boolean> {
+
+   const {verificationId, resolver} = verificationMFA;
+
+   const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+
+   const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(credential);
+
+   try{
+     await resolver.resolveSignIn(multiFactorAssertion);
+     return true;
+   }catch(e)
+   {
+     return false;
+   }
+
+}
+
+export async function verifyPhoneNumber(phoneNumber:string, 
+  recaptchaVerifier:ApplicationVerifier):Promise<false | string> {
+
+  const user= auth.currentUser;
+
+  if (!user) throw new Error("No user logged in");
+  
+  const session = await multiFactor(user).getSession();
+  const phoneInfoOptions = {
+    phoneNumber,
+    session
+  };
+
+  const phoneAuthProvider = new PhoneAuthProvider(auth);
+  try{
+    return await phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+  }catch(e)
+  {
+    console.error("Error verifying phone number:", e);
+    return false;
+  }
+}
+
+
+export async function enrollUser(verificationCodeId: string, verificationCode: string): Promise<boolean> {
+
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("No user logged in");
+    return false;
+  }
+  
+  const phoneAuthCredential = PhoneAuthProvider.credential(verificationCodeId, verificationCode);
+  const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(phoneAuthCredential);
+  
+  try {
+    await multiFactor(user).enroll(multiFactorAssertion, "Phone Number");
+    return true;
+  } catch (error) {
+    console.error("Error enrolling user:", error);
+    return false;
+  }
+
 }
 
 
@@ -112,6 +221,9 @@ const AuthProvider: React.FC = ({ children }) => {
   const [userDoc, setUserDoc] = useState<any>(null);
   const [permissions, setPermissions] = useState<string [] | null>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
+
+  
+  useUpdateLastInActive(1000 * 60 * 1); 
 
   useEffect(() => {
      const unsubscribe= auth.onAuthStateChanged(async (user) => {
@@ -137,13 +249,6 @@ const AuthProvider: React.FC = ({ children }) => {
     };
   }, []);
 
-  // const value = {
-  //   currentUser: currentUser,
-  //   userDoc: userDoc,
-  //   permissions: permissions,
-  //   loading: loading,
-  //   value: "",
-  // };
 
   const value = useMemo(() => {
     return {
@@ -154,9 +259,6 @@ const AuthProvider: React.FC = ({ children }) => {
     };
   }, [ userDoc,permissions, currentUser])
 
-  // if (loading) {
-  //   return <div>Loading...</div>; // You can replace this with a spinner or your custom loader
-  // }
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };

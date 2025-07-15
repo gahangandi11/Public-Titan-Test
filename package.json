@@ -41,6 +41,8 @@
     "react-dom": "^17.0.1",
     "react-dropdown-select": "^4.8.0",
     "react-map-gl": "^6.1.18",
+    "react-otp-input": "^3.1.1",
+    "react-phone-input-2": "^2.15.1",
     "react-player": "^2.9.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
@@ -85,7 +87,8 @@
     "@capacitor/cli": "3.2.5",
     "@iconify/react": "^5.0.1",
     "@types/reactour": "^1.18.5",
-    "firebase-tools": "^13.18.0"
+    "firebase-tools": "^13.18.0",
+    "react-error-overlay": "^6.0.9"
   },
   "description": "An Ionic project"
 }

@@ -52,6 +52,8 @@ import {
     snowSharp,
     swapHorizontalOutline,
     swapHorizontalSharp,
+    bugOutline,
+    bugSharp,
 } from 'ionicons/icons';
 
 const iconService = {
@@ -110,6 +112,8 @@ const iconService = {
                 return ios ? snowOutline : snowSharp;
             case 'swap':
                     return ios ? swapHorizontalOutline : swapHorizontalSharp;
+            case 'bug':
+                    return ios ? bugOutline : bugSharp;
             case 'warning':
                 return warning;
             case 'weather':

@@ -239,3 +239,18 @@
 .invalid{
   border: 3px solid red;
 }
+
+.mandatory-asterisk {
+  color: #ff4961; /* Ionic's danger color */
+  margin-left: 3px;
+  font-weight: bold;
+}
+
+.centered-subtitle {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+  font-size: 1.1rem;
+}

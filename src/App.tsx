@@ -1,7 +1,6 @@
-import { Redirect, Route, useHistory } from "react-router-dom";
+import { Redirect, Route , useParams, useHistory} from "react-router-dom";
 import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-
 
 import LiveData from "./pages/LiveData/LiveData";
 import Homepage from "./pages/Home/HomePage";
@@ -31,7 +30,7 @@ import AppPage from "./pages/AppPage/AppPage";
 import DataDownload from "./pages/DataDownload/DataDownload";
 import Login from "./pages/Login/Login";
 import RouteGuard from "./components/Guard/RouteGuard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { getAuthToken, getLinks } from "./services/firestoreService";
 import { LinkData } from "./interfaces/LinkData";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -45,22 +44,52 @@ import ForgotPassword from "./pages/Login/ForgotPassword";
 import EmailVerification from "./pages/Login/EmailVerification";
 import RedirectHandler from "./pages/Login/RedirectUrlHandler";
 import ReValidation from "./pages/Login/AccountReValidation";
-import RoleRouteGuard from "./components/Guard/RoleRouteGard";
+import Issues from "./pages/Issues/Issues";
+import NewIssue from "./pages/New Issue/NewIssue";
+import IssueDetail from "./pages/IssueDetail/IssueDetail";
+import SMSSignUp from "./pages/Login/SMSSignUp";
+import Signup from "./pages/Login/Signup";
+
+import { logout } from "./services/contexts/AuthContext/AuthContext";
+import { log } from "console";
+
+const DynamicAppPage: React.FC = () => {
+  const { title } = useParams<{ title: string }>();
+  return <AppPage title={title} />;
+};
+
+
 
 const App: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
 
+
+
+
+
   useEffect(() => {
-    getAuthToken().then((doc) => {
-      setAuthToken(doc);
-    });
+    
     watchUser().onAuthStateChanged((user) => {
       if (user) {
+
+        // Set the auth token in the BigQuery service
+        getAuthToken().then((doc) => {
+          setAuthToken(doc);
+        }).catch((error) => {
+          console.error("Error fetching auth token:", error);
+          }
+        );
+        
+        // Fetch links to the app center dashboards
         getLinks().then((foundLinks) => {
           setLinks(foundLinks);
-        });
+        }).catch((error) => {
+          console.error("Error fetching links:", error);
+        }
+        );
       }
     });
+
   }, []);
 
   return (
@@ -83,6 +112,14 @@ const App: React.FC = () => {
             <Route path="/verification" exact={true}>
               <EmailVerification />
             </Route>
+
+            <Route path="/signup" exact={true}>
+              <Signup/>
+            </Route>
+
+            {/* <Route path="/smssignup" exact={true}>
+              <SMSSignUp />
+            </Route> */}
 
             <Route path="/renewaccount" exact={true}>
               <ReValidation />
@@ -121,9 +158,22 @@ const App: React.FC = () => {
               <Tutorials />
             </RouteGuard>
 
+            <RouteGuard path="/issues" exact={true}>
+              <Issues />
+            </RouteGuard>
+
+            <RouteGuard path="/issues-new" exact={true}>
+              <NewIssue />
+            </RouteGuard>
+
+            <RouteGuard path="/issues/:issueId" exact={true}> {/* Use exact={true} if this is the only dynamic part */}
+              <IssueDetail />
+            </RouteGuard>
+
             <RouteGuard path="/profile" exact={true}>
               <Profile />
             </RouteGuard>
+
 
             <RouteGuard path="/support" exact={true}>
               <Support />
@@ -136,6 +186,11 @@ const App: React.FC = () => {
                 </RouteGuard>
               );
             })}
+
+             {/* Catch-all route for /app-center/* - This will handle refreshes on the app center pages if links are not fetched properly*/}
+             <RouteGuard path="/app-center/:title">
+              <DynamicAppPage />
+            </RouteGuard>
         </AuthProvider>
           </IonRouterOutlet>
         </IonReactRouter>
